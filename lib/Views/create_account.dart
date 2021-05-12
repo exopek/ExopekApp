@@ -28,16 +28,42 @@ class CreateUserAccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0.0,
       ),
-      body: Container(
-        color: Colors.grey[900],
-        child: Center(
-          child: Column(
-            children: [
-              _signInButtonEmail(context)
-            ],
+      body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 50.0, left: 15.0, right: 15.0),
+                  child: Image(
+                      image: AssetImage(
+                        'assets/Exopek_Logo.png'
+                      )),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 200.0),
+                  child: Center(
+                      child: Image(
+                        image: AssetImage(
+                          'assets/Logo_weiß.png'
+                        ),
+                      ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 200.0),
+                  child: Center(child: _signInButtonEmail(context)),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -46,65 +72,71 @@ class CreateUserAccountPage extends StatelessWidget {
 
   Widget _signInButtonEmail(BuildContext context) {
     return Container(
-      height: 250.0,
+      height: MediaQuery.of(context).size.height/3.0,
+      width: MediaQuery.of(context).size.width/1.5,
       child: Column(
         children: [
           SizedBox(height: 20.0,),
-          Expanded(
-            child: NeoContainer(
-              containerHeight: MediaQuery.of(context).size.height/10.0,
-              containerWidth: MediaQuery.of(context).size.width/1.1,
-              containerBorderRadius: BorderRadius.all(Radius.circular(30.0)),
-              shadowColor2: Color.fromRGBO(5, 5, 5, 40),
-              shadowColor1: Color.fromRGBO(40, 40, 40, 40),
-              blurRadius1: 3.0,
-              blurRadius2: 3.0,
-              spreadRadius1: 0.0,
-              spreadRadius2: 0.0,
-              gradientColor1: Color.fromRGBO(19, 19, 19, 40),
-              gradientColor2: Color.fromRGBO(19, 19, 19, 40),
-              gradientColor3: Color.fromRGBO(19, 19, 19, 40),
-              gradientColor4: Color.fromRGBO(19, 19, 19, 40),
-              circleShape: false,
-              containerChild: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: TextField(
-                    controller: emailController,
+          Container(
+            height: MediaQuery.of(context).size.height/17.0,
+            width: MediaQuery.of(context).size.width/1.4,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                border: Border.all(
+                    color: Colors.grey
+                )
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                      hintText: 'Deine E-Mail',
+                      filled: true,
+                      hintStyle: TextStyle(
+                          color: Colors.black54
+                      ),
+                      border: InputBorder.none
                   ),
+                  style: TextStyle(
+                      color: Colors.white
+                  ),
+                  controller: emailController,
                 ),
-              ),),
-          ),
+              ),
+            ),),
+
           SizedBox(height: 20.0,),
-          Expanded(
-            child: NeoContainer(
-              containerHeight: MediaQuery.of(context).size.height/10.0,
-              containerWidth: MediaQuery.of(context).size.width/1.1,
-              containerBorderRadius: BorderRadius.all(Radius.circular(30.0)),
-              shadowColor2: Color.fromRGBO(5, 5, 5, 40),
-              shadowColor1: Color.fromRGBO(40, 40, 40, 40),
-              blurRadius1: 3.0,
-              blurRadius2: 3.0,
-              spreadRadius1: 0.0,
-              spreadRadius2: 0.0,
-              gradientColor1: Color.fromRGBO(19, 19, 19, 40),
-              gradientColor2: Color.fromRGBO(19, 19, 19, 40),
-              gradientColor3: Color.fromRGBO(19, 19, 19, 40),
-              gradientColor4: Color.fromRGBO(19, 19, 19, 40),
-              circleShape: false,
-              containerChild: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: TextField(
-                    style: TextStyle(
-                        color: Colors.white
-                    ),
-                    controller: passwordController,
+          Container(
+            height: MediaQuery.of(context).size.height/17.0,
+            width: MediaQuery.of(context).size.width/1.4,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                border: Border.all(
+                    color: Colors.grey
+                )
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                      hintText: 'Deine Passwort',
+                      hintStyle: TextStyle(
+                          color: Colors.black54
+                      ),
+                      border: InputBorder.none
                   ),
+                  style: TextStyle(
+                      color: Colors.white
+                  ),
+                  controller: passwordController,
                 ),
-              ),),
-          ),
-          SizedBox(height: 30.0,),
+              ),
+            ),),
+          SizedBox(height: MediaQuery.of(context).size.height/50,),
           OutlineButton(
             splashColor: Colors.grey,
             onPressed: () {

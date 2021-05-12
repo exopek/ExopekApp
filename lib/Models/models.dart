@@ -179,6 +179,59 @@ class Routine {
 
 }
 
+class Einheit {
+  Einheit({@required this.Datum, @required this.Name, @required this.Dauer, @required this.Thumbnail, @required this.VideoUrl, @required this.Uebungsnamen, @required this.Klassifizierung, @required this.Muskelgruppen});
+
+  final String Datum;
+  final String Name;
+  final String Dauer;
+  final List<dynamic> Thumbnail;
+  final List<dynamic> VideoUrl;
+  final List<dynamic> Uebungsnamen;
+  final List<dynamic> Klassifizierung;
+  final List<dynamic> Muskelgruppen;
+
+
+  factory Einheit.fromMap(Map<String, dynamic> data) {
+    if (data == null) {
+      return null;
+    }
+    final String Datum = data['Datum'];
+    final String Name = data['Name'];
+    final String Dauer = data['Dauer'];
+    final List<dynamic> Thumbnail = data['Thumbnail'];
+    final List<dynamic> VideoUrl = data['VideoUrl'];
+    final List<dynamic> Uebungsnamen = data['Uebungsnamen'];
+    final List<dynamic> Klassifizierung = data['Klassifizierung'];
+    final List<dynamic> Muskelgruppen = data['Muskelgruppen'];
+
+    return Einheit(
+        Datum: Datum,
+        Name: Name,
+        Dauer: Dauer,
+        Thumbnail: Thumbnail,
+        VideoUrl: VideoUrl,
+        Uebungsnamen: Uebungsnamen,
+        Klassifizierung: Klassifizierung,
+        Muskelgruppen: Muskelgruppen
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'Datum': Datum,
+      'Name': Name,
+      'Dauer': Dauer,
+      'Thumbnail': Thumbnail,
+      'VideoUrl': VideoUrl,
+      'Uebungsnamen': Uebungsnamen,
+      'Klassifizierung': Klassifizierung,
+      'Muskelgruppen': Muskelgruppen
+    };
+  }
+
+}
+
 class MyRoutine {
   MyRoutine({@required this.workoutNames, @required this.thumbnails, @required this.routineName, @required this.videoPaths, @required this.count,});
 

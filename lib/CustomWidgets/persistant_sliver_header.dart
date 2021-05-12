@@ -7,11 +7,13 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
   NetworkingPageHeader({
     this.minExtent,
     @required this.maxExtent,
-    @required this.headerName
+    @required this.headerName,
+    @required this.picRef,
   });
   final double minExtent;
   final double maxExtent;
   final String headerName;
+  final String picRef;
 
   @override
   Widget build(
@@ -20,7 +22,7 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          'assets/Thabs.png',//'https://r-cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg',
+          picRef ?? 'assets/Thabs.png',//'https://r-cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg',
           fit: BoxFit.cover,
         ),
         Container(

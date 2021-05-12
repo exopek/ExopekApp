@@ -66,9 +66,10 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         elevation: 0.0,
         centerTitle: true,
         title: Text('My Workouts'),
+        leading: Container(),
       ),
       body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
+        //physics: NeverScrollableScrollPhysics(),
         child: Stack(children: [
           _workouts(context),
           Padding(

@@ -9,7 +9,7 @@ import 'firebase_cloud_service.dart';
 class DatabaseHandler {
   DatabaseHandler({@required this.uid}) : assert(uid != null);
   final String uid;
-  String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
+  String currentDate() => DateTime.now().toIso8601String();
 
   final _service = FirestoreService.instance;
 
@@ -72,6 +72,11 @@ class DatabaseHandler {
   Stream<List<Routine>> routineStream() => _service.collectionStream(
     path: CloudPath.getroutine(uid),
     builder:  (data) => Routine.fromMap(data),
+  );
+
+  Stream<List<Einheit>> verlaufStream() => _service.collectionStream(
+    path: CloudPath.getverlauf(uid),
+    builder:  (data) => Einheit.fromMap(data),
   );
 
   Stream<Routine> routineInputStream(String id) => _service.documentStream(

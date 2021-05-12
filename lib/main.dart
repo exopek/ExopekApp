@@ -8,6 +8,7 @@ import 'dart:ui';
 
 void main() {
   //enableFlutterDriverExtension();
+
   runApp(MyApp());
 }
 

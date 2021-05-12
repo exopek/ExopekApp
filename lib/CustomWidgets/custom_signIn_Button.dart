@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/listViewIndex.dart';
+import 'package:video_app/Notifyers/navigationBar_notifyer.dart';
 import 'package:video_app/Notifyers/tabbar_color.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Services/firebase_auth_service.dart';
 import 'package:video_app/Services/storage_handler.dart';
+import 'package:video_app/Views/center_a.dart';
 
 import 'package:video_app/Views/home_a.dart';
 
@@ -41,9 +43,15 @@ class AddTodoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlineButton(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      borderSide: BorderSide(color: Colors.white),
+    return Container(
+      height: MediaQuery.of(context).size.height*0.06,
+      width: MediaQuery.of(context).size.width*0.47,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(40.0)),
+        border: Border.all(
+          color: Colors.grey
+        )
+      ),
       child: GestureDetector(
         onTap: () {
           _signInwithEmail(context, email, password).then((result) {
@@ -57,8 +65,9 @@ class AddTodoButton extends StatelessWidget {
                           Provider(create: (context) => DatabaseHandler(uid: result.uid),),
                           ChangeNotifierProvider(create: (context) => TabbarColor(context: context)),
                           ChangeNotifierProvider(create: (context) => ListViewIndex(context: context)),
+                          ChangeNotifierProvider(create: (context) => navbarColor()),
                         ],
-                        child: HomeAPage());
+                        child: CenterAPage());
                   },
                 ),
               );
@@ -75,21 +84,14 @@ class AddTodoButton extends StatelessWidget {
           createRectTween: (begin, end) {
             return CustomRectTween(begin: begin, end: end);
           },
-          child: OutlineButton(
-            splashColor: Colors.grey,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-            borderSide: BorderSide(color: Colors.white),
-            highlightedBorderColor: Colors.grey,
-            child: Row(
-              children:[
-                Center(
+          child: Container(
+            child: Center(
                   child: Text('Sign in with Email',
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.grey
                 ),),
-              )]
-            ),
+              )
           ),
         ),
       ),

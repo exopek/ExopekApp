@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
 import 'package:video_app/Notifyers/infoTextRoutine_notifyer.dart';
+import 'package:video_app/Notifyers/navigationBar_notifyer.dart';
 import 'package:video_app/Notifyers/tabbar_color.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/category_a.dart';
@@ -13,6 +14,7 @@ import 'package:video_app/Views/functional_a.dart';
 import 'package:video_app/Views/mobility_a.dart';
 import 'package:video_app/Views/myWorkouts_a.dart';
 import 'package:video_app/Views/settings.dart';
+import 'package:video_app/Views/statistic_a.dart';
 import 'package:video_app/Views/workout_a.dart';
 
 import 'category_myworkouts_a.dart';
@@ -48,13 +50,18 @@ class _HomeAPageState extends State<HomeAPage> {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
+      //bottomNavigationBar: _navigationBar(context),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width:  MediaQuery.of(context).size.width,
         child: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.only(top: 80, left: MediaQuery.of(context).size.width/8, right: MediaQuery.of(context).size.width/8),
+              child: _header(context),
+            ),
+            Padding(
+              padding: EdgeInsets.all(15.0),
               child: Align(
                 alignment: Alignment.topRight,
                 child: GestureDetector(
@@ -85,15 +92,13 @@ class _HomeAPageState extends State<HomeAPage> {
                 ),
               ),
             ),
-            Center(child: _catergories(context)),
             Padding(
-              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/8, top: MediaQuery.of(context).size.height/6),
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/8, top: MediaQuery.of(context).size.height/4.4),
               child: _catergoriesHeader(context),
             ),
             Padding(
-              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/10, right: MediaQuery.of(context).size.width/10,top: MediaQuery.of(context).size.height/1.2),
-              child: _navigationBar(context),
-            )
+              padding: EdgeInsets.only( top: MediaQuery.of(context).size.height/3.5),
+                child: _catergories(context)),
           ],
         ),
       )
@@ -103,7 +108,7 @@ class _HomeAPageState extends State<HomeAPage> {
   Widget _catergories(BuildContext context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Container(
-      height: MediaQuery.of(context).size.height/1.5,
+      height: MediaQuery.of(context).size.height/1.8,
       width: MediaQuery.of(context).size.width,
       color: Theme.of(context).primaryColor,
       child: StreamBuilder<List<Categories>>(
@@ -119,19 +124,9 @@ class _HomeAPageState extends State<HomeAPage> {
                   return _workoutContainerContent(context, snapshot.data[Index].name, snapshot.data[Index].thumbnail, Index, scale);
                 });
           } else if(snapshot.connectionState == ConnectionState.waiting) {
-            return PageView.builder(
-                itemCount: 12,
-                itemBuilder: (BuildContext context, int Index) {
-                  double scale = max(viewportFraction ,(1-(pageOffset - Index).abs()) + viewportFraction);
-                  return _waitContainer(context, Index, scale);
-                });
+            return Container();
           } else {
-            return PageView.builder(
-                itemCount: 12,
-                itemBuilder: (BuildContext context, int Index) {
-                  double scale = max(viewportFraction ,(1-(pageOffset - Index).abs()) + viewportFraction);
-                  return _waitContainer(context, Index, scale);
-                });
+            return Container();
           }
         },
       ),
@@ -159,10 +154,9 @@ class _HomeAPageState extends State<HomeAPage> {
 
   Widget _workoutContainerContent(BuildContext context, String name, String thumbnail, int index, double scale) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
-    var route = {'Excercises' : CategoryAPage(category: name,),
-                    'My Workouts' : CategoryMyWorkouts(),
+    var route = {'My Workouts' : CategoryMyWorkouts(),
                       'Functional' : FunctionalWorkoutsPage(),
-                      'Mobility' : MobilityWorkoutsPage()};
+                      'Mobility' : MobilityWorkoutsPage(),};
     return Center(
         child:
           Padding(
@@ -184,24 +178,28 @@ class _HomeAPageState extends State<HomeAPage> {
                 ),
               ),
                 child: NeoContainer(
+                  gradientColor1: Theme.of(context).primaryColor,
+                  gradientColor2: Theme.of(context).primaryColor,
+                  gradientColor3: Theme.of(context).primaryColor,
+                  gradientColor4: Theme.of(context).primaryColor,
                   containerHeight: MediaQuery.of(context).size.height/2,
                   containerWidth: MediaQuery.of(context).size.width,
-                  shadowColor1: Colors.grey,
-                  shadowColor2: Color.fromRGBO(15, 15, 15, 1.0),
-                  shadow2Offset: 4.0,
+                  shadowColor1: Colors.white30,
+                  shadowColor2: Colors.black,
+                  shadow2Offset: 2.0,
                   shadow1Offset: -3.0,
                   spreadRadius1: 1.0,
-                  spreadRadius2: 5.0,
-                  blurRadius1: 5.0,
+                  spreadRadius2: 3.0,
+                  blurRadius1: 3.0,
                   blurRadius2: 3.5,
                   circleShape: false,
-                  borderColor: Colors.white,
+                  borderColor: Colors.black,
                   containerBorderRadius: BorderRadius.all(Radius.circular(35.0)),
                   containerChild: Container(
                     width: MediaQuery.of(context).size.width/1.0,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        //color: Colors.black.withOpacity(0.3),
                         borderRadius: BorderRadius.all(Radius.circular(35.0))
                       ),
                       child: Center(
@@ -238,47 +236,110 @@ class _HomeAPageState extends State<HomeAPage> {
     );
   }
 
+  Widget _header(BuildContext context) {
+    return Image(
+      image: AssetImage(
+        'assets/Exopek_Logo.png'
+      ),
+    );
+  }
+
   Widget _navigationBar(BuildContext context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
-    return NeoContainer(
-        circleShape: false,
-        blurRadius2: 3.0,
-        blurRadius1: 5.0,
-        shadowColor1: Color.fromRGBO(19, 19, 19, 1.0),
-        shadowColor2: Color.fromRGBO(19, 19, 19, 1.0),
-        containerWidth: MediaQuery.of(context).size.width/1.2,
-        containerHeight: MediaQuery.of(context).size.height/10,
-        containerChild: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            FlatButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.home, color: Colors.black,),
-                label: Text('home'.toUpperCase())),
-            FlatButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.analytics, color: Colors.black,),
-                label: Text('')),
-            FlatButton.icon(
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                icon: Icon(Icons.alarm_add_outlined, color: Colors.black,),
-                label: Text(''),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MultiProvider(
-                          providers: [
-                            Provider(create: (context) => DatabaseHandler(uid: database.uid),),
-                            ChangeNotifierProvider(create: (context) => TextRoutine()),
-                          ],
-                          child: MyWorkoutsAPage());
+    final navbarColor navigationBar = Provider.of<navbarColor>(context);
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.0, left: 10.0, right: 10.0),
+      child: NeoContainer(
+          circleShape: false,
+          blurRadius2: 3.0,
+          blurRadius1: 3.0,
+          shadow1Offset: 2.0,
+          gradientColor1: Theme.of(context).primaryColor,
+          gradientColor2: Colors.red,
+          gradientColor3: Theme.of(context).primaryColor,
+          gradientColor4: Theme.of(context).primaryColor,
+          shadowColor1: Colors.black,
+          shadowColor2: Colors.grey,
+          containerWidth: MediaQuery.of(context).size.width/1.2,
+          containerHeight: MediaQuery.of(context).size.height/10,
+          containerChild: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FlatButton.icon(
+                  onPressed: () {
+                    navigationBar.updatenavIconColor(true, false, false);
+                  },
+                  icon: Consumer<navbarColor>(
+                    builder: (context, data, child) {
+                      return Icon(
+                        Icons.home,
+                        color: data.navIconColor1,
+                        size: 30.0,
+                      );
+                    }
+                  ),
+                  label: Text('home'.toUpperCase())),
+              FlatButton.icon(
+                  onPressed: () {
+                    navigationBar.updatenavIconColor(false, true, false);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return MultiProvider(
+                              providers: [
+                                Provider(create: (context) => DatabaseHandler(uid: database.uid),),
+                                ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
+                                ChangeNotifierProvider(create: (context) => navbarColor()),
+                              ],
+                              child: StatisticAPage());
+                        },
+                      ),
+                    );
+                  },
+                  icon: Consumer<navbarColor>(
+                    builder: (context, data, child) {
+                      return Icon(
+                        Icons.analytics,
+                        color: data.navIconColor2,
+                        size: 30.0,
+                      );
+                    }
+                  ),
+                  label: Text('')),
+              FlatButton.icon(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  icon: Consumer<navbarColor>(
+                    builder: (context, data, child) {
+                      return Icon(
+                        Icons.folder_shared,
+                        color: data.navIconColor3,
+                        size: 30.0,
+                      );
                     },
                   ),
-                )
-            )
-          ],
-        ),
+                  label: Text(''),
+                  onPressed: () {
+                    navigationBar.updatenavIconColor(false, false, true);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return MultiProvider(
+                              providers: [
+                                Provider(create: (context) =>
+                                    DatabaseHandler(uid: database.uid),),
+                                ChangeNotifierProvider(create: (context) =>
+                                    TextRoutine()),
+                              ],
+                              child: MyWorkoutsAPage());
+                        },
+                      ),
+                    );
+                  }
+              )
+            ],
+          ),
+      ),
     );
   }
 }
