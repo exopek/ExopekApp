@@ -4,18 +4,25 @@ import 'dart:async';
 import '../Models/models.dart';
 import '../Models/apis.dart';
 import 'firebase_cloud_service.dart';
+import 'package:intl/intl.dart';
 
 
 class DatabaseHandler {
   DatabaseHandler({@required this.uid}) : assert(uid != null);
   final String uid;
-  String currentDate() => DateTime.now().toIso8601String();
+  String currentDate() => DateFormat('yyyy-MM-dd-E-hh-mm').format(DateTime.now()).toString();
+  //DateTime.now();
 
   final _service = FirestoreService.instance;
 
   Future<void> createFavorite(Favorite favorite) async => _service.setData(
     path: CloudPath.setfavorite(uid, favorite.workout),
     data: favorite.toMap(),
+  );
+
+  Future<void> createFinishWorkout(Einheit einheit) async => _service.setData(
+    path: CloudPath.setfinishworkout(uid, currentDate()),
+    data: einheit.toMap(),
   );
 
   Future<void> deleteFavorite(String workoutName) async => _service.deleteData(

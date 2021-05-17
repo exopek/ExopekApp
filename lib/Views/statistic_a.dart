@@ -1,3 +1,7 @@
+
+
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -19,6 +23,9 @@ import 'package:video_app/Views/videoPlayer2_a.dart';
 import 'package:video_app/Views/videoPlayerChewie.dart';
 import 'package:video_app/Views/videoPlayer_withListView.dart';
 import 'package:video_app/videoplayerservice.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:intl/intl.dart';
 
 import 'home_a.dart';
 
@@ -44,13 +51,24 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   List videoPath;
 
+  List finishWorkoutList;
+
   var kraft;
-
   var ausdauer;
+  var brust;
+  var beine;
+  var bauch;
+  var schultern;
+  var ruecken;
+  var counter_uebungen;
 
-  var prozent_kraft;
-
-  var prozent_ausdauer;
+  double prozent_kraft;
+  double prozent_ausdauer;
+  double prozent_brust;
+  double prozent_beine;
+  double prozent_bauch;
+  double prozent_schultern;
+  double prozent_ruecken;
 
   Future<Routine> getWorkoutList(BuildContext context) async {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
@@ -71,21 +89,293 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   bool firstVisit;
 
+
+  // Kalender
+
+  DateTime _currentDate = DateTime.now();
+  DateTime _currentDate2 = DateTime.now();
+  String _weekBegin;
+  String _weekEnd;
+  DateTime _datetime_weekBegin;
+  DateTime _datetime_weekEnd;
+  int _datetime_month;
+  int _datetime_year;
+  bool _week;
+  bool _month;
+  bool _year;
+  String _currentMonth = DateFormat.yM().format(DateTime.now());
+  String _currentWeekday = DateFormat.EEEE().format(DateTime.now());
+  DateTime _targetDateTime = DateTime.now();
+
+  CalendarCarousel _calendarCarouselNoHeader;
+
+  static Widget _eventIcon = new Container(
+    decoration: new BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(1000)),
+        border: Border.all(color: Colors.blue, width: 2.0)),
+    child: new Icon(
+      Icons.person,
+      color: Colors.amber,
+    ),
+  );
+
+  EventList<Event> _markedDateMap = new EventList<Event>(
+    events: {
+      new DateTime(2020, 2, 10): [
+        new Event(
+          date: new DateTime(2020, 2, 14),
+          title: 'Event 1',
+          icon: _eventIcon,
+          dot: Container(
+            margin: EdgeInsets.symmetric(horizontal: 1.0),
+            color: Colors.red,
+            height: 5.0,
+            width: 5.0,
+          ),
+        ),
+        new Event(
+          date: new DateTime(2020, 2, 10),
+          title: 'Event 2',
+          icon: _eventIcon,
+        ),
+        new Event(
+          date: new DateTime(2020, 2, 15),
+          title: 'Event 3',
+          icon: _eventIcon,
+        ),
+      ],
+    },
+  );
+
+  List calculate_Week_Start_and_End() {
+    if (_currentDate.weekday == 7) {
+      _weekBegin = DateFormat('yyyy-MM-dd').format(DateTime(
+          _currentDate.year, _currentDate.month, _currentDate.day - 6));
+      _weekEnd = DateFormat('yyyy-MM-dd').format(
+          DateTime(_currentDate.year, _currentDate.month, _currentDate.day));
+    }
+    else if (_currentDate.weekday == 1) {
+      _weekBegin = DateFormat('yyyy-MM-dd').format(DateTime(
+          _currentDate.year, _currentDate.month, _currentDate.day));
+      _weekEnd = DateFormat('yyyy-MM-dd').format(
+          DateTime(_currentDate.year, _currentDate.month, _currentDate.day + 6));
+    }
+
+
+    return [_weekBegin, _weekEnd];
+  }
+
+
+  void sort_Week(snapshot) {
+    for (int i = 0; i < snapshot.data.length; i++) {
+      final databaseDay = DateTime.parse(snapshot.data[i].Datum);
+      if (databaseDay.year == _datetime_weekBegin.year && databaseDay.month == _datetime_weekBegin.month && databaseDay.day >= _datetime_weekBegin.day && databaseDay.day <= _datetime_weekEnd.day) {
+        finishWorkoutList.add(snapshot.data[i]);
+      } else {
+        log('message');
+      }
+    }
+  }
+
+  void sort_Month(snapshot) {
+    for (int i = 0; i < snapshot.data.length; i++) {
+      final databaseDay = DateTime.parse(snapshot.data[i].Datum);
+      if (databaseDay.year == _datetime_year && databaseDay.month == _datetime_month) {
+        finishWorkoutList.add(snapshot.data[i]);
+      } else {
+        log('message');
+      }
+    }
+  }
+
+  void sort_Year(snapshot) {
+    for (int i = 0; i < snapshot.data.length; i++) {
+      final databaseDay = DateTime.parse(snapshot.data[i].Datum);
+      if (databaseDay.year == _datetime_year) {
+        finishWorkoutList.add(snapshot.data[i]);
+      } else {
+        log('message');
+      }
+    }
+  }
+
+  void count_ausdauer_kraft() {
+    for (int i = 0; i < finishWorkoutList.length; i++) {
+      if (finishWorkoutList[i].Klassifizierung[0] == 'Kraft') {
+        kraft = kraft + 1;
+      } else if (finishWorkoutList[i].Klassifizierung[0] == 'Ausdauer') {
+        ausdauer = ausdauer + 1;
+      } else {
+        ausdauer = 0;
+        kraft = 0;
+        log('message: ${finishWorkoutList.length}');
+      }
+    }
+  }
+
+  void count_muskelgruppen() {
+    for (int i = 0; i < finishWorkoutList.length; i++) {
+      for (var value in finishWorkoutList[i].Muskelgruppen) {
+        if (value == 'Brust') {
+          brust = brust + 1;
+          counter_uebungen = counter_uebungen + 1;
+        } else if (value == 'Beine') {
+          beine = beine + 1;
+          counter_uebungen = counter_uebungen + 1;
+        } else if (value == 'Schultern') {
+          schultern = schultern + 1;
+          counter_uebungen = counter_uebungen + 1;
+        } else if (value == 'Rücken') {
+          ruecken = ruecken + 1;
+          counter_uebungen = counter_uebungen + 1;
+        } else if (value == 'Bauch') {
+          bauch = bauch + 1;
+          counter_uebungen = counter_uebungen + 1;
+        }
+      }
+    }
+  }
+
+
   @override
   void initState() {
+    finishWorkoutList = [];
     firstVisit = false;
     workout = [];
     videoPath = [];
     kraft = 0;
     ausdauer = 0;
+    brust = 0;
+    beine = 0;
+    bauch = 0;
+    schultern = 0;
+    ruecken = 0;
+    counter_uebungen = 0;
     prozent_kraft = 0;
     prozent_ausdauer = 0;
+    prozent_beine = 0;
+    prozent_bauch = 0;
+    prozent_brust = 0;
+    prozent_schultern = 0;
+    prozent_ruecken = 0;
+    _weekBegin = calculate_Week_Start_and_End()[0];
+    _weekEnd = calculate_Week_Start_and_End()[1];
+    _datetime_weekBegin = DateTime.parse(_weekBegin);
+    _datetime_weekEnd = DateTime.parse(_weekEnd);
+    _datetime_month = _currentDate.month;
+    _datetime_year = _currentDate.year;
+    _week = true;
+    _month = false;
+    _year = false;
+    /*
+    _markedDateMap.add(
+        new DateTime(2021, 5, 25),
+        new Event(
+          date: new DateTime(2021, 5, 25),
+          title: 'Event 5',
+          icon: _eventIcon,
+        ));
+
+    _markedDateMap.add(
+        new DateTime(2020, 2, 10),
+        new Event(
+          date: new DateTime(2020, 2, 10),
+          title: 'Event 4',
+          icon: _eventIcon,
+        ));
+
+    _markedDateMap.addAll(new DateTime(2019, 2, 11), [
+      new Event(
+        date: new DateTime(2019, 2, 11),
+        title: 'Event 1',
+        icon: _eventIcon,
+      ),
+      new Event(
+        date: new DateTime(2019, 2, 11),
+        title: 'Event 2',
+        icon: _eventIcon,
+      ),
+      new Event(
+        date: new DateTime(2019, 2, 11),
+        title: 'Event 3',
+        icon: _eventIcon,
+      ),
+    ]);
+    */
     super.initState();
   }
 
 
   @override
   Widget build(BuildContext context) {
+
+
+
+    /*
+    _calendarCarouselNoHeader = CalendarCarousel<Event>(
+      pageScrollPhysics: ScrollPhysics(
+
+      ),
+      //pageScrollPhysics: PageScrollPhysics().createBallisticSimulation(position, velocity),
+      pageSnapping: true,
+      todayBorderColor: Colors.red,
+      onDayPressed: (DateTime date, List<Event> events) {
+        this.setState(() => _currentDate2 = date);
+        //events.forEach((event) => print(event.title));
+      },
+      daysHaveCircularBorder: true,
+      showOnlyCurrentMonthDate: false,
+      weekendTextStyle: TextStyle(
+        color: Colors.red,
+      ),
+      thisMonthDayBorderColor: Colors.grey,
+      weekFormat: false,
+//      firstDayOfWeek: 4,
+      markedDatesMap: _markedDateMap,
+      height: 420.0,
+      selectedDateTime: _currentDate2,
+      targetDateTime: _targetDateTime,
+      customGridViewPhysics: BouncingScrollPhysics(),
+      markedDateCustomShapeBorder:
+      CircleBorder(side: BorderSide(color: Colors.yellow)),
+      markedDateCustomTextStyle: TextStyle(
+        fontSize: 18,
+        color: Colors.blue,
+      ),
+      showHeader: false,
+      todayTextStyle: TextStyle(
+        color: Colors.blue,
+      ),
+
+      todayButtonColor: Colors.white,
+      selectedDayTextStyle: TextStyle(
+        color: Colors.yellow,
+      ),
+      minSelectedDate: _currentDate.subtract(Duration(days: 360)),
+      maxSelectedDate: _currentDate.add(Duration(days: 360)),
+      prevDaysTextStyle: TextStyle(
+        fontSize: 16,
+        color: Colors.pinkAccent,
+      ),
+      inactiveDaysTextStyle: TextStyle(
+        color: Colors.tealAccent,
+        fontSize: 16,
+      ),
+      /*
+      onCalendarChanged: (DateTime date) {
+        this.setState(() {
+          _targetDateTime = date;
+          _currentMonth = DateFormat.yMMM().format(_targetDateTime);
+        });
+      },
+
+       */
+      onDayLongPressed: (DateTime date) {
+        print('long pressed date $date');
+      },
+    );
+    */
 
     /*
     if (firstVisit == false) {
@@ -108,15 +398,46 @@ class _StatisticAPageState extends State<StatisticAPage> {
         stream: database.verlaufStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            for (int i = 0; i < snapshot.data.length; i++) {
-              if (snapshot.data[i].Klassifizierung[0] == 'Kraft') {
-                kraft = kraft + 1;
-              } else if (snapshot.data[i].Klassifizierung[0] == 'Ausdauer') {
-                ausdauer = ausdauer + 1;
-              }
+            finishWorkoutList.clear();
+            kraft = 0;
+            ausdauer = 0;
+            brust = 0;
+            beine = 0;
+            bauch = 0;
+            schultern = 0;
+            ruecken = 0;
+            counter_uebungen = 0;
+            // Befüllt die Liste für den angegebenen Zeitraum einer Woche.
+            if (_week == true) {
+              sort_Week(snapshot);
+            } else if (_month == true) {
+              sort_Month(snapshot);
+            } else if (_year == true) {
+              sort_Year(snapshot);
             }
-            prozent_kraft = (kraft/snapshot.data.length)*100;
-            prozent_ausdauer = (ausdauer/snapshot.data.length)*100;
+
+            // Ermittelt die Häufigkeit der Tag's Kraft und Ausdauer in den geladenen Modelen Einheit.
+            count_ausdauer_kraft();
+            count_muskelgruppen();
+
+            if (finishWorkoutList.length == 0) {
+              prozent_kraft = 0;
+              prozent_ausdauer = 0;
+              prozent_beine = 0;
+              prozent_bauch = 0;
+              prozent_brust = 0;
+              prozent_schultern = 0;
+              prozent_ruecken = 0;
+            } else {
+              prozent_kraft = (kraft/finishWorkoutList.length)*100;
+              prozent_ausdauer = (ausdauer/finishWorkoutList.length)*100;
+              prozent_beine = (beine/counter_uebungen)*100;
+              prozent_bauch = (bauch/counter_uebungen)*100;
+              prozent_brust = (brust/counter_uebungen)*100;
+              prozent_schultern = (schultern/counter_uebungen)*100;
+              prozent_ruecken = (ruecken/counter_uebungen)*100;
+            }
+
             print('proz_ausdauer: ${prozent_ausdauer}');
             return CustomScrollView(
               physics: BouncingScrollPhysics(
@@ -175,83 +496,285 @@ class _StatisticAPageState extends State<StatisticAPage> {
                   )
               ),
               */
+                /*
                 SliverToBoxAdapter(
-                  child: Container(
-                      height: 100.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          NeoContainer(
-                            gradientColor1: Theme.of(context).primaryColor,
-                            gradientColor2: Theme.of(context).primaryColor,
-                            gradientColor3: Theme.of(context).primaryColor,
-                            gradientColor4: Theme.of(context).primaryColor,
-                            containerHeight: MediaQuery.of(context).size.height/20,
-                            containerWidth: MediaQuery.of(context).size.width/5,
-                            shadowColor1: Colors.white30,
-                            shadowColor2: Colors.black,
-                            shadow2Offset: 1.0,
-                            shadow1Offset: -1.0,
-                            spreadRadius1: 1.0,
-                            spreadRadius2: 2.0,
-                            blurRadius1: 3.0,
-                            blurRadius2: 3.0,
-                            circleShape: false,
-                            containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),),
-                          NeoContainer(
-                            gradientColor1: Theme.of(context).primaryColor,
-                            gradientColor2: Theme.of(context).primaryColor,
-                            gradientColor3: Theme.of(context).primaryColor,
-                            gradientColor4: Theme.of(context).primaryColor,
-                            containerHeight: MediaQuery.of(context).size.height/20,
-                            containerWidth: MediaQuery.of(context).size.width/5,
-                            shadowColor1: Colors.white30,
-                            shadowColor2: Colors.black,
-                            shadow2Offset: 1.0,
-                            shadow1Offset: -1.0,
-                            spreadRadius1: 1.0,
-                            spreadRadius2: 2.0,
-                            blurRadius1: 3.0,
-                            blurRadius2: 3.0,
-                            circleShape: false,
-                            containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),),
-                          NeoContainer(
-                            gradientColor1: Theme.of(context).primaryColor,
-                            gradientColor2: Theme.of(context).primaryColor,
-                            gradientColor3: Theme.of(context).primaryColor,
-                            gradientColor4: Theme.of(context).primaryColor,
-                            containerHeight: MediaQuery.of(context).size.height/20,
-                            containerWidth: MediaQuery.of(context).size.width/5,
-                            shadowColor1: Colors.white30,
-                            shadowColor2: Colors.black,
-                            shadow2Offset: 1.0,
-                            shadow1Offset: -1.0,
-                            spreadRadius1: 1.0,
-                            spreadRadius2: 2.0,
-                            blurRadius1: 3.0,
-                            blurRadius2: 3.0,
-                            circleShape: false,
-                            containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),),
-                          NeoContainer(
-                            gradientColor1: Theme.of(context).primaryColor,
-                            gradientColor2: Theme.of(context).primaryColor,
-                            gradientColor3: Theme.of(context).primaryColor,
-                            gradientColor4: Theme.of(context).primaryColor,
-                            containerHeight: MediaQuery.of(context).size.height/20,
-                            containerWidth: MediaQuery.of(context).size.width/5,
-                            shadowColor1: Colors.white30,
-                            shadowColor2: Colors.black,
-                            shadow2Offset: 1.0,
-                            shadow1Offset: -1.0,
-                            spreadRadius1: 1.0,
-                            spreadRadius2: 2.0,
-                            blurRadius1: 3.0,
-                            blurRadius2: 3.0,
-                            circleShape: false,
-                            containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),)
-                        ],
-                      )
+                  child: Container(   // Hier war vorher SingleChildScrollView
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                //custom icon
+
+                Container(
+                margin: EdgeInsets.only(
+                top: 30.0,
+                bottom: 16.0,
+                left: 16.0,
+                right: 16.0,
+                ),
+                child: new Row(
+                children: <Widget>[
+                Expanded(
+                child: Text(
+                _currentMonth,
+                style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24.0,
+                ),
+                )),
+                FlatButton(
+                child: Text('ZURÜCK'),
+                onPressed: () {
+                setState(() {
+                _targetDateTime = DateTime(
+                _targetDateTime.year, _targetDateTime.month - 1);
+                _currentMonth =
+                DateFormat.yMMM().format(_targetDateTime);
+                });
+                },
+                ),
+                FlatButton(
+                child: Text('WEITER'),
+                onPressed: () {
+                setState(() {
+                _targetDateTime = DateTime(
+                _targetDateTime.year, _targetDateTime.month + 1);
+                _currentMonth =
+                DateFormat.yMMM().format(_targetDateTime);
+                });
+                },
+                )
+                ],
+                ),
+                ),
+                Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.0),
+                child: _calendarCarouselNoHeader,
+                ), //
+                ],
+                ),
+                ),
+                ),
+                */
+
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: Container(
+                        height: 40.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            NeoContainer(
+                              gradientColor1: Theme.of(context).primaryColor,
+                              gradientColor2: Theme.of(context).primaryColor,
+                              gradientColor3: Theme.of(context).primaryColor,
+                              gradientColor4: Theme.of(context).primaryColor,
+                              containerHeight: MediaQuery.of(context).size.height/20,
+                              containerWidth: MediaQuery.of(context).size.width/4,
+                              shadowColor1: Colors.white30,
+                              shadowColor2: Colors.black,
+                              shadow2Offset: 1.0,
+                              shadow1Offset: -1.0,
+                              spreadRadius1: 1.0,
+                              spreadRadius2: 2.0,
+                              blurRadius1: 3.0,
+                              blurRadius2: 3.0,
+                              circleShape: false,
+                              containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              containerChild: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _week = true;
+                                    _month = false;
+                                    _year = false;
+                                  });
+                                },
+                                child: Center(
+                                  child: Text(
+                                    'Woche',
+                                    style: TextStyle(
+                                      color: Colors.white
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            NeoContainer(
+                              gradientColor1: Theme.of(context).primaryColor,
+                              gradientColor2: Theme.of(context).primaryColor,
+                              gradientColor3: Theme.of(context).primaryColor,
+                              gradientColor4: Theme.of(context).primaryColor,
+                              containerHeight: MediaQuery.of(context).size.height/20,
+                              containerWidth: MediaQuery.of(context).size.width/4,
+                              shadowColor1: Colors.white30,
+                              shadowColor2: Colors.black,
+                              shadow2Offset: 1.0,
+                              shadow1Offset: -1.0,
+                              spreadRadius1: 1.0,
+                              spreadRadius2: 2.0,
+                              blurRadius1: 3.0,
+                              blurRadius2: 3.0,
+                              circleShape: false,
+                              containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              containerChild: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _week = false;
+                                    _month = true;
+                                    _year = false;
+                                  });
+                                },
+                                child: Center(
+                                  child: Text(
+                                    'Monat',
+                                    style: TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            NeoContainer(
+                              gradientColor1: Theme.of(context).primaryColor,
+                              gradientColor2: Theme.of(context).primaryColor,
+                              gradientColor3: Theme.of(context).primaryColor,
+                              gradientColor4: Theme.of(context).primaryColor,
+                              containerHeight: MediaQuery.of(context).size.height/20,
+                              containerWidth: MediaQuery.of(context).size.width/4,
+                              shadowColor1: Colors.white30,
+                              shadowColor2: Colors.black,
+                              shadow2Offset: 1.0,
+                              shadow1Offset: -1.0,
+                              spreadRadius1: 1.0,
+                              spreadRadius2: 2.0,
+                              blurRadius1: 3.0,
+                              blurRadius2: 3.0,
+                              circleShape: false,
+                              containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
+                              containerChild: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _week = false;
+                                    _month = false;
+                                    _year = true;
+                                  });
+                                },
+                                child: Center(
+                                  child: Text(
+                                    'Jahr',
+                                    style: TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                    ),
                   ),
+                ),
+                SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: Container(
+                          color: Theme.of(context).primaryColor,
+                          height: MediaQuery.of(context).size.height*0.1,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              NeoContainer(
+                                  containerHeight: MediaQuery.of(context).size.height*0.07,
+                                  containerWidth: MediaQuery.of(context).size.height*0.07,
+                                  circleShape: true,
+                                  gradientColor1: Theme.of(context).primaryColor,
+                                  gradientColor2: Theme.of(context).primaryColor,
+                                  gradientColor3: Theme.of(context).primaryColor,
+                                  gradientColor4: Theme.of(context).primaryColor,
+                                  shadowColor1: Colors.black,
+                                  spreadRadius2: 0.0,
+                                  shadowColor2: Colors.white30,
+                                  containerChild: InkWell(
+                                    onTap: () {
+                                      if (_week == true) {
+                                        final _oldDateTime_weekBegin = _datetime_weekBegin;
+                                        final _oldDateTime_weekEnd = _datetime_weekEnd;
+                                        setState(() {
+                                          _datetime_weekEnd = DateTime(_oldDateTime_weekEnd.year, _oldDateTime_weekEnd.month, _oldDateTime_weekEnd.day - 7);
+                                          _datetime_weekBegin = DateTime(_oldDateTime_weekBegin.year, _oldDateTime_weekBegin.month, _oldDateTime_weekBegin.day - 7);
+                                          _weekBegin = DateFormat('yyyy-MM-dd').format(_datetime_weekBegin);
+                                          _weekEnd = DateFormat('yyyy-MM-dd').format(_datetime_weekEnd);
+                                          finishWorkoutList.clear();
+                                        });
+                                      } else if (_month == true) {
+                                        final _newDateTime_month = DateTime(_currentDate.year, _datetime_month - 1, _currentDate.day);
+                                        setState(() {
+                                          _datetime_month = _newDateTime_month.month;
+                                          finishWorkoutList.clear();
+                                        });
+                                      } else if (_year == true) {
+                                        final _newDateTime_year = DateTime(_datetime_year - 1, _currentDate.month, _currentDate.day);
+                                        setState(() {
+                                          _datetime_year = _newDateTime_year.year;
+                                          finishWorkoutList.clear();
+                                        });
+                                      }
+
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back_ios_sharp
+                                    ),
+                                  ),
+                              ),
+                              _week_month_year_content(context),
+                              NeoContainer(
+                                  containerHeight: MediaQuery.of(context).size.height*0.07,
+                                  containerWidth: MediaQuery.of(context).size.height*0.07,
+                                  circleShape: true,
+                                  gradientColor1: Theme.of(context).primaryColor,
+                                  gradientColor2: Theme.of(context).primaryColor,
+                                  gradientColor3: Theme.of(context).primaryColor,
+                                  gradientColor4: Theme.of(context).primaryColor,
+                                  spreadRadius2: 0.0,
+                                  shadowColor1: Colors.black,
+                                  shadowColor2: Colors.white30,
+                                  containerChild: InkWell(
+                                    onTap: () {
+                                      if (_week == true) {
+                                        final _oldDateTime_weekBegin = _datetime_weekBegin;
+                                        final _oldDateTime_weekEnd = _datetime_weekEnd;
+                                        setState(() {
+                                          _datetime_weekEnd = DateTime(_oldDateTime_weekEnd.year, _oldDateTime_weekEnd.month, _oldDateTime_weekEnd.day + 7);
+                                          _datetime_weekBegin = DateTime(_oldDateTime_weekBegin.year, _oldDateTime_weekBegin.month, _oldDateTime_weekBegin.day + 7);
+                                          _weekBegin = DateFormat('yyyy-MM-dd').format(_datetime_weekBegin);
+                                          _weekEnd = DateFormat('yyyy-MM-dd').format(_datetime_weekEnd);
+                                          finishWorkoutList.clear();
+                                        });
+                                      } else if (_month == true) {
+                                        final _newDateTime_month = DateTime(_currentDate.year, _datetime_month + 1, _currentDate.day);
+                                        setState(() {
+                                          _datetime_month = _newDateTime_month.month;
+                                          finishWorkoutList.clear();
+                                        });
+                                      } else if (_year == true) {
+                                        final _newDateTime_year = DateTime(_datetime_year + 1, _currentDate.month, _currentDate.day);
+                                        setState(() {
+                                          _datetime_year = _newDateTime_year.year;
+                                          finishWorkoutList.clear();
+                                        });
+                                      }
+
+                                    },
+                                    child: Icon(
+                                        Icons.arrow_forward_ios_sharp
+                                    ),
+                                  ),
+                              ),
+                            ],
+                          )
+                      ),
+                    )
                 ),
                 SliverToBoxAdapter(
                   child: Container(
@@ -263,7 +786,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                         child: Container(
                           height: 40.0,
                           width: 200.0,
-                          color: Colors.red,
+                          color: Colors.white,
                           child: Center(
                             child: Text('Einheiten',
                               style: TextStyle(
@@ -282,7 +805,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                         height: MediaQuery.of(context).size.height/6,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data.length,
+                            itemCount: finishWorkoutList.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Padding(
                                 padding: EdgeInsets.all(10.0),
@@ -300,7 +823,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   containerChild: Padding(
                                     padding: EdgeInsets.all(12.0),
                                     child: Text(
-                                      snapshot.data[index].Name,
+                                      finishWorkoutList[index].Name,
                                       style: TextStyle(
                                         color: Colors.white
                                       ),
@@ -323,7 +846,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                         child: Container(
                           height: 40.0,
                           width: 200.0,
-                          color: Colors.red,
+                          color: Colors.white,
                           child: Center(
                             child: Text('Trainingsweise',
                               style: TextStyle(
@@ -339,9 +862,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(10.0),
                     child: NeoContainer(
-                      containerHeight: MediaQuery.of(context).size.height/3,
+                      containerHeight: MediaQuery.of(context).size.height/5,
                       containerWidth: MediaQuery.of(context).size.width/2,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
@@ -352,16 +875,49 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       gradientColor3: Theme.of(context).primaryColor,
                       gradientColor4: Theme.of(context).primaryColor,
                       containerChild: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(bottom: 50.0),
+                            padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
                             child: Align(
                               alignment: Alignment.centerLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 200.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Dein Übungsanteil, welcher sich auf den Aufbau von Kraft konzentriert',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0, top: 5.0),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                child: Text('${prozent_kraft.round().toString()}%',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(231, 40, 44, 1),
+                                    fontFamily: 'FiraSansExtraCondensed',
+                                    fontSize: 30.0
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
                               child: NeoContainer(
                                 circleShape: false,
-                                containerHeight: MediaQuery.of(context).size.height/20,
-                                  containerWidth: MediaQuery.of(context).size.width/1.5,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                  containerWidth: MediaQuery.of(context).size.width/1.2,
                                   shadowColor1: Colors.white30,
                                   shadowColor2: Colors.black,
                                   gradientColor1: Theme.of(context).primaryColor,
@@ -380,45 +936,103 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                     gradient: LinearGradient(
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
-                                        colors: [Colors.red, Colors.transparent],
-                                        stops: [0.3, 0.3]
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_kraft/100, prozent_kraft/100]
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: NeoContainer(
-                              circleShape: false,
-                              containerHeight: MediaQuery.of(context).size.height/20,
-                              containerWidth: MediaQuery.of(context).size.width/1.5,
-                              shadowColor1: Colors.white30,
-                              shadowColor2: Colors.black,
-                              gradientColor1: Theme.of(context).primaryColor,
-                              gradientColor2: Theme.of(context).primaryColor,
-                              gradientColor3: Theme.of(context).primaryColor,
-                              gradientColor4: Theme.of(context).primaryColor,
-                              shadow1Offset: 2.0,
-                              shadow2Offset: -1.0,
-                              spreadRadius2: 0.0,
-                              spreadRadius1: 0.0,
-                              blurRadius2: 0.0,
-                              blurRadius1: 0.0,
-                              containerChild: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                  gradient: LinearGradient(
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                      colors: [Colors.red, Colors.transparent],
-                                      stops: [0.7, 0.7]
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: NeoContainer(
+                      containerHeight: MediaQuery.of(context).size.height/5,
+                      containerWidth: MediaQuery.of(context).size.width/2,
+                      containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      circleShape: false,
+                      shadowColor2: Colors.grey,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 220.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Dein Übungsanteil, welcher sich auf den Aufbau von Ausdauer konzentriert',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0, top: 5.0),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                child: Text('${prozent_ausdauer.round().toString()}%',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(231, 40, 44, 1),
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 30.0
                                   ),
                                 ),
                               ),
                             ),
-                          )
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: NeoContainer(
+                                circleShape: false,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                containerWidth: MediaQuery.of(context).size.width/1.2,
+                                shadowColor1: Colors.white30,
+                                shadowColor2: Colors.black,
+                                gradientColor1: Theme.of(context).primaryColor,
+                                gradientColor2: Theme.of(context).primaryColor,
+                                gradientColor3: Theme.of(context).primaryColor,
+                                gradientColor4: Theme.of(context).primaryColor,
+                                shadow1Offset: 2.0,
+                                shadow2Offset: -1.0,
+                                spreadRadius2: 0.0,
+                                spreadRadius1: 0.0,
+                                blurRadius2: 0.0,
+                                blurRadius1: 0.0,
+                                containerChild: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_ausdauer/100, prozent_ausdauer/100]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -434,7 +1048,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                         child: Container(
                           height: 40.0,
                           width: 200.0,
-                          color: Colors.red,
+                          color: Colors.white,
                           child: Center(
                             child: Text('Muskelgruppen',
                               style: TextStyle(
@@ -450,9 +1064,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(10.0),
                     child: NeoContainer(
-                      containerHeight: MediaQuery.of(context).size.height/3,
+                      containerHeight: MediaQuery.of(context).size.height/2,
                       containerWidth: MediaQuery.of(context).size.width/2,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
@@ -462,9 +1076,360 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       gradientColor2: Theme.of(context).primaryColor,
                       gradientColor3: Theme.of(context).primaryColor,
                       gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Stack(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 220.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Brustübungen                             ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0, top: 5.0),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                child: Text('${prozent_brust.round().toString()}%',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(231, 40, 44, 1),
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 30.0
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 45.0),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: NeoContainer(
+                                circleShape: false,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                containerWidth: MediaQuery.of(context).size.width/1.2,
+                                shadowColor1: Colors.white30,
+                                shadowColor2: Colors.black,
+                                gradientColor1: Theme.of(context).primaryColor,
+                                gradientColor2: Theme.of(context).primaryColor,
+                                gradientColor3: Theme.of(context).primaryColor,
+                                gradientColor4: Theme.of(context).primaryColor,
+                                shadow1Offset: 1.0,
+                                shadow2Offset: -1.0,
+                                spreadRadius2: 0.0,
+                                spreadRadius1: 0.0,
+                                blurRadius2: 0.0,
+                                blurRadius1: 0.0,
+                                containerChild: AnimatedContainer(
+                                  duration: Duration(seconds: 3),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_brust/100, prozent_brust/100]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Zweiter Abschnitt
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, top: 80.0, bottom: 5.0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 220.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Beinübungen                             ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0, top: 80.0),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                child: Text('${prozent_beine.round().toString()}%',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(231, 40, 44, 1),
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 30.0
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 120.0),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: NeoContainer(
+                                circleShape: false,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                containerWidth: MediaQuery.of(context).size.width/1.2,
+                                shadowColor1: Colors.white30,
+                                shadowColor2: Colors.black,
+                                gradientColor1: Theme.of(context).primaryColor,
+                                gradientColor2: Theme.of(context).primaryColor,
+                                gradientColor3: Theme.of(context).primaryColor,
+                                gradientColor4: Theme.of(context).primaryColor,
+                                shadow1Offset: 1.0,
+                                shadow2Offset: -1.0,
+                                spreadRadius2: 0.0,
+                                spreadRadius1: 0.0,
+                                blurRadius2: 0.0,
+                                blurRadius1: 0.0,
+                                containerChild: AnimatedContainer(
+                                  duration: Duration(seconds: 3),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_beine/100, prozent_beine/100]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, top: 155.0, bottom: 5.0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 220.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Schulterübungen                             ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0, top: 155.0),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                child: Text('${prozent_schultern.round().toString()}%',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(231, 40, 44, 1),
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 30.0
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 195.0),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: NeoContainer(
+                                circleShape: false,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                containerWidth: MediaQuery.of(context).size.width/1.2,
+                                shadowColor1: Colors.white30,
+                                shadowColor2: Colors.black,
+                                gradientColor1: Theme.of(context).primaryColor,
+                                gradientColor2: Theme.of(context).primaryColor,
+                                gradientColor3: Theme.of(context).primaryColor,
+                                gradientColor4: Theme.of(context).primaryColor,
+                                shadow1Offset: 1.0,
+                                shadow2Offset: -1.0,
+                                spreadRadius2: 0.0,
+                                spreadRadius1: 0.0,
+                                blurRadius2: 0.0,
+                                blurRadius1: 0.0,
+                                containerChild: AnimatedContainer(
+                                  duration: Duration(seconds: 3),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_schultern/100, prozent_schultern/100]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, top: 230.0, bottom: 5.0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 220.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Rückenübungen                             ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0, top: 230.0),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                child: Text('${prozent_ruecken.round().toString()}%',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(231, 40, 44, 1),
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 30.0
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 270.0),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: NeoContainer(
+                                circleShape: false,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                containerWidth: MediaQuery.of(context).size.width/1.2,
+                                shadowColor1: Colors.white30,
+                                shadowColor2: Colors.black,
+                                gradientColor1: Theme.of(context).primaryColor,
+                                gradientColor2: Theme.of(context).primaryColor,
+                                gradientColor3: Theme.of(context).primaryColor,
+                                gradientColor4: Theme.of(context).primaryColor,
+                                shadow1Offset: 1.0,
+                                shadow2Offset: -1.0,
+                                spreadRadius2: 0.0,
+                                spreadRadius1: 0.0,
+                                blurRadius2: 0.0,
+                                blurRadius1: 0.0,
+                                containerChild: AnimatedContainer(
+                                  duration: Duration(seconds: 3),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_ruecken/100, prozent_ruecken/100]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, top: 305.0, bottom: 5.0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 220.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Bauchübungen                             ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0, top: 305.0),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                child: Text('${prozent_bauch.round().toString()}%',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(231, 40, 44, 1),
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 30.0
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 345.0),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: NeoContainer(
+                                circleShape: false,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                containerWidth: MediaQuery.of(context).size.width/1.2,
+                                shadowColor1: Colors.white30,
+                                shadowColor2: Colors.black,
+                                gradientColor1: Theme.of(context).primaryColor,
+                                gradientColor2: Theme.of(context).primaryColor,
+                                gradientColor3: Theme.of(context).primaryColor,
+                                gradientColor4: Theme.of(context).primaryColor,
+                                shadow1Offset: 1.0,
+                                shadow2Offset: -1.0,
+                                spreadRadius2: 0.0,
+                                spreadRadius1: 0.0,
+                                blurRadius2: 0.0,
+                                blurRadius1: 0.0,
+                                containerChild: AnimatedContainer(
+                                  duration: Duration(seconds: 3),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_bauch/100, prozent_bauch/100]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
+
               ],
             );
           } else {
@@ -477,107 +1442,19 @@ class _StatisticAPageState extends State<StatisticAPage> {
   }
 
 
-  Widget _navigationBar(BuildContext context) {
-    final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
-    final navbarColor navigationBar = Provider.of<navbarColor>(context);
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.0, left: 10.0, right: 10.0),
-      child: NeoContainer(
-        circleShape: false,
-        blurRadius2: 3.0,
-        blurRadius1: 3.0,
-        shadow1Offset: 2.0,
-        gradientColor1: Theme.of(context).primaryColor,
-        gradientColor2: Colors.red,
-        gradientColor3: Theme.of(context).primaryColor,
-        gradientColor4: Theme.of(context).primaryColor,
-        shadowColor1: Colors.black,
-        shadowColor2: Colors.grey,
-        containerWidth: MediaQuery.of(context).size.width/1.2,
-        containerHeight: MediaQuery.of(context).size.height/10,
-        containerChild: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            FlatButton.icon(
-                onPressed: () {
-                  navigationBar.updatenavIconColor(true, false, false);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MultiProvider(
-                            providers: [
-                              Provider(create: (context) => StorageHandler(uid: database.uid),),
-                              Provider(create: (context) => DatabaseHandler(uid: database.uid),),
-                              ChangeNotifierProvider(create: (context) => TabbarColor(context: context)),
-                              ChangeNotifierProvider(create: (context) => ButtonbarColor(context: context)),
-                              ChangeNotifierProvider(create: (context) => ListViewIndex(context: context)),
-                              ChangeNotifierProvider(create: (context) => navbarColor()),
-                            ],
-                            child: HomeAPage());
-                      },
-                    ),
-                  );
-                },
-                icon: Consumer<navbarColor>(
-                    builder: (context, data, child) {
-                      return Icon(
-                        Icons.home,
-                        color: data.navIconColor1,
-                        size: 30.0,
-                      );
-                    }
-                ),
-                label: Text('home'.toUpperCase())),
-            FlatButton.icon(
-                onPressed: () {
-                  navigationBar.updatenavIconColor(false, true, false);
-                },
-                icon: Consumer<navbarColor>(
-                    builder: (context, data, child) {
-                      return Icon(
-                        Icons.analytics,
-                        color: data.navIconColor2,
-                        size: 30.0,
-                      );
-                    }
-                ),
-                label: Text('')),
-            FlatButton.icon(
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                icon: Consumer<navbarColor>(
-                  builder: (context, data, child) {
-                    return Icon(
-                      Icons.folder_shared,
-                      color: data.navIconColor3,
-                      size: 30.0,
-                    );
-                  },
-                ),
-                label: Text(''),
-                onPressed: () {
-                  navigationBar.updatenavIconColor(false, false, true);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MultiProvider(
-                            providers: [
-                              Provider(create: (context) =>
-                                  DatabaseHandler(uid: database.uid),),
-                              ChangeNotifierProvider(create: (context) =>
-                                  TextRoutine()),
-                            ],
-                            child: MyWorkoutsAPage());
-                      },
-                    ),
-                  );
-                }
-            )
-          ],
-        ),
-      ),
-    );
+  Widget _week_month_year_content(BuildContext context) {
+    if (_week == true) {
+      return Text('${_weekBegin}-${_weekEnd}',
+          style: TextStyle(color: Colors.white));
+    } else if (_month == true) {
+      return Text('${_datetime_month.toString()}',
+          style: TextStyle(color: Colors.white));
+    } else if (_year == true) {
+      return Text('${_datetime_year.toString()}',
+          style: TextStyle(color: Colors.white));
+    }
   }
+
 
 
 }

@@ -63,7 +63,7 @@ class _Workout3APageState extends State<Workout3APage> {
 
   @override
   Widget build(BuildContext context) {
-
+    final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     if (firstVisit == false) {
       getWorkoutList(context).then((value){
         setState(() {
@@ -195,8 +195,9 @@ class _Workout3APageState extends State<Workout3APage> {
                       builder: (context) {
                         return MultiProvider(
                           providers: [
+                            Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
-                          ], child: VideoPlayerList(urlList: videoPath),
+                          ], child: VideoPlayerList(urlList: videoPath, ),
                         );
 
                       },
