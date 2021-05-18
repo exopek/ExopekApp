@@ -107,6 +107,10 @@ class _StatisticAPageState extends State<StatisticAPage> {
   String _currentWeekday = DateFormat.EEEE().format(DateTime.now());
   DateTime _targetDateTime = DateTime.now();
 
+  Color _woche_color;
+  Color _monat_color;
+  Color _jahr_color;
+
   CalendarCarousel _calendarCarouselNoHeader;
 
   static Widget _eventIcon = new Container(
@@ -161,6 +165,37 @@ class _StatisticAPageState extends State<StatisticAPage> {
       _weekEnd = DateFormat('yyyy-MM-dd').format(
           DateTime(_currentDate.year, _currentDate.month, _currentDate.day + 6));
     }
+    else if (_currentDate.weekday == 2) {
+      _weekBegin = DateFormat('yyyy-MM-dd').format(DateTime(
+          _currentDate.year, _currentDate.month, _currentDate.day - 1));
+      _weekEnd = DateFormat('yyyy-MM-dd').format(
+          DateTime(_currentDate.year, _currentDate.month, _currentDate.day + 5));
+    }
+    else if (_currentDate.weekday == 3) {
+      _weekBegin = DateFormat('yyyy-MM-dd').format(DateTime(
+          _currentDate.year, _currentDate.month, _currentDate.day - 2));
+      _weekEnd = DateFormat('yyyy-MM-dd').format(
+          DateTime(_currentDate.year, _currentDate.month, _currentDate.day + 4));
+    }
+    else if (_currentDate.weekday == 4) {
+      _weekBegin = DateFormat('yyyy-MM-dd').format(DateTime(
+          _currentDate.year, _currentDate.month, _currentDate.day - 3));
+      _weekEnd = DateFormat('yyyy-MM-dd').format(
+          DateTime(_currentDate.year, _currentDate.month, _currentDate.day + 3));
+    }
+    else if (_currentDate.weekday == 5) {
+      _weekBegin = DateFormat('yyyy-MM-dd').format(DateTime(
+          _currentDate.year, _currentDate.month, _currentDate.day - 4));
+      _weekEnd = DateFormat('yyyy-MM-dd').format(
+          DateTime(_currentDate.year, _currentDate.month, _currentDate.day + 2));
+    }
+    else if (_currentDate.weekday == 6) {
+      _weekBegin = DateFormat('yyyy-MM-dd').format(DateTime(
+          _currentDate.year, _currentDate.month, _currentDate.day - 5));
+      _weekEnd = DateFormat('yyyy-MM-dd').format(
+          DateTime(_currentDate.year, _currentDate.month, _currentDate.day + 1));
+    }
+
 
 
     return [_weekBegin, _weekEnd];
@@ -268,6 +303,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
     _week = true;
     _month = false;
     _year = false;
+    _woche_color = Colors.redAccent;
+    _monat_color = Colors.white;
+    _jahr_color = Colors.white;
     /*
     _markedDateMap.add(
         new DateTime(2021, 5, 25),
@@ -572,14 +610,14 @@ class _StatisticAPageState extends State<StatisticAPage> {
                               gradientColor4: Theme.of(context).primaryColor,
                               containerHeight: MediaQuery.of(context).size.height/20,
                               containerWidth: MediaQuery.of(context).size.width/4,
-                              shadowColor1: Colors.white30,
-                              shadowColor2: Colors.black,
-                              shadow2Offset: 1.0,
-                              shadow1Offset: -1.0,
-                              spreadRadius1: 1.0,
-                              spreadRadius2: 2.0,
-                              blurRadius1: 3.0,
-                              blurRadius2: 3.0,
+                              shadowColor1: Colors.black,
+                              shadowColor2: Colors.white30,
+                              //shadow2Offset: 1.0,
+                              //shadow1Offset: -1.0,
+                              //spreadRadius1: 1.0,
+                              spreadRadius2: 0.0,
+                              //blurRadius1: 3.0,
+                              //blurRadius2: 3.0,
                               circleShape: false,
                               containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
                               containerChild: InkWell(
@@ -588,13 +626,16 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                     _week = true;
                                     _month = false;
                                     _year = false;
+                                    _woche_color = Colors.redAccent;
+                                    _monat_color = Colors.white;
+                                    _jahr_color = Colors.white;
                                   });
                                 },
                                 child: Center(
                                   child: Text(
                                     'Woche',
                                     style: TextStyle(
-                                      color: Colors.white
+                                      color: _woche_color
                                     ),
                                   ),
                                 ),
@@ -607,14 +648,14 @@ class _StatisticAPageState extends State<StatisticAPage> {
                               gradientColor4: Theme.of(context).primaryColor,
                               containerHeight: MediaQuery.of(context).size.height/20,
                               containerWidth: MediaQuery.of(context).size.width/4,
-                              shadowColor1: Colors.white30,
-                              shadowColor2: Colors.black,
-                              shadow2Offset: 1.0,
-                              shadow1Offset: -1.0,
-                              spreadRadius1: 1.0,
-                              spreadRadius2: 2.0,
-                              blurRadius1: 3.0,
-                              blurRadius2: 3.0,
+                              shadowColor1: Colors.black,
+                              shadowColor2: Colors.white30,
+                              //shadow2Offset: 1.0,
+                              //shadow1Offset: -1.0,
+                              //spreadRadius1: 1.0,
+                              spreadRadius2: 0.0,
+                              //blurRadius1: 3.0,
+                              //blurRadius2: 3.0,
                               circleShape: false,
                               containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
                               containerChild: InkWell(
@@ -623,13 +664,16 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                     _week = false;
                                     _month = true;
                                     _year = false;
+                                    _woche_color = Colors.white;
+                                    _monat_color = Colors.redAccent;
+                                    _jahr_color = Colors.white;
                                   });
                                 },
                                 child: Center(
                                   child: Text(
                                     'Monat',
                                     style: TextStyle(
-                                        color: Colors.white
+                                        color: _monat_color
                                     ),
                                   ),
                                 ),
@@ -642,14 +686,14 @@ class _StatisticAPageState extends State<StatisticAPage> {
                               gradientColor4: Theme.of(context).primaryColor,
                               containerHeight: MediaQuery.of(context).size.height/20,
                               containerWidth: MediaQuery.of(context).size.width/4,
-                              shadowColor1: Colors.white30,
-                              shadowColor2: Colors.black,
-                              shadow2Offset: 1.0,
-                              shadow1Offset: -1.0,
-                              spreadRadius1: 1.0,
-                              spreadRadius2: 2.0,
-                              blurRadius1: 3.0,
-                              blurRadius2: 3.0,
+                              shadowColor1: Colors.black,
+                              shadowColor2: Colors.white30,
+                              //shadow2Offset: 1.0,
+                              //shadow1Offset: -1.0,
+                              //spreadRadius1: 1.0,
+                              spreadRadius2: 0.0,
+                              //blurRadius1: 3.0,
+                              //blurRadius2: 3.0,
                               circleShape: false,
                               containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
                               containerChild: InkWell(
@@ -658,13 +702,16 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                     _week = false;
                                     _month = false;
                                     _year = true;
+                                    _woche_color = Colors.white;
+                                    _monat_color = Colors.white;
+                                    _jahr_color = Colors.redAccent;
                                   });
                                 },
                                 child: Center(
                                   child: Text(
                                     'Jahr',
                                     style: TextStyle(
-                                        color: Colors.white
+                                        color: _jahr_color
                                     ),
                                   ),
                                 ),
@@ -682,94 +729,100 @@ class _StatisticAPageState extends State<StatisticAPage> {
                           color: Theme.of(context).primaryColor,
                           height: MediaQuery.of(context).size.height*0.1,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              NeoContainer(
-                                  containerHeight: MediaQuery.of(context).size.height*0.07,
-                                  containerWidth: MediaQuery.of(context).size.height*0.07,
-                                  circleShape: true,
-                                  gradientColor1: Theme.of(context).primaryColor,
-                                  gradientColor2: Theme.of(context).primaryColor,
-                                  gradientColor3: Theme.of(context).primaryColor,
-                                  gradientColor4: Theme.of(context).primaryColor,
-                                  shadowColor1: Colors.black,
-                                  spreadRadius2: 0.0,
-                                  shadowColor2: Colors.white30,
-                                  containerChild: InkWell(
-                                    onTap: () {
-                                      if (_week == true) {
-                                        final _oldDateTime_weekBegin = _datetime_weekBegin;
-                                        final _oldDateTime_weekEnd = _datetime_weekEnd;
-                                        setState(() {
-                                          _datetime_weekEnd = DateTime(_oldDateTime_weekEnd.year, _oldDateTime_weekEnd.month, _oldDateTime_weekEnd.day - 7);
-                                          _datetime_weekBegin = DateTime(_oldDateTime_weekBegin.year, _oldDateTime_weekBegin.month, _oldDateTime_weekBegin.day - 7);
-                                          _weekBegin = DateFormat('yyyy-MM-dd').format(_datetime_weekBegin);
-                                          _weekEnd = DateFormat('yyyy-MM-dd').format(_datetime_weekEnd);
-                                          finishWorkoutList.clear();
-                                        });
-                                      } else if (_month == true) {
-                                        final _newDateTime_month = DateTime(_currentDate.year, _datetime_month - 1, _currentDate.day);
-                                        setState(() {
-                                          _datetime_month = _newDateTime_month.month;
-                                          finishWorkoutList.clear();
-                                        });
-                                      } else if (_year == true) {
-                                        final _newDateTime_year = DateTime(_datetime_year - 1, _currentDate.month, _currentDate.day);
-                                        setState(() {
-                                          _datetime_year = _newDateTime_year.year;
-                                          finishWorkoutList.clear();
-                                        });
-                                      }
+                              Padding(
+                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.07),
+                                child: NeoContainer(
+                                    containerHeight: MediaQuery.of(context).size.height*0.07,
+                                    containerWidth: MediaQuery.of(context).size.height*0.07,
+                                    circleShape: true,
+                                    gradientColor1: Theme.of(context).primaryColor,
+                                    gradientColor2: Theme.of(context).primaryColor,
+                                    gradientColor3: Theme.of(context).primaryColor,
+                                    gradientColor4: Theme.of(context).primaryColor,
+                                    shadowColor1: Colors.black,
+                                    spreadRadius2: 0.0,
+                                    shadowColor2: Colors.white30,
+                                    containerChild: InkWell(
+                                      onTap: () {
+                                        if (_week == true) {
+                                          final _oldDateTime_weekBegin = _datetime_weekBegin;
+                                          final _oldDateTime_weekEnd = _datetime_weekEnd;
+                                          setState(() {
+                                            _datetime_weekEnd = DateTime(_oldDateTime_weekEnd.year, _oldDateTime_weekEnd.month, _oldDateTime_weekEnd.day - 7);
+                                            _datetime_weekBegin = DateTime(_oldDateTime_weekBegin.year, _oldDateTime_weekBegin.month, _oldDateTime_weekBegin.day - 7);
+                                            _weekBegin = DateFormat('yyyy-MM-dd').format(_datetime_weekBegin);
+                                            _weekEnd = DateFormat('yyyy-MM-dd').format(_datetime_weekEnd);
+                                            finishWorkoutList.clear();
+                                          });
+                                        } else if (_month == true) {
+                                          final _newDateTime_month = DateTime(_currentDate.year, _datetime_month - 1, _currentDate.day);
+                                          setState(() {
+                                            _datetime_month = _newDateTime_month.month;
+                                            finishWorkoutList.clear();
+                                          });
+                                        } else if (_year == true) {
+                                          final _newDateTime_year = DateTime(_datetime_year - 1, _currentDate.month, _currentDate.day);
+                                          setState(() {
+                                            _datetime_year = _newDateTime_year.year;
+                                            finishWorkoutList.clear();
+                                          });
+                                        }
 
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_back_ios_sharp
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_back_ios_sharp
+                                      ),
                                     ),
-                                  ),
+                                ),
                               ),
                               _week_month_year_content(context),
-                              NeoContainer(
-                                  containerHeight: MediaQuery.of(context).size.height*0.07,
-                                  containerWidth: MediaQuery.of(context).size.height*0.07,
-                                  circleShape: true,
-                                  gradientColor1: Theme.of(context).primaryColor,
-                                  gradientColor2: Theme.of(context).primaryColor,
-                                  gradientColor3: Theme.of(context).primaryColor,
-                                  gradientColor4: Theme.of(context).primaryColor,
-                                  spreadRadius2: 0.0,
-                                  shadowColor1: Colors.black,
-                                  shadowColor2: Colors.white30,
-                                  containerChild: InkWell(
-                                    onTap: () {
-                                      if (_week == true) {
-                                        final _oldDateTime_weekBegin = _datetime_weekBegin;
-                                        final _oldDateTime_weekEnd = _datetime_weekEnd;
-                                        setState(() {
-                                          _datetime_weekEnd = DateTime(_oldDateTime_weekEnd.year, _oldDateTime_weekEnd.month, _oldDateTime_weekEnd.day + 7);
-                                          _datetime_weekBegin = DateTime(_oldDateTime_weekBegin.year, _oldDateTime_weekBegin.month, _oldDateTime_weekBegin.day + 7);
-                                          _weekBegin = DateFormat('yyyy-MM-dd').format(_datetime_weekBegin);
-                                          _weekEnd = DateFormat('yyyy-MM-dd').format(_datetime_weekEnd);
-                                          finishWorkoutList.clear();
-                                        });
-                                      } else if (_month == true) {
-                                        final _newDateTime_month = DateTime(_currentDate.year, _datetime_month + 1, _currentDate.day);
-                                        setState(() {
-                                          _datetime_month = _newDateTime_month.month;
-                                          finishWorkoutList.clear();
-                                        });
-                                      } else if (_year == true) {
-                                        final _newDateTime_year = DateTime(_datetime_year + 1, _currentDate.month, _currentDate.day);
-                                        setState(() {
-                                          _datetime_year = _newDateTime_year.year;
-                                          finishWorkoutList.clear();
-                                        });
-                                      }
+                              Padding(
+                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.07),
+                                child: NeoContainer(
+                                    containerHeight: MediaQuery.of(context).size.height*0.07,
+                                    containerWidth: MediaQuery.of(context).size.height*0.07,
+                                    circleShape: true,
+                                    gradientColor1: Theme.of(context).primaryColor,
+                                    gradientColor2: Theme.of(context).primaryColor,
+                                    gradientColor3: Theme.of(context).primaryColor,
+                                    gradientColor4: Theme.of(context).primaryColor,
+                                    spreadRadius2: 0.0,
+                                    shadowColor1: Colors.black,
+                                    shadowColor2: Colors.white30,
+                                    containerChild: InkWell(
+                                      onTap: () {
+                                        if (_week == true) {
+                                          final _oldDateTime_weekBegin = _datetime_weekBegin;
+                                          final _oldDateTime_weekEnd = _datetime_weekEnd;
+                                          setState(() {
+                                            _datetime_weekEnd = DateTime(_oldDateTime_weekEnd.year, _oldDateTime_weekEnd.month, _oldDateTime_weekEnd.day + 7);
+                                            _datetime_weekBegin = DateTime(_oldDateTime_weekBegin.year, _oldDateTime_weekBegin.month, _oldDateTime_weekBegin.day + 7);
+                                            _weekBegin = DateFormat('yyyy-MM-dd').format(_datetime_weekBegin);
+                                            _weekEnd = DateFormat('yyyy-MM-dd').format(_datetime_weekEnd);
+                                            finishWorkoutList.clear();
+                                          });
+                                        } else if (_month == true) {
+                                          final _newDateTime_month = DateTime(_currentDate.year, _datetime_month + 1, _currentDate.day);
+                                          setState(() {
+                                            _datetime_month = _newDateTime_month.month;
+                                            finishWorkoutList.clear();
+                                          });
+                                        } else if (_year == true) {
+                                          final _newDateTime_year = DateTime(_datetime_year + 1, _currentDate.month, _currentDate.day);
+                                          setState(() {
+                                            _datetime_year = _newDateTime_year.year;
+                                            finishWorkoutList.clear();
+                                          });
+                                        }
 
-                                    },
-                                    child: Icon(
-                                        Icons.arrow_forward_ios_sharp
+                                      },
+                                      child: Icon(
+                                          Icons.arrow_forward_ios_sharp
+                                      ),
                                     ),
-                                  ),
+                                ),
                               ),
                             ],
                           )
@@ -1444,14 +1497,63 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   Widget _week_month_year_content(BuildContext context) {
     if (_week == true) {
-      return Text('${_weekBegin}-${_weekEnd}',
-          style: TextStyle(color: Colors.white));
+      return Text('${_weekBegin}   -   ${_weekEnd}',
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'FiraSansExtraCondensed',
+              fontSize: 20.0
+          ));
     } else if (_month == true) {
-      return Text('${_datetime_month.toString()}',
-          style: TextStyle(color: Colors.white));
+      String _dateString = '';
+        if (_datetime_month == 1) {
+          _dateString = 'Januar';
+        }
+        else if (_datetime_month == 2) {
+          _dateString = 'Februar';
+        }
+        else if (_datetime_month == 3) {
+          _dateString = 'März';
+        }
+        else if (_datetime_month == 4) {
+          _dateString = 'April';
+        }
+        else if (_datetime_month == 5) {
+          _dateString = 'Mai';
+        }
+        else if (_datetime_month == 6) {
+          _dateString = 'Juni';
+        }
+        else if (_datetime_month == 7) {
+          _dateString = 'Juli';
+        }
+        else if (_datetime_month == 8) {
+          _dateString = 'August';
+        }
+        else if (_datetime_month == 9) {
+          _dateString = 'September';
+        }
+        else if (_datetime_month == 10) {
+          _dateString = 'Oktober';
+        }
+        else if (_datetime_month == 11) {
+          _dateString = 'November';
+        }
+        else if (_datetime_month == 12) {
+          _dateString = 'Dezember';
+        }
+      return Text('${_dateString}',
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'FiraSansExtraCondensed',
+              fontSize: 20.0
+          ));
     } else if (_year == true) {
       return Text('${_datetime_year.toString()}',
-          style: TextStyle(color: Colors.white));
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'FiraSansExtraCondensed',
+              fontSize: 20.0
+          ));
     }
   }
 
