@@ -15,14 +15,18 @@ import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Services/storage_handler.dart';
 import 'package:video_app/Views/center_a.dart';
 import 'package:video_player/video_player.dart';
+import 'package:intl/intl.dart';
 
 class VideoPlayerList extends StatefulWidget {
 
   final List urlList;
-
+  final List classifycationList;
+  final List muscleGroupsList;
+  final List thumbnialsList;
+  final List workoutNameList;
   final String workoutName;
 
-  const VideoPlayerList({Key key,@required this.urlList, @required this.workoutName}) : super(key: key);
+  const VideoPlayerList({Key key,@required this.urlList, @required this.workoutName, @required this.thumbnialsList, @required this.classifycationList, @required this.muscleGroupsList, @required this.workoutNameList}) : super(key: key);
 
   @override
   _VideoPlayerListState createState() => _VideoPlayerListState();
@@ -38,9 +42,11 @@ class _VideoPlayerListState extends State<VideoPlayerList> {
             Name: widget.workoutName,
             Dauer: _videoPlayerController.value.duration.toString(),
             VideoUrl: widget.urlList,
-            Klassifizierung: ['Kraft'],
-            Muskelgruppen: ['Beine',
-                             'Brust'       ]
+            Klassifizierung: widget.classifycationList,
+            Muskelgruppen: widget.muscleGroupsList,
+            Thumbnail: widget.thumbnialsList,
+            Uebungsnamen: widget.workoutNameList,
+            Datum: DateFormat('yyyy-MM-dd').format(DateTime.now()).toString()
       ));
     } catch (e) {
       print(e);

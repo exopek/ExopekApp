@@ -867,23 +867,26 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   containerWidth: MediaQuery.of(context).size.width/2,
                                   containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                                   circleShape: false,
-                                  shadowColor2: Colors.grey,
+                                  spreadRadius2: 0.0,
+                                  shadowColor2: Colors.white30,
                                   shadowColor1: Colors.black,
                                   gradientColor1: Theme.of(context).primaryColor,
                                   gradientColor2: Theme.of(context).primaryColor,
                                   gradientColor3: Theme.of(context).primaryColor,
                                   gradientColor4: Theme.of(context).primaryColor,
-                                  containerChild: Padding(
-                                    padding: EdgeInsets.all(12.0),
-                                    child: Text(
-                                      finishWorkoutList[index].Name,
-                                      style: TextStyle(
-                                        color: Colors.white
+                                  containerChild: Container(
+                                    child: Center(
+                                      child: Text(
+                                        finishWorkoutList[index].Name,
+                                        style: TextStyle(
+                                          fontFamily: 'FiraSansExtraCondensed',
+                                          color: Colors.white,
+                                          fontSize: 20.0
+                                        ),
                                       ),
                                     ),
-                                  ),
                                 ),
-
+                                )
                               );
                             }
                         )
@@ -921,7 +924,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerWidth: MediaQuery.of(context).size.width/2,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
-                      shadowColor2: Colors.grey,
+                      spreadRadius2: 0.0,
+                      shadowColor2: Colors.white30,
                       shadowColor1: Colors.black,
                       gradientColor1: Theme.of(context).primaryColor,
                       gradientColor2: Theme.of(context).primaryColor,
@@ -1010,7 +1014,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerWidth: MediaQuery.of(context).size.width/2,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
-                      shadowColor2: Colors.grey,
+                      spreadRadius2: 0.0,
+                      shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
                       gradientColor1: Theme.of(context).primaryColor,
                       gradientColor2: Theme.of(context).primaryColor,
@@ -1119,364 +1124,25 @@ class _StatisticAPageState extends State<StatisticAPage> {
                   child: Padding(
                     padding: EdgeInsets.all(10.0),
                     child: NeoContainer(
-                      containerHeight: MediaQuery.of(context).size.height/2,
+                      containerHeight: MediaQuery.of(context).size.height/1.6,
                       containerWidth: MediaQuery.of(context).size.width/2,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
-                      shadowColor2: Colors.grey,
+                      spreadRadius2: 0.0,
+                      shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
                       gradientColor1: Theme.of(context).primaryColor,
                       gradientColor2: Theme.of(context).primaryColor,
                       gradientColor3: Theme.of(context).primaryColor,
                       gradientColor4: Theme.of(context).primaryColor,
-                      containerChild: Stack(
+                      containerChild: Column(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                height: 40.0,
-                                width: 220.0,
-                                color: Theme.of(context).primaryColor,
-                                child: Center(
-                                  child: Text('Brustübungen                             ',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'FiraSansExtraCondensed',
-                                        fontSize: 20.0
-                                    ),),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 20.0, top: 5.0),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Container(
-                                child: Text('${prozent_brust.round().toString()}%',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(231, 40, 44, 1),
-                                      fontFamily: 'FiraSansExtraCondensed',
-                                      fontSize: 30.0
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 45.0),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: NeoContainer(
-                                circleShape: false,
-                                containerHeight: MediaQuery.of(context).size.height*0.02,
-                                containerWidth: MediaQuery.of(context).size.width/1.2,
-                                shadowColor1: Colors.white30,
-                                shadowColor2: Colors.black,
-                                gradientColor1: Theme.of(context).primaryColor,
-                                gradientColor2: Theme.of(context).primaryColor,
-                                gradientColor3: Theme.of(context).primaryColor,
-                                gradientColor4: Theme.of(context).primaryColor,
-                                shadow1Offset: 1.0,
-                                shadow2Offset: -1.0,
-                                spreadRadius2: 0.0,
-                                spreadRadius1: 0.0,
-                                blurRadius2: 0.0,
-                                blurRadius1: 0.0,
-                                containerChild: AnimatedContainer(
-                                  duration: Duration(seconds: 3),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
-                                        stops: [prozent_brust/100, prozent_brust/100]
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Zweiter Abschnitt
-                          Padding(
-                            padding: EdgeInsets.only(left: 20.0, top: 80.0, bottom: 5.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                height: 40.0,
-                                width: 220.0,
-                                color: Theme.of(context).primaryColor,
-                                child: Center(
-                                  child: Text('Beinübungen                             ',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'FiraSansExtraCondensed',
-                                        fontSize: 20.0
-                                    ),),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 20.0, top: 80.0),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Container(
-                                child: Text('${prozent_beine.round().toString()}%',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(231, 40, 44, 1),
-                                      fontFamily: 'FiraSansExtraCondensed',
-                                      fontSize: 30.0
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 120.0),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: NeoContainer(
-                                circleShape: false,
-                                containerHeight: MediaQuery.of(context).size.height*0.02,
-                                containerWidth: MediaQuery.of(context).size.width/1.2,
-                                shadowColor1: Colors.white30,
-                                shadowColor2: Colors.black,
-                                gradientColor1: Theme.of(context).primaryColor,
-                                gradientColor2: Theme.of(context).primaryColor,
-                                gradientColor3: Theme.of(context).primaryColor,
-                                gradientColor4: Theme.of(context).primaryColor,
-                                shadow1Offset: 1.0,
-                                shadow2Offset: -1.0,
-                                spreadRadius2: 0.0,
-                                spreadRadius1: 0.0,
-                                blurRadius2: 0.0,
-                                blurRadius1: 0.0,
-                                containerChild: AnimatedContainer(
-                                  duration: Duration(seconds: 3),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
-                                        stops: [prozent_beine/100, prozent_beine/100]
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 20.0, top: 155.0, bottom: 5.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                height: 40.0,
-                                width: 220.0,
-                                color: Theme.of(context).primaryColor,
-                                child: Center(
-                                  child: Text('Schulterübungen                             ',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'FiraSansExtraCondensed',
-                                        fontSize: 20.0
-                                    ),),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 20.0, top: 155.0),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Container(
-                                child: Text('${prozent_schultern.round().toString()}%',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(231, 40, 44, 1),
-                                      fontFamily: 'FiraSansExtraCondensed',
-                                      fontSize: 30.0
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 195.0),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: NeoContainer(
-                                circleShape: false,
-                                containerHeight: MediaQuery.of(context).size.height*0.02,
-                                containerWidth: MediaQuery.of(context).size.width/1.2,
-                                shadowColor1: Colors.white30,
-                                shadowColor2: Colors.black,
-                                gradientColor1: Theme.of(context).primaryColor,
-                                gradientColor2: Theme.of(context).primaryColor,
-                                gradientColor3: Theme.of(context).primaryColor,
-                                gradientColor4: Theme.of(context).primaryColor,
-                                shadow1Offset: 1.0,
-                                shadow2Offset: -1.0,
-                                spreadRadius2: 0.0,
-                                spreadRadius1: 0.0,
-                                blurRadius2: 0.0,
-                                blurRadius1: 0.0,
-                                containerChild: AnimatedContainer(
-                                  duration: Duration(seconds: 3),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
-                                        stops: [prozent_schultern/100, prozent_schultern/100]
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 20.0, top: 230.0, bottom: 5.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                height: 40.0,
-                                width: 220.0,
-                                color: Theme.of(context).primaryColor,
-                                child: Center(
-                                  child: Text('Rückenübungen                             ',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'FiraSansExtraCondensed',
-                                        fontSize: 20.0
-                                    ),),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 20.0, top: 230.0),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Container(
-                                child: Text('${prozent_ruecken.round().toString()}%',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(231, 40, 44, 1),
-                                      fontFamily: 'FiraSansExtraCondensed',
-                                      fontSize: 30.0
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 270.0),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: NeoContainer(
-                                circleShape: false,
-                                containerHeight: MediaQuery.of(context).size.height*0.02,
-                                containerWidth: MediaQuery.of(context).size.width/1.2,
-                                shadowColor1: Colors.white30,
-                                shadowColor2: Colors.black,
-                                gradientColor1: Theme.of(context).primaryColor,
-                                gradientColor2: Theme.of(context).primaryColor,
-                                gradientColor3: Theme.of(context).primaryColor,
-                                gradientColor4: Theme.of(context).primaryColor,
-                                shadow1Offset: 1.0,
-                                shadow2Offset: -1.0,
-                                spreadRadius2: 0.0,
-                                spreadRadius1: 0.0,
-                                blurRadius2: 0.0,
-                                blurRadius1: 0.0,
-                                containerChild: AnimatedContainer(
-                                  duration: Duration(seconds: 3),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
-                                        stops: [prozent_ruecken/100, prozent_ruecken/100]
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 20.0, top: 305.0, bottom: 5.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                height: 40.0,
-                                width: 220.0,
-                                color: Theme.of(context).primaryColor,
-                                child: Center(
-                                  child: Text('Bauchübungen                             ',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'FiraSansExtraCondensed',
-                                        fontSize: 20.0
-                                    ),),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 20.0, top: 305.0),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Container(
-                                child: Text('${prozent_bauch.round().toString()}%',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(231, 40, 44, 1),
-                                      fontFamily: 'FiraSansExtraCondensed',
-                                      fontSize: 30.0
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 345.0),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: NeoContainer(
-                                circleShape: false,
-                                containerHeight: MediaQuery.of(context).size.height*0.02,
-                                containerWidth: MediaQuery.of(context).size.width/1.2,
-                                shadowColor1: Colors.white30,
-                                shadowColor2: Colors.black,
-                                gradientColor1: Theme.of(context).primaryColor,
-                                gradientColor2: Theme.of(context).primaryColor,
-                                gradientColor3: Theme.of(context).primaryColor,
-                                gradientColor4: Theme.of(context).primaryColor,
-                                shadow1Offset: 1.0,
-                                shadow2Offset: -1.0,
-                                spreadRadius2: 0.0,
-                                spreadRadius1: 0.0,
-                                blurRadius2: 0.0,
-                                blurRadius1: 0.0,
-                                containerChild: AnimatedContainer(
-                                  duration: Duration(seconds: 3),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
-                                        stops: [prozent_bauch/100, prozent_bauch/100]
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height/35,),
+                          _muscle_group_content(context, 'Brustübungen', prozent_brust),
+                          _muscle_group_content(context, 'Beinübungen', prozent_beine),
+                          _muscle_group_content(context, 'Schulterübungen', prozent_schultern),
+                          _muscle_group_content(context, 'Rückenübungen', prozent_ruecken),
+                          _muscle_group_content(context, 'Bauchübungen', prozent_bauch),
                         ],
                       ),
                     ),
@@ -1491,6 +1157,87 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
         }
       ),
+    );
+  }
+
+  Widget _muscle_group_content(BuildContext context, String bezeichnung, double prozent_uebung) {
+    return Container(
+      height: MediaQuery.of(context).size.height/9,
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/18, top: MediaQuery.of(context).size.height/400, bottom: MediaQuery.of(context).size.height/100),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                height: 40.0,
+                width: 100.0,
+                color: Theme.of(context).primaryColor,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(bezeichnung,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'FiraSansExtraCondensed',
+                        fontSize: 20.0
+                    ),),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width/18, top: MediaQuery.of(context).size.height/100),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                child: Text('${prozent_uebung.round().toString()}%',
+                  style: TextStyle(
+                      color: Color.fromRGBO(231, 40, 44, 1),
+                      fontFamily: 'FiraSansExtraCondensed',
+                      fontSize: 30.0
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/15),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: NeoContainer(
+                circleShape: false,
+                containerHeight: MediaQuery.of(context).size.height*0.02,
+                containerWidth: MediaQuery.of(context).size.width/1.2,
+                shadowColor1: Colors.white30,
+                shadowColor2: Colors.black,
+                gradientColor1: Theme.of(context).primaryColor,
+                gradientColor2: Theme.of(context).primaryColor,
+                gradientColor3: Theme.of(context).primaryColor,
+                gradientColor4: Theme.of(context).primaryColor,
+                shadow1Offset: 1.0,
+                shadow2Offset: -1.0,
+                spreadRadius2: 0.0,
+                spreadRadius1: 0.0,
+                blurRadius2: 0.0,
+                blurRadius1: 0.0,
+                containerChild: AnimatedContainer(
+                  duration: Duration(seconds: 3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                        stops: [prozent_uebung/100, prozent_uebung/100]
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      )
+
     );
   }
 

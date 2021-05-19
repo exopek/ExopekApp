@@ -139,13 +139,15 @@ class Workout {
 
 
 class Routine {
-  Routine({@required this.workoutNames, @required this.thumbnails, @required this.routineName, @required this.videoPaths, @required this.count,});
+  Routine({@required this.workoutNames, @required this.thumbnails, @required this.routineName, @required this.videoPaths, @required this.count, @required this.muscleGroups, @required this.classifycation});
 
   final String routineName;
   final String count;
   final List<dynamic> videoPaths;
   final List<dynamic> thumbnails;
   final List<dynamic> workoutNames;
+  final List<dynamic> classifycation;
+  final List<dynamic> muscleGroups;
 
 
   factory Routine.fromMap(Map<String, dynamic> data) {
@@ -157,13 +159,17 @@ class Routine {
     final String routineName = data['routineName'];
     final List<dynamic> thumbnails = data['thumbnails'];
     final List<dynamic> workoutNames = data['workoutNames'];
+    final List<dynamic> classifycation = data['classifycation'];
+    final List<dynamic> muscleGroups = data['muscleGroups'];
 
     return Routine(
         videoPaths: videoPaths,
         count: count,
         routineName: routineName,
         thumbnails: thumbnails,
-        workoutNames: workoutNames
+        workoutNames: workoutNames,
+        classifycation: classifycation,
+        muscleGroups: muscleGroups
     );
   }
 
@@ -173,7 +179,9 @@ class Routine {
       'count': count,
       'routineName': routineName,
       'thumbnails': thumbnails,
-      'workoutNames': workoutNames
+      'workoutNames': workoutNames,
+      'classifycation': classifycation,
+      'muscleGroups': muscleGroups
     };
   }
 

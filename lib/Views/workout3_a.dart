@@ -30,8 +30,11 @@ class _Workout3APageState extends State<Workout3APage> {
   Routine routine;
 
   List workout;
-
   List videoPath;
+  List thumbnails;
+  List classifycation;
+  List muscleGroups;
+
 
   Future<Routine> getWorkoutList(BuildContext context) async {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
@@ -57,6 +60,9 @@ class _Workout3APageState extends State<Workout3APage> {
     firstVisit = false;
     workout = [];
     videoPath = [];
+    thumbnails = [];
+    classifycation = [];
+    muscleGroups = [];
     super.initState();
   }
 
@@ -69,6 +75,9 @@ class _Workout3APageState extends State<Workout3APage> {
         setState(() {
           workout = value.workoutNames;
           videoPath = value.videoPaths;
+          thumbnails = value.thumbnails;
+          classifycation = value.classifycation;
+          muscleGroups = value.muscleGroups;
           firstVisit = true;
         });
       });
@@ -197,7 +206,7 @@ class _Workout3APageState extends State<Workout3APage> {
                           providers: [
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
-                          ], child: VideoPlayerList(urlList: videoPath, ),
+                          ], child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
                         );
 
                       },
