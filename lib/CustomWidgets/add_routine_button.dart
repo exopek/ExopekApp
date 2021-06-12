@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Helpers/hero_dialog_route.dart';
@@ -29,21 +30,18 @@ class AddRoutineButton extends StatelessWidget {
       createRectTween: (begin, end) {
         return CustomRectTween(begin: begin, end: end);
       },
-      child: Material(
-        elevation: 5.0,
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        child: Container(
-          height: 80.0,
-          width: 140.0,
-          decoration: BoxDecoration(
-            //shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-            border: Border.all(
-              color: Colors.white
-            ),
-            color: Colors.grey[900]
-          ),
-            child: Stack(
+        child: NeoContainer(
+          gradientColor1: Theme.of(context).primaryColor,
+          gradientColor2: Theme.of(context).primaryColor,
+          gradientColor3: Theme.of(context).primaryColor,
+          gradientColor4: Theme.of(context).primaryColor,
+          containerHeight: MediaQuery.of(context).size.height/10,
+          containerWidth: MediaQuery.of(context).size.height/10,
+          circleShape: true,
+            shadowColor1: Colors.black,
+            shadowColor2: Colors.white60,
+            spreadRadius2: 0.0,
+            containerChild: Stack(
               children: [
                 Center(
                   child: Icon(
@@ -78,7 +76,7 @@ class AddRoutineButton extends StatelessWidget {
               ]
             ),
             ),
-      ),
+
     );
 
   }
@@ -134,7 +132,7 @@ class __AddRoutinePopupCardState extends State<_AddRoutinePopupCard> {
             return CustomRectTween(begin: begin, end: end);
           },
           child: Material(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.grey.withOpacity(1.0),
             elevation: 2,
             shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
@@ -148,7 +146,7 @@ class __AddRoutinePopupCardState extends State<_AddRoutinePopupCard> {
                       controller: routineNameController,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Gib deiner Routine einen Namen'
+                        hintText: 'Gib deinem Workout einen Namen'
                       ),
                     ),
                     const Divider(

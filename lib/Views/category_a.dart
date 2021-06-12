@@ -97,6 +97,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
                 child: Text(
                   'SPEICHERN',
                   style: TextStyle(
+                    fontSize: 18.0,
                     fontFamily: 'FiraSansExtraCondensed',
                     color: Colors.white
                   ),
@@ -125,7 +126,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
                   child: _tabBar(context),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 60.0),
+                  padding: const EdgeInsets.only(top: 90.0),
                   child: _listView(context),
                 )
               ],
@@ -169,9 +170,10 @@ class _CategoryAPageState extends State<CategoryAPage> {
   Widget _tabBar(BuildContext context) {
     final CTabBarIndex tabBarIndex = Provider.of<CTabBarIndex>(context);
     return Container(
-      height: MediaQuery.of(context).size.height/16.0,
+      height: MediaQuery.of(context).size.height/12.0,
       width: MediaQuery.of(context).size.width,
       child: ListView.builder(
+        physics: BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           itemCount: currentTabBar.length,
           itemBuilder: (BuildContext context, int index) {
@@ -183,6 +185,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       border: Border.all(
                           color: Colors.white
                       )
@@ -216,6 +219,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
@@ -256,26 +260,27 @@ class _CategoryAPageState extends State<CategoryAPage> {
           elevation: 5.0,
           shadowColor: Colors.black,
           child: NeoContainer(
+            containerHeight: MediaQuery.of(context).size.height/8,
+            containerWidth: MediaQuery.of(context).size.width/2,
+            containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
             circleShape: false,
-            containerHeight: MediaQuery.of(context).size.height/10,
-            containerWidth: MediaQuery.of(context).size.width,
+            spreadRadius2: 0.0,
+            shadowColor2: Colors.white30,
             shadowColor1: Colors.black,
-            shadowColor2: Colors.grey,
             gradientColor1: Theme.of(context).primaryColor,
             gradientColor2: Theme.of(context).primaryColor,
             gradientColor3: Theme.of(context).primaryColor,
             gradientColor4: Theme.of(context).primaryColor,
 
-            containerBorderRadius: BorderRadius.all(Radius.circular(20.0)),
-
             containerChild: Center(
               child: SwitchListTile(
                 title: Text(workoutTag,
                   style: TextStyle(
+                    fontSize: 20.0,
                     fontFamily: 'FiraSansExtraCondensed',
                       color: Colors.white
                   ),),
-                value: toggleMap[workoutTag],
+                value: toggleMap[workoutTag] ?? false,
                 onChanged: (bool value) {
                   setState(() {
                     toggleMap[workoutTag] = value;

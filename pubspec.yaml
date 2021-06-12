@@ -51,6 +51,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.4.0
   chewie: ^1.0.0
   flutter_calendar_carousel: ^2.0.1
+  rive: ^0.7.10
   # webview_flutter: ^1.0.7
   # flutter_neumorphic: ^3.0.4+1
 
@@ -84,6 +85,8 @@ flutter:
     - assets/Exopek_Logo.png
     - assets/Logo_Weiß.svg
     - assets/Logo_weiß.png
+    - assets/kniebeuge.riv
+    - assets/Checkmark_green.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/CustomWidgets/persistant_sliver_header.dart';
 import 'package:video_app/Models/models.dart';
+import 'package:video_app/Notifyers/animationState_notifyer.dart';
 import 'package:video_app/Notifyers/timerEnd_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
+import 'package:video_app/Views/rive_animation_a.dart';
 import 'package:video_app/Views/videoPlayer2_a.dart';
 import 'package:video_app/Views/videoPlayerChewie.dart';
 import 'package:video_app/Views/videoPlayer_withListView.dart';
@@ -206,7 +208,8 @@ class _Workout3APageState extends State<Workout3APage> {
                           providers: [
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
-                          ], child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
+                            ChangeNotifierProvider(create: (context) => AnimationStateNotifier())
+                          ], child: AnimationPage()//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
                         );
 
                       },

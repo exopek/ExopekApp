@@ -20,7 +20,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
 
   PageController _pageViewController1;
 
-  double viewportFraction = 0.2;
+  double viewportFraction = 0.8;
 
   double pageOffset = 0.0;
 
@@ -30,15 +30,19 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
 
   int _infoState;
 
+  int _currentPage;
+
   @override
   void initState() {
     _infoState  = 0;
+    _currentPage = 0;
     _infoIndexController = StreamController<dynamic>();
     myWorkoutInfoStream = _infoIndexController.stream.asBroadcastStream();
     _pageViewController1 = PageController(initialPage: 0, viewportFraction: viewportFraction)
       ..addListener(() {
         setState(() {
           pageOffset = _pageViewController1.page;
+          _currentPage = _pageViewController1.page.toInt();
         });
       });
     _infoIndexController.stream.listen((event) {
@@ -59,6 +63,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
 
   @override
   Widget build(BuildContext context) {
+    final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -69,32 +74,76 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         leading: Container(),
       ),
       body: SingleChildScrollView(
-        //physics: NeverScrollableScrollPhysics(),
-        child: Stack(children: [
-          _workouts(context),
-          Padding(
-            padding: EdgeInsets.only(left: 200),
-            child: _infoSideBar(context)
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/1.6, top: MediaQuery.of(context).size.height/1.35,right: 10.0),
-            child: AddRoutineButton(),
-          )
-        ] ),
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            StreamBuilder<List<Routine>>(
+              stream: database.routineStream(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 10.0,
+                                  width: 80.0,
+                                  color: Colors.red,
+                                ),
+                                AddRoutineButton(),
+                               Container(
+                                 height: 10.0,
+                                 width: 80.0,
+                                 color: Colors.red,
+                               )
+                              ],
+                            ),
+                          ),
+                          _workouts(context, snapshot),
+                          Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: _infoSideBar(context, snapshot)
+                          ),
+                        ] ),
+                  );
+                } else if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else {
+                  return Container(
+                    child: Center(
+                      child: Text('Du hast noch keine Workouts erstellt',
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                      ),
+                    ),
+                  );
+                }
+
+              }
+            ),
+
+          ],
+        ),
       ),
     );
   }
 
-  Widget _workouts(BuildContext context) {
+  Widget _workouts(BuildContext context, snapshot) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Container(
-      height:  MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width/2,
-      child: StreamBuilder<List<Routine>>(
-        stream: database.routineStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return PageView.builder(
+      height:  MediaQuery.of(context).size.height/4,
+      //width: MediaQuery.of(context).size.width,
+      child: PageView.builder(
               onPageChanged: (context) {
                 if (_pageViewController1.page == null) {
                   return _infoIndexController.add(0);
@@ -103,29 +152,23 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
                 }
               },
                 controller: _pageViewController1,
-                scrollDirection: Axis.vertical,
+                scrollDirection: Axis.horizontal,
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   double scale = max(viewportFraction ,(1-(pageOffset - index).abs()) + viewportFraction);
                   return _workoutsContainer(context, index, scale, snapshot.data[index].routineName);
-                });
-          } else {
-            return Container();
-          }
-
-        }
-      ),
+                })
     );
   }
 
   Widget _workoutsContainer(BuildContext context, index, scale, String name) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Padding(
-      padding: EdgeInsets.only(top: 10, bottom: 10,
-      left: 10, right: 50 - scale * 25),
+      padding: EdgeInsets.only(top: 50 - scale * 25, bottom: 10,
+      left: 10, right: 10),
       child: NeoContainer(
         containerHeight: MediaQuery.of(context).size.height/3,
-        containerWidth: MediaQuery.of(context).size.width/2,
+        containerWidth: MediaQuery.of(context).size.width,
         containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
         circleShape: false,
         shadowColor2: Colors.grey,
@@ -201,111 +244,66 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
     );
   }
 
-  Widget _infoSideBar(BuildContext context) {
+  Widget _infoSideBar(BuildContext context, snapshot) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Container(
-      height: MediaQuery.of(context).size.height/1.4,
-      width: MediaQuery.of(context).size.width/2,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-            child: Text('Übersicht',
-            style: TextStyle(
-              fontFamily: 'FiraSansExtraCondensed',
-              fontSize: 30.0,
-              color: Colors.white.withOpacity(0.86)
-            ),),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 10.0),
-            child: NeoContainer(
-              containerHeight: MediaQuery.of(context).size.height/1.6,
-              containerWidth: MediaQuery.of(context).size.width/2,
-              containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
-              circleShape: false,
-              shadowColor2: Colors.grey,
-              shadowColor1: Colors.black,
-              gradientColor1: Theme.of(context).primaryColor,
-              gradientColor2: Theme.of(context).primaryColor,
-              gradientColor3: Theme.of(context).primaryColor,
-              gradientColor4: Theme.of(context).primaryColor,
-              containerChild: StreamBuilder<List<Routine>>(
-                stream: database.routineStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.separated(
-                      separatorBuilder: (context, index) => Divider(
-                        color: Colors.black,
-                      ),
-                      itemCount: snapshot.data[_infoState].workoutNames.length,
-                      itemBuilder: (context, adex) {
-                        print('------------------------');
-                        //print(snapshot.data[_infoState].workoutNames.first);
-                        // ToDo: Bug -> Beschreibung in Trello
-                        if (snapshot.data[_infoState].workoutNames == null) {
-                          return Container(
-                            color: Colors.transparent,
-                            height: 60.0,
-                            child: Center(
-                              child: Text(
-                                'Erstelle dir dein eigenes Workout',
-                                style: TextStyle(
-                                    fontFamily: 'FiraSansExtraCondensed',
-                                    fontSize: 15.0
-                                ),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
+      height: 100.0*snapshot.data[_currentPage].workoutNames.length,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) => Divider(
+                          color: Colors.white,
+                        ),
+                        itemCount: snapshot.data[_currentPage].workoutNames.length,
+                        itemBuilder: (context, adex) {
+                          print('------------------------');
+                          //print(snapshot.data[_infoState].workoutNames.first);
+                          // ToDo: Bug -> Beschreibung in Trello
+                          if (snapshot.data[_currentPage].workoutNames == null) {
+                            return Container(
                               color: Colors.transparent,
                               height: 60.0,
                               child: Center(
+                                child: Text(
+                                  'Erstelle dir dein eigenes Workout',
+                                  style: TextStyle(
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 15.0
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container(
+                                color: Colors.transparent,
+                                width: MediaQuery.of(context).size.width,
+                                height: 80.0,
+                                child: Center(
+                                    child: Text(snapshot.data[_currentPage].workoutNames[adex],
+                                      style: TextStyle(
+                                          fontFamily: 'FiraSansExtraCondensed',
+                                          fontSize: 20.0,
+                                          color: Colors.white.withOpacity(0.86)
+                                      ),
+                                    )
+                                )
+                            );
+                          }
+                          return Container(
+                            color: Colors.transparent,
+                              height: 60.0,
+                              child: Center(
                                   child: Text(snapshot.data[_infoState].workoutNames[adex],
-                                    style: TextStyle(
-                                        fontFamily: 'FiraSansExtraCondensed',
-                                        fontSize: 20.0,
-                                        color: Colors.white.withOpacity(0.86)
-                                    ),
+                                  style: TextStyle(
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 20.0,
+                                    color: Colors.white.withOpacity(0.86)
+                                  ),
                                   )
                               )
                           );
-                        }
-                        return Container(
-                          color: Colors.transparent,
-                            height: 60.0,
-                            child: Center(
-                                child: Text(snapshot.data[_infoState].workoutNames[adex],
-                                style: TextStyle(
-                                    fontFamily: 'FiraSansExtraCondensed',
-                                    fontSize: 20.0,
-                                  color: Colors.white.withOpacity(0.86)
-                                ),
-                                )
-                            )
-                        );
-                      },
-                    );
-                  } else {
-                    return Container(
-                      child: Center(
-                        child: Text(
-                          'Erstelle dir dein eigenes Workout',
-                          style: TextStyle(
-                            fontFamily: 'FiraSansExtraCondensed',
-                            fontSize: 25.0
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                }
-              ),
-            ),
-          )
-        ],
-      ),
+                        },
+                      )
     );
   }
 }
