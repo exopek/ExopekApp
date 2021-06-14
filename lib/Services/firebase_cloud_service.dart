@@ -36,40 +36,50 @@ class FirestoreService {
   }
 
   Future<List<T>> getData<T>({@required String path,}) async {
-    Routine newRoutine;
+    RoutineAnimation newRoutine;
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = await reference.get();
-     newRoutine = Routine.fromMap(snapshots.data());
+     newRoutine = RoutineAnimation.fromMap(snapshots.data());
      print(newRoutine);
      return newRoutine.workoutNames;
 
   }
 
-  Future<void> transactionData({String path, List<dynamic> data, List<dynamic> thumb}) async {
-    Routine newRoutine;
+  Future<void> transactionData({String path, List<dynamic> data, List<dynamic> thumb, List<dynamic> artboards, List<dynamic> bodyPart, List<dynamic> level}) async {
+    RoutineAnimation newRoutine;
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = reference.get();
     snapshots.then((docSnapshot) => {
-      newRoutine = Routine.fromMap(docSnapshot.data()),
+      newRoutine = RoutineAnimation.fromMap(docSnapshot.data()),
       data.forEach((element) {
         newRoutine.workoutNames.add(element);
       }),
       thumb.forEach((element) {
         newRoutine.thumbnails.add(element);
       }),
+      artboards.forEach((element) {
+        newRoutine.artboards.add(element);
+      }),
+      bodyPart.forEach((element) {
+        newRoutine.muscleGroups.add(element);
+      }),
+      level.forEach((element) {
+        newRoutine.classifycation.add(element);
+      }),
       reference.set(newRoutine.toMap())
     });
 
   }
 
-  Future<void> transactionWorkoutData({String path, List<dynamic> data}) async {
-    Routine newRoutine;
+  Future<void> transactionWorkoutData({String path, RoutineAnimation data}) async {  // hier stand List<dynamic> data
+    RoutineAnimation newRoutine;
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = reference.get();
     snapshots.then((docSnapshot) => {
-      newRoutine = Routine.fromMap(docSnapshot.data()),
-      newRoutine.workoutNames.replaceRange(0, newRoutine.workoutNames.length, data),
-      reference.set(newRoutine.toMap())
+      newRoutine = RoutineAnimation.fromMap(docSnapshot.data()),
+      //newRoutine.workoutNames.replaceRange(0, newRoutine.workoutNames.length, data),
+
+      reference.set(data.toMap()) // hier stand vorher newroutine
     });
 
   }

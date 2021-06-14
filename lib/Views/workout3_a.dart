@@ -97,6 +97,8 @@ class _Workout3APageState extends State<Workout3APage> {
             pinned: true, // header bleibt fest bei minExtent
             //floating: true,     // Scrollt den gesamten header weg
             delegate: NetworkingPageHeader(
+              expandPic: true,
+              showBackButton: true,
                 minExtent: 250.0,
                 maxExtent: MediaQuery.of(context).size.height,
                 headerName: widget.routineName

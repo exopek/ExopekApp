@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import 'package:video_app/Helpers/blank.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
 import 'package:video_app/Services/database_handler.dart';
+import 'package:video_app/Views/editMyWorkouts_a.dart';
 import 'package:video_app/Views/workout_a.dart';
 
 class CategoryAPage extends StatefulWidget {
@@ -37,6 +40,12 @@ class _CategoryAPageState extends State<CategoryAPage> {
 
   List workoutNames = new List();
 
+  List artboards = [];
+
+  List bodyPart = [];
+
+  List level = [];
+
   bool firstVisit;
 
   bool _toggled;
@@ -47,6 +56,12 @@ class _CategoryAPageState extends State<CategoryAPage> {
 
   var thumbnailMap = new Map();
 
+  var artboardMap = new Map();
+
+  var bodyPartMap = new Map();
+
+  var levelMap = new Map();
+
   void setFirstTabbarIndex() async {
     final CTabBarIndex tabBarIndex = Provider.of<CTabBarIndex>(context);
     tabBarIndex.updateIndex(0, widget.category,context);
@@ -54,8 +69,13 @@ class _CategoryAPageState extends State<CategoryAPage> {
 
   void initState() {
     var tabBarMap = {'Functional':functionalTabBar, 'Mobility':mobilityTabBar, 'Excercises':excerciseTabBar, 'Konfigurator':konfiguratorTabBar};
-    thumbnailMap = {'Bankdrücken': '', 'Schulterpresse': '', 'Butterfly': '', 'CrossPress': '', 'XPushUp': '', 'Seitheben': ''};
-    toggleMap = {'Bankdrücken': false, 'Schulterpresse': false, 'Butterfly': false, 'CrossPress': false, 'XPushUp': false, 'Seitheben': false};
+    //thumbnailMap = {'Bankdrücken': '', 'Schulterpresse': '', 'Butterfly': '', 'CrossPress': '', 'XPushUp': '', 'Seitheben': ''};
+    //toggleMap = {'Bankdrücken': false, 'Schulterpresse': false, 'Butterfly': false, 'CrossPress': false, 'XPushUp': false, 'Seitheben': false};
+    thumbnailMap = {};
+    toggleMap = {};
+    artboardMap = {};
+    bodyPartMap = {};
+    levelMap = {};
     currentTabBar = tabBarMap[widget.category];
     firstVisit = false;
     _toggled = false;
@@ -107,11 +127,34 @@ class _CategoryAPageState extends State<CategoryAPage> {
                 toggleMap.forEach((key, value) {
                   if (value == true) {
                     thumbnails.add(thumbnailMap[key]);
+                    artboards.add(artboardMap[key]);
+                    level.add(levelMap[key]);
+                    bodyPart.add(bodyPartMap[key]);
                     workoutNames.add(key);
-                    database.updateRoutine(workoutNames, thumbnails, widget.routineName);
+                    database.updateRoutine(
+                        workoutNames: workoutNames,
+                        thumbnails: thumbnails,
+                        artboards: artboards,
+                        level: level,
+                        bodyPart: bodyPart,
+                        routineName: widget.routineName
+                    );
                   }
                 });
                 Navigator.pop(context);
+                /*
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MultiProvider(
+                          providers: [
+                            Provider(create: (context) => DatabaseHandler(uid: database.uid),),
+                          ],
+                          child: EditWorkoutPage(routineName: widget.routineName,));
+                    },
+                  ),
+                );
+                */
               },
 
             ),
@@ -214,7 +257,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
       width: MediaQuery.of(context).size.width,
       child: Consumer<CTabBarIndex>(
         builder: (context, data, child) {
-          return StreamBuilder<List<Workout>>(
+          return StreamBuilder<List<WorkoutAnimation>>(
             stream: data.cTabBarStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -222,7 +265,9 @@ class _CategoryAPageState extends State<CategoryAPage> {
                     physics: BouncingScrollPhysics(),
                     itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
+                        return _listViewInput(context, snapshot.data[index].workout, snapshot.data[index].thumbnail, snapshot.data[index].artboardName, snapshot.data[index].bodyPart, snapshot.data[index].level);
+                          /*
+                          GestureDetector(
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -239,6 +284,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
                             },
                             child: _listViewInput(context, snapshot.data[index].workout, snapshot.data[index].thumbnail)
                           );
+                        */
                       }
                       );
                 } else {
@@ -251,7 +297,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
     );
   }
 
-  Widget _listViewInput(BuildContext context, String workoutTag, String thumbnail) {
+  Widget _listViewInput(BuildContext context, String workoutTag, String thumbnail, String artboardName, String bodyPart, String level) {
     if (widget.category == 'Konfigurator') {
       return Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/35, left: MediaQuery.of(context).size.width/20, right: MediaQuery.of(context).size.width/20),
@@ -283,8 +329,17 @@ class _CategoryAPageState extends State<CategoryAPage> {
                 value: toggleMap[workoutTag] ?? false,
                 onChanged: (bool value) {
                   setState(() {
+                    log('workoutTag: $workoutTag');
+                    log('value: $value');
+                    log('thumbnail: $thumbnail');
                     toggleMap[workoutTag] = value;
                     thumbnailMap[workoutTag] = thumbnail;
+                    artboardMap[workoutTag] = artboardName;
+                    bodyPartMap[workoutTag] = bodyPart;
+                    levelMap[workoutTag] = level;
+                    log('$artboardMap');
+                    log('$toggleMap');
+                    log('$thumbnailMap');
                   });
                 },
               ),

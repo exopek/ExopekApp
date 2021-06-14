@@ -30,18 +30,21 @@ class DatabaseHandler {
     docName: workoutName
   );
 
-  Future<void> updateRoutine(List workoutNames, List thumbnails, String routineName) async => _service.transactionData(
+  Future<void> updateRoutine({List workoutNames, List thumbnails, List artboards, List bodyPart, List level, String routineName}) async => _service.transactionData(
     path: CloudPath.setroutine(uid, routineName),
     data: workoutNames,
-    thumb: thumbnails
+    thumb: thumbnails,
+    artboards: artboards,
+    bodyPart: bodyPart,
+    level: level
   );
 
-  Future<void> updateRoutineWorkoutList(List workoutNames, String routineName) async => _service.transactionWorkoutData(
+  Future<void> updateRoutineWorkoutList(RoutineAnimation routine, String routineName) async => _service.transactionWorkoutData(
       path: CloudPath.setroutine(uid, routineName),
-      data: workoutNames,
+      data: routine,
   );
 
-  Future<void> createRoutine(Routine routine) async => _service.setData(
+  Future<void> createRoutine(RoutineAnimation routine) async => _service.setData(
     path: CloudPath.setroutine(uid, routine.routineName),
     data: routine.toMap(),
   );
@@ -53,7 +56,7 @@ class DatabaseHandler {
 
   Future<dynamic> getRoutineCustomMap(String routineName) async => _service.getDataMap(
     path: CloudPath.setroutine(uid, routineName),
-    builder: (data) => Routine.fromMap(data),
+    builder: (data) => RoutineAnimation.fromMap(data),
   );
 
   Future<dynamic> getFunctionalWorkoutsMap(String routineName) async => _service.getDataMap(
@@ -92,19 +95,19 @@ class DatabaseHandler {
     docPath: id,
   );
 
-  Stream<List<Workout>> legWorkoutStream() => _service.collectionStream(
+  Stream<List<WorkoutAnimation>> legWorkoutStream() => _service.collectionStream(
     path: CloudPath.getlegworkouts(),
-    builder:  (data) => Workout.fromMap(data),
+    builder:  (data) => WorkoutAnimation.fromMap(data),
   );
 
-  Stream<List<Workout>> chestWorkoutStream() => _service.collectionStream(
+  Stream<List<WorkoutAnimation>> chestWorkoutStream() => _service.collectionStream(
     path: CloudPath.getchestworkouts(),
-    builder:  (data) => Workout.fromMap(data),
+    builder:  (data) => WorkoutAnimation.fromMap(data),
   );
 
-  Stream<List<Workout>> allWorkoutStream() => _service.collectionStream(
+  Stream<List<WorkoutAnimation>> allWorkoutStream() => _service.collectionStream(
     path: CloudPath.getallworkouts(),
-    builder:  (data) => Workout.fromMap(data),
+    builder:  (data) => WorkoutAnimation.fromMap(data),
   );
 
   Stream<List<Categories>> categoriesStream() => _service.collectionStream(

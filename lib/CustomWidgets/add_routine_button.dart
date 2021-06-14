@@ -101,12 +101,15 @@ class _AddRoutinePopupCard extends StatefulWidget {
       List videoPaths = List.generate(0, (index) => '');
       List thumbnails = List.generate(0, (index) => '');
       List workoutNames = List.generate(0, (index) => '');
-      await database.createRoutine(Routine(
+      await database.createRoutine(RoutineAnimation(
           routineName: name,
-          videoPaths: videoPaths,
-          thumbnails: thumbnails,
-          workoutNames: workoutNames,
-          count: '0'));
+          artboards: [],
+          thumbnails: [],
+          workoutNames: [],
+          muscleGroups: [],
+          classifycation: [],
+          duration: [],
+          reps: []));
     } catch (e) {
       print(e);
     }

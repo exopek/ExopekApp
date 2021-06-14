@@ -9,8 +9,8 @@ class AnimationStateNotifier extends ChangeNotifier {
 
 
   ///ToDo: Hier muss ein Future hin, welches eine Aussage über die Anzahl der Übungen gibt
-  var animationStates = new List.filled(3, false);
-  var lastAnimationValueList = new List.filled(3, 0.0);
+  var animationStates = new List.filled(4, false);
+  var lastAnimationValueList = new List.filled(4, 0.0);
 
 
   List animationValue() {

@@ -37,8 +37,8 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
 
 
   /// ToDo: Hier muss ein Future hin
-  List _artBoardList = ['Art', 'Art1', 'Art2'];
-  List _durations = [10, 5, 20];
+  List _artBoardList = ['Art', 'Art1', 'Art2', 'Art3'];
+  List _durations = [10, 5, 20, 10];
   //var _animationState = new List.filled(3, false);
 
 
@@ -269,7 +269,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
       body: PageView.builder(
               controller: _pageController,
               scrollDirection: Axis.horizontal,
-              itemCount: 3,
+              itemCount: 4,
               itemBuilder: (context, position) {
                 //final _artboard = artboardMap[position];
                 //print('im build: ${_artboard}');

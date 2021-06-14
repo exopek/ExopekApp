@@ -80,7 +80,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
     return Container(
       height: MediaQuery.of(context).size.height/4,
       width: MediaQuery.of(context).size.width,
-      child: StreamBuilder<List<Workout>>(
+      child: StreamBuilder<List<WorkoutAnimation>>(
         stream: database.chestWorkoutStream(),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
@@ -91,7 +91,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 itemBuilder: (BuildContext context, int Index) {
                   double scale = max(viewportFraction ,(1-(pageOffsetchest - Index).abs()) + viewportFraction);
                     return _workoutContainerContent(context, snapshot.data[Index].workout, snapshot.data[Index].level,
-                        snapshot.data[Index].bodyPart, snapshot.data[Index].thumbnail, snapshot.data[Index].videoPath, Index, scale);
+                        snapshot.data[Index].bodyPart, snapshot.data[Index].thumbnail, snapshot.data[Index].artboardName, Index, scale);
                 });
           } else {
             return PageView.builder(
@@ -111,7 +111,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
     return Container(
       height: MediaQuery.of(context).size.height/4,
       width: MediaQuery.of(context).size.width,
-      child: StreamBuilder<List<Workout>>(
+      child: StreamBuilder<List<WorkoutAnimation>>(
         stream: database.legWorkoutStream(),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
@@ -122,7 +122,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 itemBuilder: (BuildContext context, int Index) {
                   double scale = max(viewportFraction ,(1-(pageOffsetlegs - Index).abs()) + viewportFraction);
                   return _workoutContainerContent(context, snapshot.data[Index].workout, snapshot.data[Index].level,
-                      snapshot.data[Index].bodyPart, snapshot.data[Index].thumbnail, snapshot.data[Index].videoPath, Index, scale);
+                      snapshot.data[Index].bodyPart, snapshot.data[Index].thumbnail, snapshot.data[Index].artboardName, Index, scale);
                 });
           } else {
             return PageView.builder(

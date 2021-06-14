@@ -65,7 +65,16 @@ class CenterAPage extends StatelessWidget {
                       );
                     }
                 ),
-                label: Text('home'.toUpperCase())),
+                label: Consumer<navbarColor>(
+                  builder: (context, data, child) {
+                    return Text(
+                        'home'.toUpperCase(),
+                        style: TextStyle(
+                          color: data.navIconColor1
+                        ),
+                    );
+                  }
+                )),
             TextButton.icon(
                 onPressed: () {
                   navigationBar.updatenavIconColor(false, true, false);

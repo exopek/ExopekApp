@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/DraggableListItem.dart';
@@ -8,6 +10,7 @@ import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/category_a.dart';
 import 'dart:async';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class EditWorkoutPage extends StatefulWidget {
 
@@ -21,15 +24,20 @@ class EditWorkoutPage extends StatefulWidget {
 
 class _EditWorkoutPageState extends State<EditWorkoutPage> {
 
-  List<dynamic> routineInput;
+  //List<dynamic> routineInput;
+  RoutineAnimation routineInput;
 
   List workoutList;
 
-  Future<List<dynamic>> getWorkoutList(BuildContext context) async {
+  RoutineAnimation routineMap;
+
+  Future<RoutineAnimation> getWorkoutList(BuildContext context) async {
           final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
           try {
-            final Input = await database.getRoutine(widget.routineName);
+            final Input = await database.getRoutineCustomMap(widget.routineName);
+            log('pureInput: $Input');
             routineInput = Input;
+            log('input: $Input');
           } catch(e) {
             print(e);
           }
@@ -52,7 +60,9 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
     if (firstVisit == false) {
       getWorkoutList(context).then((value){
         setState(() {
-          workoutList = value;
+          //workoutList = value;
+          routineMap = value;
+          log('routineMap: $routineMap');
           firstVisit = true;
         });
       });
@@ -68,6 +78,8 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                 pinned: true, // header bleibt fest bei minExtent
                 //floating: true,     // Scrollt den gesamten header weg
                 delegate: NetworkingPageHeader(
+                  expandPic: true,
+                    showBackButton: true,
                     minExtent: 250.0,
                     maxExtent: MediaQuery.of(context).size.height,
                     headerName: widget.routineName
@@ -142,26 +154,66 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
       color: Colors.white,
       child: ReorderableListView(
         //scrollController: ScrollController().,
+
         scrollDirection: Axis.vertical,
         children: [
-          if (workoutList.isNotEmpty)
-            for (int i = 0; i <= workoutList.length-1; i++)
-              DraggableWidget(
-                key: ValueKey(i.toString()),
-                customWidgetString: workoutList[i],
-              )
+          if (routineMap.workoutNames.isNotEmpty)
+            for (int i = 0; i <= routineMap.workoutNames.length-1; i++)
+                 Slidable(
+                   key: ValueKey(i.toString()),
+                   actionPane: SlidableScrollActionPane(),
+                   actionExtentRatio: 1,
+                   actions: <Widget> [
+                     IconSlideAction(
+                       caption: 'Löschen',
+                       color: Colors.red,
+                       icon: Icons.delete,
+                       onTap: () {
+                         routineMap.workoutNames.removeAt(i);
+                         routineMap.thumbnails.removeAt(i);
+                         routineMap.artboards.removeAt(i);
+                         routineMap.classifycation.removeAt(i);
+                         routineMap.muscleGroups.removeAt(i);
+                         routineMap = routineMap;
+                         database.updateRoutineWorkoutList(routineMap, widget.routineName);
+                         setState(() {
+
+                         });
+                         log('index: $i');
+                       },
+                     )
+                   ],
+                   child: DraggableWidget(
+                    key: ValueKey(i.toString()),
+                    customWidgetString: routineMap.workoutNames[i],
+                ),
+                 ),
+
         ],
         onReorder: (oldIndex, newIndex) {
           setState(() {
           if (newIndex > oldIndex) {
             newIndex -= 1;
           }
-          final workout = workoutList.removeAt(oldIndex);
-          print(workout);
-          workoutList.insert(newIndex, workout);
+          final workouts = routineMap.workoutNames.removeAt(oldIndex);
+          //print(workout);
+          routineMap.workoutNames.insert(newIndex, workouts);
+          // Anderer Datensatz
+          final thumbs = routineMap.thumbnails.removeAt(oldIndex);
+          routineMap.thumbnails.insert(newIndex, thumbs);
+          // Anderer Datensatz
+          final arts = routineMap.artboards.removeAt(oldIndex);
+          routineMap.artboards.insert(newIndex, arts);
+          // Anderer Datensatz
+          final classy = routineMap.classifycation.removeAt(oldIndex);
+          routineMap.classifycation.insert(newIndex, classy);
+          // Anderer Datensatz
+          final muscleG = routineMap.muscleGroups.removeAt(oldIndex);
+          routineMap.muscleGroups.insert(newIndex, muscleG);
 
-            workoutList = workoutList;
-            database.updateRoutineWorkoutList(workoutList, widget.routineName);
+            //workoutList = workoutList;
+          routineMap = routineMap;
+            database.updateRoutineWorkoutList(routineMap, widget.routineName);
           });
         },
       ),

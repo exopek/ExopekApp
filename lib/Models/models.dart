@@ -138,6 +138,101 @@ class Workout {
 }
 
 
+class WorkoutAnimation {
+  WorkoutAnimation({@required this.artboardName, @required this.workout, @required this.level, @required this.bodyPart, @required this.thumbnail});
+
+  final String artboardName;
+  final String workout;
+  final String level;
+  final String bodyPart;
+  final String thumbnail;
+
+  factory WorkoutAnimation.fromMap(Map<String, dynamic> data) {
+    if (data == null) {
+      return null;
+    }
+    final String artboardName = data['artboardName'];
+    final String workout = data['workout'];
+    final String level = data['level'];
+    final String bodyPart = data['bodyPart'];
+    final String thumbnail = data['thumbnail'];
+
+    return WorkoutAnimation(
+        artboardName: artboardName,
+        workout: workout,
+        level: level,
+        bodyPart: bodyPart,
+        thumbnail: thumbnail,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'artboardName': artboardName,
+      'workout': workout,
+      'level': level,
+      'bodyPart': bodyPart,
+      'thumbnail': thumbnail,
+    };
+  }
+
+}
+
+
+class RoutineAnimation {
+  RoutineAnimation({@required this.workoutNames, @required this.thumbnails, @required this.routineName, @required this.artboards, @required this.reps, @required this.duration, @required this.muscleGroups, @required this.classifycation});
+
+  final String routineName;
+  final List<dynamic> reps;
+  final List<dynamic> duration;
+  final List<dynamic> artboards;
+  final List<dynamic> thumbnails;
+  final List<dynamic> workoutNames;
+  final List<dynamic> classifycation;
+  final List<dynamic> muscleGroups; // bodyParts
+
+
+  factory RoutineAnimation.fromMap(Map<String, dynamic> data) {
+    if (data == null) {
+      return null;
+    }
+    final String routineName = data['routineName'];
+    final List<dynamic> artboards = data['artboards'];
+    final List<dynamic> reps = data['reps'];
+    final List<dynamic> duration = data['duration'];
+    final List<dynamic> thumbnails = data['thumbnails'];
+    final List<dynamic> workoutNames = data['workoutNames'];
+    final List<dynamic> classifycation = data['classifycation'];
+    final List<dynamic> muscleGroups = data['muscleGroups'];
+
+    return RoutineAnimation(
+        artboards: artboards,
+        reps: reps,
+        duration: duration,
+        routineName: routineName,
+        thumbnails: thumbnails,
+        workoutNames: workoutNames,
+        classifycation: classifycation,
+        muscleGroups: muscleGroups
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'artboards': artboards,
+      'reps': reps,
+      'duration': duration,
+      'routineName': routineName,
+      'thumbnails': thumbnails,
+      'workoutNames': workoutNames,
+      'classifycation': classifycation,
+      'muscleGroups': muscleGroups
+    };
+  }
+
+}
+
+
 class Routine {
   Routine({@required this.workoutNames, @required this.thumbnails, @required this.routineName, @required this.videoPaths, @required this.count, @required this.muscleGroups, @required this.classifycation});
 

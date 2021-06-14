@@ -77,10 +77,10 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         physics: BouncingScrollPhysics(),
         child: Column(
           children: [
-            StreamBuilder<List<Routine>>(
-              stream: database.routineStream(),
+            StreamBuilder<List<Routine>>( // ToDo: Das Model muss noch angepasst werden
+              stream: database.routineStream(), // ToDo: Im Stream muss das Model noch angepasst werden
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.hasData && snapshot.requireData.isNotEmpty) {
                   return SingleChildScrollView(
                     physics: NeverScrollableScrollPhysics(),
                     child: Column(
@@ -118,14 +118,49 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
                     ),
                   );
                 } else {
-                  return Container(
-                    child: Center(
-                      child: Text('Du hast noch keine Workouts erstellt',
-                      style: TextStyle(
-                        color: Colors.white
-                      ),
-                      ),
-                    ),
+                  return SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 10.0,
+                                  width: 80.0,
+                                  color: Colors.red,
+                                ),
+                                AddRoutineButton(),
+                                Container(
+                                  height: 10.0,
+                                  width: 80.0,
+                                  color: Colors.red,
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.6,
+                            //color: Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Align(
+                                child: Text('Du hast noch kein Workout erstellst.\n'
+                                    'Über das Klicken auf das + Symbol erstellst du dein erstes Workout',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24.0,
+                                  fontFamily: 'FiraSansExtraCondensed'
+                                ),
+                                ),
+                                alignment: Alignment.topCenter,
+                              ),
+                            ),
+                          )
+
+                        ] ),
                   );
                 }
 
@@ -180,7 +215,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         containerChild: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 20.0),
+              padding: EdgeInsets.only(left: 75.0),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Container(
@@ -191,13 +226,14 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: 10.0, left: 8.0),
+              padding: EdgeInsets.only(bottom: 30.0, left: 50.0),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(name.toUpperCase(),
                 style: TextStyle(
                   fontFamily: 'FiraSansExtraCondensed',
-                  color: Colors.white
+                  color: Colors.white,
+                  fontSize: 25.0
                 )
                 ),
               ),
