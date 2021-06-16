@@ -80,7 +80,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                 delegate: NetworkingPageHeader(
                   expandPic: true,
                     showBackButton: true,
-                    minExtent: 250.0,
+                    minExtent: 150.0,
                     maxExtent: MediaQuery.of(context).size.height,
                     headerName: widget.routineName
                 ),
@@ -118,7 +118,9 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                 child: Container(
                   child: Column(
                     children: [
-                      _excerciseDragandDrop(context),
+                       Align(
+                          alignment: Alignment.centerRight,
+                            child: _excerciseDragandDrop(context)),
                       OutlineButton(
                         splashColor: Colors.grey,
                         borderSide: BorderSide(
@@ -146,15 +148,38 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
     );
   }
 
+  Widget _listPoints(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height/1.45,
+      width: MediaQuery.of(context).size.width*1/3,
+      color: Colors.red,
+      child: ListView(
+          scrollDirection: Axis.vertical,
+        children: [
+          if (routineMap.workoutNames.isNotEmpty)
+            for (int i = 0; i <= routineMap.workoutNames.length-1; i++)
+              Container(
+                height: 30.0,
+                width: 30.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.orange
+                ),
+              )
+        ]
+      ),
+    );
+  }
+
   Widget _excerciseDragandDrop(BuildContext context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Container(
-      height: MediaQuery.of(context).size.height/2,
+      height: MediaQuery.of(context).size.height/1.45,
       width: MediaQuery.of(context).size.width,
       color: Colors.white,
       child: ReorderableListView(
         //scrollController: ScrollController().,
-
+        //physics: NeverScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         children: [
           if (routineMap.workoutNames.isNotEmpty)
@@ -163,7 +188,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                    key: ValueKey(i.toString()),
                    actionPane: SlidableScrollActionPane(),
                    actionExtentRatio: 1,
-                   actions: <Widget> [
+                   secondaryActions: <Widget> [
                      IconSlideAction(
                        caption: 'Löschen',
                        color: Colors.red,
@@ -186,6 +211,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                    child: DraggableWidget(
                     key: ValueKey(i.toString()),
                     customWidgetString: routineMap.workoutNames[i],
+                     workoutLocation: i.toString(),
                 ),
                  ),
 

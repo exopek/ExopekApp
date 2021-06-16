@@ -161,6 +161,7 @@ class __AddRoutinePopupCardState extends State<_AddRoutinePopupCard> {
                         splashColor: Colors.grey,
                         onPressed: () {
                           widget._createRoutine(context, routineNameController.text);
+                          Navigator.pop(context);
                         },
                       child: Center(
                         child: Text('Speichern'.toUpperCase(),

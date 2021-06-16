@@ -241,18 +241,45 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
             Padding(
               padding: EdgeInsets.all(10.0),
               child: Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        primary: Colors.grey,
+                        side: BorderSide(color: Colors.white)
+                    ),
+                    child: Center(
+                      child: Icon(
+                          Icons.delete,
+                          color: Colors.white
+                      ),
+                    ),
+                    // Gesamtes erstellte Routine wird gelöscht
+                    onPressed: () {
+
+                      setState(() {
+                        database.deleteRoutine(name);
+                        _pageViewController1.jumpToPage(0);
+                      });
+                    }
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Align(
                 alignment: Alignment.topRight,
                 child: Container(
-                  height: 50,
-                  width: 50,
-                  child: OutlineButton(
-                    borderSide: BorderSide(
-                      color: Colors.white
+                  height: 60,
+                  width: 60,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.grey,
+                      side: BorderSide(color: Colors.white)
                     ),
-                    color: Colors.grey,
-                    splashColor: Colors.grey,
-                    highlightElevation: 5.0,
-                    highlightedBorderColor: Colors.white,
                     child: Center(
                       child: Icon(
                         Icons.edit,

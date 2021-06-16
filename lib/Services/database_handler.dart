@@ -30,6 +30,11 @@ class DatabaseHandler {
     docName: workoutName
   );
 
+  Future<void> deleteRoutine(String workoutName) async => _service.deleteData(
+      path: CloudPath.getroutine(uid),
+      docName: workoutName
+  );
+
   Future<void> updateRoutine({List workoutNames, List thumbnails, List artboards, List bodyPart, List level, String routineName}) async => _service.transactionData(
     path: CloudPath.setroutine(uid, routineName),
     data: workoutNames,
