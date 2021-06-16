@@ -53,6 +53,9 @@ class CenterAPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton.icon(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateColor.resolveWith((states) => Colors.white.withOpacity(0.2)),
+                ),
                 onPressed: () {
                   navigationBar.updatenavIconColor(true, false, false);
                 },
@@ -76,6 +79,9 @@ class CenterAPage extends StatelessWidget {
                   }
                 )),
             TextButton.icon(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateColor.resolveWith((states) => Colors.white.withOpacity(0.2)),
+                ),
                 onPressed: () {
                   navigationBar.updatenavIconColor(false, true, false);
                 },
@@ -90,6 +96,9 @@ class CenterAPage extends StatelessWidget {
                 ),
                 label: Text('')),
             TextButton.icon(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateColor.resolveWith((states) => Colors.white.withOpacity(0.2)),
+                ),
                 icon: Consumer<navbarColor>(
                   builder: (context, data, child) {
                     return Icon(

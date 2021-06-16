@@ -22,21 +22,22 @@ class _ProfilPageState extends State<ProfilPage> {
     final FirebaseAuthService auth = Provider.of<FirebaseAuthService>(context);
     final StorageHandler storage = Provider.of<StorageHandler>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        elevation: 0.0,
+        //backgroundColor: Theme.of(context).primaryColor,
+        centerTitle: true,
         title: Text('Profil',
         style: TextStyle(
           color: Colors.white
         ),),
       ),
-      body: ListView.builder(
-            itemCount: 1,
-            itemBuilder: (BuildContext context, int Index) {
-              return Container(
-                height: MediaQuery.of(context).size.height/1.1,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                color: Colors.black,
+                //color: Colors.black,
                 child: Column(
                     children: [
                       Padding(
@@ -52,11 +53,12 @@ class _ProfilPageState extends State<ProfilPage> {
                                         await storage.uploadProfilImage(UserImage);
                                       },
                                       child: Container(
-                                        height: 90.0,
-                                        width: 90.0,
+                                        height: 100.0,
+                                        width: 100.0,
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             image: DecorationImage(
+                                              fit: BoxFit.cover,
                                                 image: NetworkImage(
                                                     snapshot2.data.downloadUrl
                                                 )
@@ -85,13 +87,14 @@ class _ProfilPageState extends State<ProfilPage> {
                                           await storage.uploadProfilImage(UserImage);
                                         },
                                         child: Container(
-                                          height: 90.0,
-                                          width: 90.0,
+                                          height: 100.0,
+                                          width: 100.0,
                                           decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               image: DecorationImage(
+                                                fit: BoxFit.cover,
                                                   image: NetworkImage(
-                                                      snapshot.data.foto
+                                                      snapshot.data.foto,
                                                   )
                                               )
                                           ),
@@ -134,8 +137,8 @@ class _ProfilPageState extends State<ProfilPage> {
                                         await storage.uploadProfilImage(UserImage);
                                       },
                                       child: Container(
-                                        height: 90.0,
-                                        width: 90.0,
+                                        height: 100.0,
+                                        width: 100.0,
                                         child: Icon(Icons.camera_alt_rounded,
                                         color: Colors.white,),
                                         decoration: BoxDecoration(
@@ -180,15 +183,19 @@ class _ProfilPageState extends State<ProfilPage> {
                             } else {
                               return Text('Hallo',
                                 style: TextStyle(
-                                    fontSize: 25
+                                    fontSize: 25,
+                                  color: Colors.white
                                 ),);
                             }
                           }
                         ),
                       ),
-                      Padding(
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        /*
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height/2,),
+                              */
                       child: Container(
                         height: MediaQuery.of(context).size.height/10,
                         width: MediaQuery.of(context).size.width,
@@ -197,11 +204,12 @@ class _ProfilPageState extends State<ProfilPage> {
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               stops: [0.2, 0.4, 0.9],
-                              colors: [Colors.red, Colors.red[700], Colors.red[900]]
+                              colors: [Colors.red, Colors.red, Colors.red]
                           ),
                         ),
                         child: OutlineButton(
                           color: Colors.black,
+                          highlightedBorderColor: Colors.white,
                           onPressed: ()  {
                             signOutGoogle().then((result) {
                               if (result != null) {
@@ -218,15 +226,15 @@ class _ProfilPageState extends State<ProfilPage> {
                           child: Text('LogOut',
                           style: TextStyle(
                             fontSize: 25,
-                                color: Colors.white
+                                color: Colors.black
                           ),),
                         ),
                       ))
                     ],
                   ),
 
-              );
-            })
+              )
+           )
 
     );
   }

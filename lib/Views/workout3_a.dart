@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +31,7 @@ class Workout3APage extends StatefulWidget {
 class _Workout3APageState extends State<Workout3APage> {
 
 
-  Routine routine;
+  RoutineAnimation routine;
 
   List workout;
   List videoPath;
@@ -38,14 +40,18 @@ class _Workout3APageState extends State<Workout3APage> {
   List muscleGroups;
 
 
-  Future<Routine> getWorkoutList(BuildContext context) async {
+  Future<RoutineAnimation> getWorkoutList(BuildContext context) async {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     try {
       if (widget.category == 'Functional') {
-        final Routine Input = await database.getFunctionalWorkoutsMap(widget.routineName);
+        final RoutineAnimation Input = await database.getFunctionalWorkoutsMap(widget.routineName);
         routine = Input;
       } else if (widget.category == 'Mobility') {
-        final Routine Input = await database.getMobilityWorkoutsMap(widget.routineName);
+        final RoutineAnimation Input = await database.getMobilityWorkoutsMap(widget.routineName);
+        routine = Input;
+      } else if (widget.category == 'My Workouts') {
+        final RoutineAnimation Input = await database.getRoutineCustomMap(widget.routineName);
+        log('$Input');
         routine = Input;
       }
     } catch(e) {
@@ -76,7 +82,7 @@ class _Workout3APageState extends State<Workout3APage> {
       getWorkoutList(context).then((value){
         setState(() {
           workout = value.workoutNames;
-          videoPath = value.videoPaths;
+          videoPath = value.artboards;
           thumbnails = value.thumbnails;
           classifycation = value.classifycation;
           muscleGroups = value.muscleGroups;
@@ -187,7 +193,9 @@ class _Workout3APageState extends State<Workout3APage> {
                           child: Center(
                             child: Text(workout[index],
                               style: TextStyle(
-                                  color: Colors.white
+                                  color: Colors.white,
+                                  fontSize: 22.0,
+                                  fontFamily: 'FiraSansExtraCondensed'
                               ),),
                           ),
                         ),
@@ -196,11 +204,12 @@ class _Workout3APageState extends State<Workout3APage> {
                   },
                   childCount: workout.length
               )),
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            actions: [
-              Container(
+          SliverToBoxAdapter(
+            //automaticallyImplyLeading: false,
+            //actions: [
+              child: Container(
                 width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height*0.1,
                 color: Colors.white,
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).push(
@@ -211,7 +220,7 @@ class _Workout3APageState extends State<Workout3APage> {
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
                             ChangeNotifierProvider(create: (context) => AnimationStateNotifier())
-                          ], child: AnimationPage()//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
+                          ], child: AnimationPage(artboardList: videoPath)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
                         );
 
                       },
@@ -227,7 +236,7 @@ class _Workout3APageState extends State<Workout3APage> {
                   ),
                 ),
               )
-            ],
+            //],
           )
         ],
       ),

@@ -40,7 +40,7 @@ class FunctionalWorkoutsPage extends StatelessWidget {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Container(
       width: MediaQuery.of(context).size.width,
-      child: StreamBuilder<List<Routine>>(
+      child: StreamBuilder<List<RoutineAnimation>>(
         stream: database.functionalStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -50,7 +50,7 @@ class FunctionalWorkoutsPage extends StatelessWidget {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
-                      splashColor: Colors.white,
+                      splashColor: Colors.black,
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -70,9 +70,14 @@ class FunctionalWorkoutsPage extends StatelessWidget {
                 });
           } else {
             return SingleChildScrollView(
-              child: Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).primaryColor,
+              physics: BouncingScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
             );

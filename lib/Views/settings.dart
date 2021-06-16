@@ -30,15 +30,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         title: Text('Einstellungen',
           style: TextStyle(
-              color: Colors.grey[800],
+              color: Colors.white,
             fontWeight: FontWeight.w500,
           ),),
       ),
@@ -153,24 +154,41 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height/12,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          child: Center(
+                        child: NeoContainer(
+                          circleShape: false,
+                          spreadRadius2: 0.0,
+                          shadowColor2: Colors.white30,
+                          shadowColor1: Colors.black,
+                          gradientColor1: Theme.of(context).primaryColor,
+                          gradientColor2: Theme.of(context).primaryColor,
+                          gradientColor3: Theme.of(context).primaryColor,
+                          gradientColor4: Theme.of(context).primaryColor,
+                          containerHeight: MediaQuery.of(context).size.height/12,
+                          containerWidth: MediaQuery.of(context).size.width,
+                          containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          containerChild: Center(
                             child: ListTile(
                               tileColor: Colors.transparent,
-                              leading: Icon(Icons.account_circle),
-                              title: Text('Mein Profil'),
-                              trailing: Icon(Icons.keyboard_arrow_right),
+                              leading: Icon(Icons.account_circle,
+                                color: Colors.white,
+                              ),
+                              title: Text('Mein Profil',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'FiraSansExtraCondensed',
+                                  fontSize: 20.0
+                                ),
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right,
+                                color: Colors.white,
+                              ),
                               onTap: () => Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
                                     return MultiProvider(
                                       providers: [
                                         Provider(create: (context) => FirebaseAuthService()),
-                                        //Provider(create: (context) => FirebaseStorageService()
+                                        Provider(create: (context) => StorageHandler(uid: database.uid),),
                                       ],
                                       child: ProfilPage(),
                                     );
@@ -183,21 +201,38 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 15.0),
                     child: Material(
                       elevation: 5.0,
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height/12,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15.0))
-                        ),
-                        child: Center(
+                      child: NeoContainer(
+                        circleShape: false,
+                        spreadRadius2: 0.0,
+                        shadowColor2: Colors.white30,
+                        shadowColor1: Colors.black,
+                        gradientColor1: Theme.of(context).primaryColor,
+                        gradientColor2: Theme.of(context).primaryColor,
+                        gradientColor3: Theme.of(context).primaryColor,
+                        gradientColor4: Theme.of(context).primaryColor,
+                        containerHeight: MediaQuery.of(context).size.height/12,
+                        containerWidth: MediaQuery.of(context).size.width,
+                        containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        containerChild: Center(
                           child: ListTile(
                             tileColor: Colors.transparent,
-                            leading: Icon(MdiIcons.web),
-                            title: Text('Webseite'),
-                            trailing: Icon(Icons.keyboard_arrow_right),
+                            leading: Icon(MdiIcons.web,
+                              color: Colors.white,
+                            ),
+                            title: Text('Webseite',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'FiraSansExtraCondensed',
+                                  fontSize: 20.0
+                              ),
+                            ),
+                            trailing: Icon(Icons.keyboard_arrow_right,
+                              color: Colors.white,
+                            ),
                             onTap: () async {
                               await HelperFunctions().launchURL('https://exopek.de/');
                             },
@@ -217,19 +252,22 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: [
                           IconButton(
                               icon: Icon(MdiIcons.instagram,
-                              size: 40.0),
+                              size: 40.0,
+                              color: Colors.white,),
                           onPressed: () async {
                                 await HelperFunctions().launchURL('https://www.instagram.com/exopek/?hl=en');
                           },),
                           IconButton(
                               icon: Icon(MdiIcons.youtube,
-                              size: 40.0,),
+                              size: 40.0,
+                              color: Colors.white,),
                           onPressed: () async {
                                 await HelperFunctions().launchURL('https://www.youtube.com/channel/UCEcRmE0vw6DkF3ef-k2DYTw');
                           },),
                           IconButton(
                               icon: Icon(MdiIcons.facebook,
-                              size: 40.0,),
+                              size: 40.0,
+                              color: Colors.white,),
                           onPressed: () async {
                                 await HelperFunctions().launchURL('https://www.facebook.com/exopekofficial/');
                           },)

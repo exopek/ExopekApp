@@ -5,6 +5,7 @@ import 'package:video_app/Helpers/blank.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/workout2_a.dart';
+import 'package:video_app/Views/workout3_a.dart';
 import 'package:video_app/Views/workout_a.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -48,7 +49,7 @@ class CategoryMyWorkouts extends StatelessWidget {
               itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
-                    splashColor: Colors.white,
+                    splashColor: Colors.black,
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -58,7 +59,7 @@ class CategoryMyWorkouts extends StatelessWidget {
                                     Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                                     //ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
                                   ],
-                                  child: Workout2APage(routineName: snapshot.data[index].routineName));
+                                  child: Workout3APage(routineName: snapshot.data[index].routineName, category: 'My Workouts'));
                             },
                           ),
                         );
@@ -68,8 +69,15 @@ class CategoryMyWorkouts extends StatelessWidget {
                 });
           } else {
             return SingleChildScrollView(
-              child: CircularProgressIndicator(
-                backgroundColor: Theme.of(context).primaryColor,
+              physics: BouncingScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                ),
               ),
             );
           }

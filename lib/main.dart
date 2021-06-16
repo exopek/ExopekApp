@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       create: (context) => FirebaseAuthService(),
       child: MaterialApp(
         title: 'Flutter Demo',
-
+        debugShowCheckedModeBanner: false,
         theme:
         /*
         Theme.myTheme,

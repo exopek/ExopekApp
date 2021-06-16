@@ -61,7 +61,7 @@ class _HomeAPageState extends State<HomeAPage> {
               child: _header(context),
             ),
             Padding(
-              padding: EdgeInsets.all(15.0),
+              padding: EdgeInsets.only(top: 25.0, left: 15.0),
               child: Align(
                 alignment: Alignment.topRight,
                 child: GestureDetector(

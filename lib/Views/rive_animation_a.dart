@@ -11,7 +11,10 @@ import 'package:video_app/Notifyers/animationState_notifyer.dart';
 
 
 class AnimationPage extends StatefulWidget {
-  const AnimationPage({Key key}) : super(key: key);
+
+  final List artboardList;
+
+  const AnimationPage({Key key, this.artboardList}) : super(key: key);
 
   @override
   _AnimationPageState createState() => _AnimationPageState();
@@ -37,7 +40,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
 
 
   /// ToDo: Hier muss ein Future hin
-  List _artBoardList = ['Art', 'Art1', 'Art2', 'Art3'];
+  //List _artBoardList = ['Art', 'Art1', 'Art2', 'Art3'];
   List _durations = [10, 5, 20, 10];
   //var _animationState = new List.filled(3, false);
 
@@ -134,6 +137,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
     //log('notifyer: ${_notifier?.value}');
   }
 
+  /*
   void _reinitRiveAnimation(int pageIndex) {
     rootBundle.load('assets/kniebeuge.riv').then(
           (data) async {
@@ -173,6 +177,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
       },
     );
   }
+  */
 
 
   /*
@@ -269,7 +274,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
       body: PageView.builder(
               controller: _pageController,
               scrollDirection: Axis.horizontal,
-              itemCount: 4,
+              itemCount: widget.artboardList.length,
               itemBuilder: (context, position) {
                 //final _artboard = artboardMap[position];
                 //print('im build: ${_artboard}');
@@ -279,7 +284,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
                 builder: (context, data, child) {
                   return AnimationWidget(
                     duration: Duration(seconds: _durations[position]),
-                    artBoardName: _artBoardList[position],
+                    artBoardName: widget.artboardList[position],
                     showCheckAnimation: data.animationState()[position],
                     lastAnimationValue: data.animationValue()[position],
                     page: position,

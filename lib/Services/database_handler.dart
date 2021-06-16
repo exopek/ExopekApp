@@ -66,12 +66,12 @@ class DatabaseHandler {
 
   Future<dynamic> getFunctionalWorkoutsMap(String routineName) async => _service.getDataMap(
     path: CloudPath.functionalworkouts(routineName),
-    builder: (data) => Routine.fromMap(data),
+    builder: (data) => RoutineAnimation.fromMap(data),
   );
 
   Future<dynamic> getMobilityWorkoutsMap(String routineName) async => _service.getDataMap(
     path: CloudPath.mobilityworkouts(routineName),
-    builder: (data) => Routine.fromMap(data),
+    builder: (data) => RoutineAnimation.fromMap(data),
   );
 
   Stream<List<Favorite>> favoriteStream() => _service.collectionStream(
@@ -120,13 +120,13 @@ class DatabaseHandler {
     builder:  (data) => Categories.fromMap(data),
   );
 
-  Stream<List<Routine>> functionalStream() => _service.collectionStream(
+  Stream<List<RoutineAnimation>> functionalStream() => _service.collectionStream(
     path: CloudPath.getfunctionalworkouts(),
-    builder:  (data) => Routine.fromMap(data),
+    builder:  (data) => RoutineAnimation.fromMap(data),
   );
 
-  Stream<List<Routine>> mobilityStream() => _service.collectionStream(
+  Stream<List<RoutineAnimation>> mobilityStream() => _service.collectionStream(
     path: CloudPath.getmobilityworkouts(),
-    builder:  (data) => Routine.fromMap(data),
+    builder:  (data) => RoutineAnimation.fromMap(data),
   );
 }

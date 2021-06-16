@@ -111,11 +111,13 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
         padding: EdgeInsets.only(top: 27.0, left: 4.0),
         child: Align(
           alignment: Alignment.topLeft,
+          /*
           child: GestureDetector(
 
               onTap: () {
                 Navigator.pop(context);
               },
+    */
               child: Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -123,13 +125,18 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
                 ),
                 height: 50.0,
                 width: 50.0,
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: Colors.white,
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  splashColor: Colors.grey,
+                  splashRadius: 60.0,
+                  icon: Icon(
+                    Icons.arrow_back_rounded,
+                    color: Colors.white,
+                  ),
                 ),
               )
 
-          ),
+         // ),
         ),
       );
     } else {
