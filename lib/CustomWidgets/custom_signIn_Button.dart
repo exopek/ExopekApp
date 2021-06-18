@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:video_app/Helpers/blank.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/listViewIndex.dart';
 import 'package:video_app/Notifyers/navigationBar_notifyer.dart';
@@ -54,29 +55,37 @@ class AddTodoButton extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {
-          _signInwithEmail(context, email, password).then((result) {
-            if (result != null) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return MultiProvider(
-                        providers: [
-                          Provider(create: (context) => StorageHandler(uid: result.uid),),
-                          Provider(create: (context) => DatabaseHandler(uid: result.uid),),
-                          ChangeNotifierProvider(create: (context) => TabbarColor(context: context)),
-                          ChangeNotifierProvider(create: (context) => ListViewIndex(context: context)),
-                          ChangeNotifierProvider(create: (context) => navbarColor()),
-                        ],
-                        child: CenterAPage());
-                  },
-                ),
-              );
-            } else {
+          try {
+            _signInwithEmail(context, email, password).then((result) {
+              if (result != null) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MultiProvider(
+                          providers: [
+                            Provider(create: (context) => StorageHandler(uid: result.uid),),
+                            Provider(create: (context) => DatabaseHandler(uid: result.uid),),
+                            ChangeNotifierProvider(create: (context) => TabbarColor(context: context)),
+                            ChangeNotifierProvider(create: (context) => ListViewIndex(context: context)),
+                            ChangeNotifierProvider(create: (context) => navbarColor()),
+                          ],
+                          child: CenterAPage());
+                    },
+                  ),
+                );
+              }
+            })
+                .catchError((error, stackTrace) {
               Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-                return const _AddTodoPopupCard();
+                return BlankPage(result: error.toString(),);//_AddTodoPopupCard();
               }));
-            }
-          });
+            });
+          } catch (e) {
+            Navigator.of(context).push(HeroDialogRoute(builder: (context) {
+              return BlankPage(result: e.toString(),);//_AddTodoPopupCard();
+            }));
+          }
+
 
         },
         child: Hero(

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/custom_signIn_Button.dart';
+import 'package:video_app/Helpers/blank.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/listViewIndex.dart';
 import 'package:video_app/Notifyers/navigationBar_notifyer.dart';
@@ -82,6 +83,7 @@ class _SignInPageState extends State<SignInPage> {
                       SizedBox(height: MediaQuery.of(context).size.height/15),
                       _signInButtonEmail(context),
                       //SizedBox(height: MediaQuery.of(context).size.height/100),
+                      //_testButton(context),
                       _signInButton(context),
                       //SizedBox(height: MediaQuery.of(context).size.height/15),
                       _createAccountButton(context)
@@ -241,26 +243,47 @@ class _SignInPageState extends State<SignInPage> {
         ),
       child: GestureDetector(
         onTap: () {
-          _signInWithGoogle(context).then((result) {
-            if (result != null) {
+          try {
+            _signInWithGoogle(context).then((result) {
+              if (result != null) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MultiProvider(
+                          providers: [
+                            Provider(create: (context) => StorageHandler(uid: result.uid),),
+                            Provider(create: (context) => DatabaseHandler(uid: result.uid),),
+                            ChangeNotifierProvider(create: (context) => TabbarColor(context: context)),
+                            ChangeNotifierProvider(create: (context) => ButtonbarColor(context: context)),
+                            ChangeNotifierProvider(create: (context) => ListViewIndex(context: context)),
+                            ChangeNotifierProvider(create: (context) => navbarColor()),
+                          ],
+                          child:  CenterAPage());
+                    },
+                  ),
+                );
+              }
+
+                throw(result.toString());
+            })
+                .catchError((error, stackTrace) {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
-                    return MultiProvider(
-                        providers: [
-                          Provider(create: (context) => StorageHandler(uid: result.uid),),
-                          Provider(create: (context) => DatabaseHandler(uid: result.uid),),
-                          ChangeNotifierProvider(create: (context) => TabbarColor(context: context)),
-                          ChangeNotifierProvider(create: (context) => ButtonbarColor(context: context)),
-                          ChangeNotifierProvider(create: (context) => ListViewIndex(context: context)),
-                          ChangeNotifierProvider(create: (context) => navbarColor()),
-                        ],
-                        child:  CenterAPage());
+                    return BlankPage(result: error.toString(),);
                   },
                 ),
               );
-            }
-          });
+            });
+          } catch (e) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return BlankPage(result: e.toString(),);
+                },
+              ),
+            );
+          }
         },
         child: Center(
           child: Text(
@@ -274,6 +297,56 @@ class _SignInPageState extends State<SignInPage> {
       )
 
             // Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
+
+    );
+  }
+
+
+  Widget _testButton(BuildContext context) {
+    return Container(
+        height: MediaQuery.of(context).size.height*0.06,
+        width: MediaQuery.of(context).size.width*0.47,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(40.0)),
+            border: Border.all(
+                color: Colors.grey
+            )
+        ),
+        child: GestureDetector(
+          onTap: () {
+           // _signInWithGoogle(context).then((result) {
+            //  if (result != null) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MultiProvider(
+                          providers: [
+                            Provider(create: (context) => StorageHandler(uid: ''),),
+                            Provider(create: (context) => DatabaseHandler(uid: ''),),
+                            ChangeNotifierProvider(create: (context) => TabbarColor(context: context)),
+                            ChangeNotifierProvider(create: (context) => ButtonbarColor(context: context)),
+                            ChangeNotifierProvider(create: (context) => ListViewIndex(context: context)),
+                            ChangeNotifierProvider(create: (context) => navbarColor()),
+                          ],
+                          child:  CenterAPage());
+                    },
+                  ),
+                );
+           //   }
+          // });
+          },
+          child: Center(
+            child: Text(
+              'Test',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        )
+
+      // Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
 
     );
   }
