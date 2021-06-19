@@ -1,19 +1,13 @@
 import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/CustomWidgets/persistant_sliver_header.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/animationState_notifyer.dart';
 import 'package:video_app/Notifyers/timerEnd_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/rive_animation_a.dart';
-import 'package:video_app/Views/videoPlayer2_a.dart';
-import 'package:video_app/Views/videoPlayerChewie.dart';
-import 'package:video_app/Views/videoPlayer_withListView.dart';
-import 'package:video_app/videoplayerservice.dart';
 
 class Workout3APage extends StatefulWidget {
 

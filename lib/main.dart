@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/Services/firebase_auth_service.dart';
-import 'Theme/theme.dart' as Theme;
 import 'Views/sign_in.dart';
-import 'package:flutter_driver/driver_extension.dart';
 import 'dart:ui';
 
 void main() {

@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/add_routine_button.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/Models/models.dart';
-import 'package:video_app/Notifyers/infoTextRoutine_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/editMyWorkouts_a.dart';
 

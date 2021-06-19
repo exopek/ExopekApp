@@ -1,15 +1,11 @@
 import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
-import 'package:video_app/Helpers/blank.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
 import 'package:video_app/Services/database_handler.dart';
-import 'package:video_app/Views/editMyWorkouts_a.dart';
-import 'package:video_app/Views/workout_a.dart';
+
 
 class CategoryAPage extends StatefulWidget {
 

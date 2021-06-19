@@ -10,9 +10,8 @@ import 'package:video_app/Services/firebase_auth_service.dart';
 import 'package:video_app/Services/storage_handler.dart';
 import 'package:video_app/Views/center_a.dart';
 
-import 'package:video_app/Views/home_a.dart';
 
-import '../CustomColors/customColors.dart';
+
 import 'package:video_app/Helpers/hero_dialog_route.dart';
 
 import 'custom_rect_tween.dart';

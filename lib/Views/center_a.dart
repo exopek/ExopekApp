@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
-import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
-import 'package:video_app/Notifyers/infoTextRoutine_notifyer.dart';
 import 'package:video_app/Notifyers/navigationBar_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/home_a.dart';

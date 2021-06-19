@@ -1,7 +1,4 @@
-
-
 import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,25 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/CustomWidgets/persistant_sliver_header.dart';
 import 'package:video_app/Models/models.dart';
-import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
-import 'package:video_app/Notifyers/infoTextRoutine_notifyer.dart';
-import 'package:video_app/Notifyers/listViewIndex.dart';
-import 'package:video_app/Notifyers/navigationBar_notifyer.dart';
-import 'package:video_app/Notifyers/sortBar_notifyer.dart';
-import 'package:video_app/Notifyers/tabbar_color.dart';
-import 'package:video_app/Notifyers/timerEnd_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
-import 'package:video_app/Services/storage_handler.dart';
-import 'package:video_app/Views/myWorkouts_a.dart';
-import 'package:video_app/Views/videoPlayer2_a.dart';
-import 'package:video_app/Views/videoPlayerChewie.dart';
-import 'package:video_app/Views/videoPlayer_withListView.dart';
-import 'package:video_app/videoplayerservice.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:intl/intl.dart';
 
-import 'home_a.dart';
 
 class StatisticAPage extends StatefulWidget {
 

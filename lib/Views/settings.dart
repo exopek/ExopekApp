@@ -3,18 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/Helpers/helpers.dart';
-import 'package:video_app/Notifyers/listViewIndex.dart';
-import 'package:video_app/Notifyers/tabbar_color.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Services/firebase_auth_service.dart';
-import 'package:video_app/Services/firebase_storage_service.dart';
+
 import 'package:video_app/Services/storage_handler.dart';
 import 'package:video_app/Views/profil.dart';
 
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-
-import 'neo_home.dart';
 
 class SettingsPage extends StatefulWidget {
   final String uid;

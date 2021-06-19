@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_app/CustomWidgets/buttonClipper.dart';
+//import 'package:video_app/CustomWidgets/buttonClipper.dart';
 
 class BlankPage extends StatelessWidget {
   final result;

@@ -1,12 +1,9 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:video_app/CustomWidgets/animationWidget.dart';
-import 'package:video_app/CustomWidgets/workout_completion_ring.dart';
 import 'package:video_app/Notifyers/animationState_notifyer.dart';
 
 

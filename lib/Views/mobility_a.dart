@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
-import 'package:video_app/Helpers/blank.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Services/database_handler.dart';
-import 'package:video_app/Views/workout2_a.dart';
 import 'package:video_app/Views/workout3_a.dart';
-import 'package:video_app/Views/workout_a.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class MobilityWorkoutsPage extends StatelessWidget {
 
