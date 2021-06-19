@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:video_app/CustomWidgets/custom_signIn_Button.dart';
 
 import 'package:video_app/main.dart';
 
@@ -25,7 +26,7 @@ void main() {
      */
     // Tap the '+' icon and trigger a frame.
 
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.byWidget(AddTodoButton(email: 'jan@exopek.de', password: 'Tricken89!')));
     await tester.pump();
 
     // Verify that our counter has incremented.

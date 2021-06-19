@@ -76,9 +76,13 @@ class AddTodoButton extends StatelessWidget {
               }
             })
                 .catchError((error, stackTrace) {
-              Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-                return BlankPage(result: error.toString(),);//_AddTodoPopupCard();
-              }));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return BlankPage(result: error.toString(),);
+                  },
+                ),
+              );
             });
           } catch (e) {
             Navigator.of(context).push(HeroDialogRoute(builder: (context) {
