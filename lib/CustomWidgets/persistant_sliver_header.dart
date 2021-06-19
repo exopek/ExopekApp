@@ -7,7 +7,7 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
     this.minExtent,
     @required this.maxExtent,
     @required this.headerName,
-    @required this.picRef,
+    this.picRef,
     @required this.showBackButton,
     @required this.expandPic
   });

@@ -38,15 +38,15 @@ class _Workout3APageState extends State<Workout3APage> {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     try {
       if (widget.category == 'Functional') {
-        final RoutineAnimation Input = await database.getFunctionalWorkoutsMap(widget.routineName);
-        routine = Input;
+        final RoutineAnimation input = await database.getFunctionalWorkoutsMap(widget.routineName);
+        routine = input;
       } else if (widget.category == 'Mobility') {
-        final RoutineAnimation Input = await database.getMobilityWorkoutsMap(widget.routineName);
-        routine = Input;
+        final RoutineAnimation input = await database.getMobilityWorkoutsMap(widget.routineName);
+        routine = input;
       } else if (widget.category == 'My Workouts') {
-        final RoutineAnimation Input = await database.getRoutineCustomMap(widget.routineName);
-        log('$Input');
-        routine = Input;
+        final RoutineAnimation input = await database.getRoutineCustomMap(widget.routineName);
+        log('$input');
+        routine = input;
       }
     } catch(e) {
       print('------------Exception---------');
