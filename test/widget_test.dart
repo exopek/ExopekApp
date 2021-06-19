@@ -32,7 +32,8 @@ void main() {
     // Verify that our counter has incremented.
     //expect(find.text('0'), findsNothing);
     //expect(find.text('1'), findsOneWidget);
-    var button = find.text("Sign in with Email");
+
+    var button = find.text("Sign in with Google");
     expect(button, findsOneWidget);
     await tester.tap(button);
     await tester.pump();
