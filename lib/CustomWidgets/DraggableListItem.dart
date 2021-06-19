@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class DraggableWidget extends StatefulWidget{
 

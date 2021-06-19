@@ -1,9 +1,5 @@
-import 'dart:async';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:video_app/Services/database_handler.dart';
 
 class AnimationStateNotifier extends ChangeNotifier {
 
