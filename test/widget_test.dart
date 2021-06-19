@@ -26,12 +26,16 @@ void main() {
      */
     // Tap the '+' icon and trigger a frame.
 
-    await tester.tap(find.byWidget(AddTodoButton(email: 'jan@exopek.de', password: 'Tricken89!')));
-    await tester.pump();
+    //await tester.tap(find.byWidget(AddTodoButton(email: 'jan@exopek.de', password: 'Tricken89!')));
+    //await tester.pump();
 
     // Verify that our counter has incremented.
     //expect(find.text('0'), findsNothing);
     //expect(find.text('1'), findsOneWidget);
+    var button = find.text("Sign in with Email");
+    expect(button, findsOneWidget);
+    await tester.tap(button);
+    await tester.pump();
 
 
   });
