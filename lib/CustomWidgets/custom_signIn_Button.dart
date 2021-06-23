@@ -42,14 +42,13 @@ class AddTodoButton extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height*0.06,
       width: MediaQuery.of(context).size.width*0.47,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(40.0)),
-        border: Border.all(
-          color: Colors.grey
-        )
-      ),
-      child: GestureDetector(
-        onTap: () {
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+            primary: Colors.grey.withRed(200),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(35))),
+            side: BorderSide(color: Colors.grey)
+        ),
+        onPressed: () {
           try {
             _signInwithEmail(context, email, password).then((result) {
               if (result != null) {

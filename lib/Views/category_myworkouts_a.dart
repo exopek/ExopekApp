@@ -35,7 +35,7 @@ class CategoryMyWorkouts extends StatelessWidget {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Container(
       width: MediaQuery.of(context).size.width,
-      child: StreamBuilder<List<Routine>>(
+      child: StreamBuilder<List<RoutineAnimation>>(
         stream: database.routineStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -55,12 +55,12 @@ class CategoryMyWorkouts extends StatelessWidget {
                                     Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                                     //ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
                                   ],
-                                  child: Workout3APage(routineName: snapshot.data[index].routineName, category: 'My Workouts'));
+                                  child: Workout3APage(routineName: snapshot.data[index].routine, category: 'My Workouts'));
                             },
                           ),
                         );
                       },
-                      child: _listViewInput(context, snapshot.data[index].routineName)
+                      child: _listViewInput(context, snapshot.data[index].routine)
                   );
                 });
           } else {

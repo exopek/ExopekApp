@@ -40,30 +40,30 @@ class FirestoreService {
     final snapshots = await reference.get();
      newRoutine = RoutineAnimation.fromMap(snapshots.data());
      print(newRoutine);
-     return newRoutine.workoutNames;
+     return newRoutine.workout;
 
   }
 
-  Future<void> transactionData({String path, List<dynamic> data, List<dynamic> thumb, List<dynamic> artboards, List<dynamic> bodyPart, List<dynamic> level}) async {
+  Future<void> transactionData({String path, List<dynamic> data, List<dynamic> thumb, List<dynamic> artboard, List<dynamic> muscle, List<dynamic> level}) async {
     RoutineAnimation newRoutine;
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = reference.get();
     snapshots.then((docSnapshot) => {
       newRoutine = RoutineAnimation.fromMap(docSnapshot.data()),
       data.forEach((element) {
-        newRoutine.workoutNames.add(element);
+        newRoutine.workout.add(element);
       }),
       thumb.forEach((element) {
-        newRoutine.thumbnails.add(element);
+        newRoutine.thumbnail.add(element);
       }),
-      artboards.forEach((element) {
-        newRoutine.artboards.add(element);
+      artboard.forEach((element) {
+        newRoutine.artboard.add(element);
       }),
-      bodyPart.forEach((element) {
-        newRoutine.muscleGroups.add(element);
+      muscle.forEach((element) {
+        newRoutine.muscle.add(element);
       }),
       level.forEach((element) {
-        newRoutine.classifycation.add(element);
+        newRoutine.level.add(element);
       }),
       reference.set(newRoutine.toMap())
     });

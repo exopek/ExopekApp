@@ -74,7 +74,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         physics: BouncingScrollPhysics(),
         child: Column(
           children: [
-            StreamBuilder<List<Routine>>( // ToDo: Das Model muss noch angepasst werden
+            StreamBuilder<List<RoutineAnimation>>( // ToDo: Das Model muss noch angepasst werden
               stream: database.routineStream(), // ToDo: Im Stream muss das Model noch angepasst werden
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.requireData.isNotEmpty) {
@@ -188,7 +188,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   double scale = max(viewportFraction ,(1-(pageOffset - index).abs()) + viewportFraction);
-                  return _workoutsContainer(context, index, scale, snapshot.data[index].routineName);
+                  return _workoutsContainer(context, index, scale, snapshot.data[index].routine);
                 })
     );
   }
@@ -307,19 +307,19 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
   Widget _infoSideBar(BuildContext context, snapshot) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
     return Container(
-      height: 100.0*snapshot.data[_currentPage].workoutNames.length,
+      height: 100.0*snapshot.data[_currentPage].workout.length,
       width: MediaQuery.of(context).size.width,
       child: ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         separatorBuilder: (context, index) => Divider(
                           color: Colors.white,
                         ),
-                        itemCount: snapshot.data[_currentPage].workoutNames.length,
+                        itemCount: snapshot.data[_currentPage].workout.length,
                         itemBuilder: (context, adex) {
                           print('------------------------');
                           //print(snapshot.data[_infoState].workoutNames.first);
                           // ToDo: Bug -> Beschreibung in Trello
-                          if (snapshot.data[_currentPage].workoutNames == null) {
+                          if (snapshot.data[_currentPage].workout == null) {
                             return Container(
                               color: Colors.transparent,
                               height: 60.0,
@@ -339,7 +339,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
                                 width: MediaQuery.of(context).size.width,
                                 height: 80.0,
                                 child: Center(
-                                    child: Text(snapshot.data[_currentPage].workoutNames[adex],
+                                    child: Text(snapshot.data[_currentPage].workout[adex],
                                       style: TextStyle(
                                           fontFamily: 'FiraSansExtraCondensed',
                                           fontSize: 20.0,

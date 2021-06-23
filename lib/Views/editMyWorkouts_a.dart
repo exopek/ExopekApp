@@ -155,8 +155,8 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
       child: ListView(
           scrollDirection: Axis.vertical,
         children: [
-          if (routineMap.workoutNames.isNotEmpty)
-            for (int i = 0; i <= routineMap.workoutNames.length-1; i++)
+          if (routineMap.workout.isNotEmpty)
+            for (int i = 0; i <= routineMap.workout.length-1; i++)
               Container(
                 height: 30.0,
                 width: 30.0,
@@ -181,8 +181,8 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
         //physics: NeverScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         children: [
-          if (routineMap.workoutNames.isNotEmpty)
-            for (int i = 0; i <= routineMap.workoutNames.length-1; i++)
+          if (routineMap.workout.isNotEmpty)
+            for (int i = 0; i <= routineMap.workout.length-1; i++)
                  Slidable(
                    key: ValueKey(i.toString()),
                    actionPane: SlidableScrollActionPane(),
@@ -193,11 +193,11 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                        color: Colors.red,
                        icon: Icons.delete,
                        onTap: () {
-                         routineMap.workoutNames.removeAt(i);
-                         routineMap.thumbnails.removeAt(i);
-                         routineMap.artboards.removeAt(i);
-                         routineMap.classifycation.removeAt(i);
-                         routineMap.muscleGroups.removeAt(i);
+                         routineMap.workout.removeAt(i);
+                         routineMap.thumbnail.removeAt(i);
+                         routineMap.artboard.removeAt(i);
+                         routineMap.level.removeAt(i);
+                         routineMap.muscle.removeAt(i);
                          routineMap = routineMap;
                          database.updateRoutineWorkoutList(routineMap, widget.routineName);
                          setState(() {
@@ -209,7 +209,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                    ],
                    child: DraggableWidget(
                     key: ValueKey(i.toString()),
-                    customWidgetString: routineMap.workoutNames[i],
+                    customWidgetString: routineMap.workout[i],
                      workoutLocation: i.toString(),
                 ),
                  ),
@@ -220,21 +220,21 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
           if (newIndex > oldIndex) {
             newIndex -= 1;
           }
-          final workouts = routineMap.workoutNames.removeAt(oldIndex);
+          final workouts = routineMap.workout.removeAt(oldIndex);
           //print(workout);
-          routineMap.workoutNames.insert(newIndex, workouts);
+          routineMap.workout.insert(newIndex, workouts);
           // Anderer Datensatz
-          final thumbs = routineMap.thumbnails.removeAt(oldIndex);
-          routineMap.thumbnails.insert(newIndex, thumbs);
+          final thumbs = routineMap.thumbnail.removeAt(oldIndex);
+          routineMap.thumbnail.insert(newIndex, thumbs);
           // Anderer Datensatz
-          final arts = routineMap.artboards.removeAt(oldIndex);
-          routineMap.artboards.insert(newIndex, arts);
+          final arts = routineMap.artboard.removeAt(oldIndex);
+          routineMap.artboard.insert(newIndex, arts);
           // Anderer Datensatz
-          final classy = routineMap.classifycation.removeAt(oldIndex);
-          routineMap.classifycation.insert(newIndex, classy);
+          final classy = routineMap.level.removeAt(oldIndex);
+          routineMap.level.insert(newIndex, classy);
           // Anderer Datensatz
-          final muscleG = routineMap.muscleGroups.removeAt(oldIndex);
-          routineMap.muscleGroups.insert(newIndex, muscleG);
+          final muscleG = routineMap.muscle.removeAt(oldIndex);
+          routineMap.muscle.insert(newIndex, muscleG);
 
             //workoutList = workoutList;
           routineMap = routineMap;

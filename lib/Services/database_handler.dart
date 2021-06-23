@@ -34,12 +34,12 @@ class DatabaseHandler {
       docName: workoutName
   );
 
-  Future<void> updateRoutine({List workoutNames, List thumbnails, List artboards, List bodyPart, List level, String routineName}) async => _service.transactionData(
-    path: CloudPath.setroutine(uid, routineName),
-    data: workoutNames,
-    thumb: thumbnails,
-    artboards: artboards,
-    bodyPart: bodyPart,
+  Future<void> updateRoutine({List workout, List thumbnail, List artboard, List muscle, List level, String routine}) async => _service.transactionData(
+    path: CloudPath.setroutine(uid, routine),
+    data: workout,
+    thumb: thumbnail,
+    artboard: artboard,
+    muscle: muscle,
     level: level
   );
 
@@ -49,7 +49,7 @@ class DatabaseHandler {
   );
 
   Future<void> createRoutine(RoutineAnimation routine) async => _service.setData(
-    path: CloudPath.setroutine(uid, routine.routineName),
+    path: CloudPath.setroutine(uid, routine.routine),
     data: routine.toMap(),
   );
 
@@ -83,9 +83,9 @@ class DatabaseHandler {
     builder:  (data) => Workout.fromMap(data),
   );
 
-  Stream<List<Routine>> routineStream() => _service.collectionStream(
+  Stream<List<RoutineAnimation>> routineStream() => _service.collectionStream(
     path: CloudPath.getroutine(uid),
-    builder:  (data) => Routine.fromMap(data),
+    builder:  (data) => RoutineAnimation.fromMap(data),
   );
 
   Stream<List<Einheit>> verlaufStream() => _service.collectionStream(

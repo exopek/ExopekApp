@@ -1,13 +1,17 @@
 import 'dart:developer';
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/CustomWidgets/persistant_sliver_header.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/animationState_notifyer.dart';
 import 'package:video_app/Notifyers/timerEnd_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/rive_animation_a.dart';
+import 'package:intl/intl.dart';
 
 class Workout3APage extends StatefulWidget {
 
@@ -33,6 +37,10 @@ class _Workout3APageState extends State<Workout3APage> {
   List classifycation;
   List muscleGroups;
 
+  int pause;
+  int training;
+  int sets;
+
 
   Future<RoutineAnimation> getWorkoutList(BuildContext context) async {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
@@ -45,7 +53,7 @@ class _Workout3APageState extends State<Workout3APage> {
         routine = input;
       } else if (widget.category == 'My Workouts') {
         final RoutineAnimation input = await database.getRoutineCustomMap(widget.routineName);
-        log('$input');
+        //log('$input');
         routine = input;
       }
     } catch(e) {
@@ -55,10 +63,21 @@ class _Workout3APageState extends State<Workout3APage> {
     return routine;
   }
 
+  List<String> _splitTypDouble(Duration sub_add_sec) {
+    String neu = sub_add_sec.toString();
+
+
+    return [neu.substring(2, 7)];
+  }
+
+
   bool firstVisit;
 
   @override
   void initState() {
+    training = 10;
+    pause = 0;
+    sets = 0;
     firstVisit = false;
     workout = [];
     videoPath = [];
@@ -75,11 +94,11 @@ class _Workout3APageState extends State<Workout3APage> {
     if (firstVisit == false) {
       getWorkoutList(context).then((value){
         setState(() {
-          workout = value.workoutNames;
-          videoPath = value.artboards;
-          thumbnails = value.thumbnails;
-          classifycation = value.classifycation;
-          muscleGroups = value.muscleGroups;
+          workout = value.workout;
+          videoPath = value.artboard;
+          thumbnails = value.thumbnail;
+          classifycation = value.level;
+          muscleGroups = value.muscle;
           firstVisit = true;
         });
       });
@@ -198,6 +217,276 @@ class _Workout3APageState extends State<Workout3APage> {
                   },
                   childCount: workout.length
               )),
+          // Timer
+          SliverPadding(
+            padding: EdgeInsets.only(top: 30.0),
+            sliver: SliverToBoxAdapter(
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    NeoContainer(
+                      spreadRadius2: 0.0,
+                      containerHeight: 60.0,
+                      containerWidth: 60.0,
+                      circleShape: true,
+                      shadowColor2: Colors.white60,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Center(
+                          child:  IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (pause == 0) {
+                                  pause = 0;
+                                } else {
+                                  pause = pause - 5;
+                                }
+
+                              });
+                            },
+                            icon: Icon(
+                              Icons.remove,
+                              color: Colors.white,
+                            ),
+                          )
+                      ),
+                    ),
+                    NeoContainer(
+                      spreadRadius2: 0.0,
+                      containerHeight: 60.0,
+                      containerWidth: 60.0,
+                      circleShape: true,
+                      shadowColor2: Colors.white60,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Center(
+                        child:  IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (training == 0) {
+                                training = 0;
+                              } else {
+                                training = training - 5;
+                              }
+
+                            });
+                          },
+                          icon: Icon(
+                              Icons.remove,
+                              color: Colors.white,
+                          ),
+                        )
+                      ),
+                    ),
+                    NeoContainer(
+                      spreadRadius2: 0.0,
+                      containerHeight: 60.0,
+                      containerWidth: 60.0,
+                      circleShape: true,
+                      shadowColor2: Colors.white60,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Center(
+                          child:  IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (sets == 0) {
+                                  sets = 0;
+                                } else {
+                                  sets = sets - 1;
+                                }
+
+                              });
+                            },
+                            icon: Icon(
+                              Icons.remove,
+                              color: Colors.white,
+                            ),
+                          )
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          //
+          SliverPadding(
+            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+            sliver: SliverToBoxAdapter(
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      height: 60.0,
+                      width: 60.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text('${_splitTypDouble(Duration(seconds: pause))[0].toString()}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0
+                          ),
+                          ),
+                          Text('Pause',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 60.0,
+                      width: 60.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text('${_splitTypDouble(Duration(seconds: training))[0].toString()}',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30.0
+                            ),
+                          ),
+                          Text('Training',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 60.0,
+                      width: 60.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text('x$sets',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35.0
+                            ),
+                          ),
+                          Text('Sätze',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          //
+          SliverPadding(
+            padding: EdgeInsets.only(bottom: 30.0),
+            sliver: SliverToBoxAdapter(
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    NeoContainer(
+                      spreadRadius2: 0.0,
+                      containerHeight: 60.0,
+                      containerWidth: 60.0,
+                      circleShape: true,
+                      shadowColor2: Colors.white60,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Center(
+                          child:  IconButton(
+                            onPressed: () {
+                              setState(() {
+                                pause = pause + 5;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                          )
+                      ),
+                    ),
+                    NeoContainer(
+                      spreadRadius2: 0.0,
+                      containerHeight: 60.0,
+                      containerWidth: 60.0,
+                      circleShape: true,
+                      shadowColor2: Colors.white60,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Center(
+                          child:  IconButton(
+                            onPressed: () {
+                              setState(() {
+                                training = training + 5;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                          )
+                      ),
+                    ),
+                    NeoContainer(
+                      spreadRadius2: 0.0,
+                      containerHeight: 60.0,
+                      containerWidth: 60.0,
+                      circleShape: true,
+                      shadowColor2: Colors.white60,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Center(
+                          child:  IconButton(
+                            onPressed: () {
+                              setState(() {
+                                sets = sets + 1;
+                              });
+                            },
+                            splashColor: Colors.transparent,
+                            splashRadius: 0.1,
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                          )
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Startbutton
           SliverToBoxAdapter(
             //automaticallyImplyLeading: false,
             //actions: [
@@ -214,7 +503,7 @@ class _Workout3APageState extends State<Workout3APage> {
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
                             ChangeNotifierProvider(create: (context) => AnimationStateNotifier())
-                          ], child: AnimationPage(artboardList: videoPath)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
+                          ], child: AnimationPage(artboardList: videoPath, trainingSeconds: training, pauseSeconds: pause, sets: sets,)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
                         );
 
                       },

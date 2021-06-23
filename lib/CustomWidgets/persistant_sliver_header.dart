@@ -21,7 +21,10 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return _fillContent(context, shrinkOffset);
+    return Scaffold(
+
+        body: _fillContent(context, shrinkOffset)
+    );
   }
 
   Widget _fillContent(BuildContext context, double shrinkOffset) {
@@ -106,37 +109,39 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
 
   Widget _backButton(BuildContext context) {
     if (showBackButton == true) {
-      return Padding(
-        padding: EdgeInsets.only(top: 27.0, left: 4.0),
-        child: Align(
-          alignment: Alignment.topLeft,
-          /*
-          child: GestureDetector(
+      return SafeArea(
+       // child: Padding(
+          //padding: EdgeInsets.only(top: 27.0, left: 4.0),
+          child: Align(
+            alignment: Alignment.topLeft,
+            /*
+            child: GestureDetector(
 
-              onTap: () {
-                Navigator.pop(context);
-              },
+                onTap: () {
+                  Navigator.pop(context);
+                },
     */
-              child: Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColor
-                ),
-                height: 50.0,
-                width: 50.0,
-                child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  splashColor: Colors.grey,
-                  splashRadius: 60.0,
-                  icon: Icon(
-                    Icons.arrow_back_rounded,
-                    color: Colors.white,
+                child: Container(
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent
                   ),
-                ),
-              )
+                  height: 50.0,
+                  width: 50.0,
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    splashColor: Colors.grey,
+                    splashRadius: 60.0,
+                    icon: Icon(
+                      Icons.arrow_back_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
 
-         // ),
-        ),
+           // ),
+          ),
+       // ),
       );
     } else {
       return Container();

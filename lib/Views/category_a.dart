@@ -128,12 +128,12 @@ class _CategoryAPageState extends State<CategoryAPage> {
                     bodyPart.add(bodyPartMap[key]);
                     workoutNames.add(key);
                     database.updateRoutine(
-                        workoutNames: workoutNames,
-                        thumbnails: thumbnails,
-                        artboards: artboards,
+                        workout: workoutNames,
+                        thumbnail: thumbnails,
+                        artboard: artboards,
                         level: level,
-                        bodyPart: bodyPart,
-                        routineName: widget.routineName
+                        muscle: bodyPart,
+                        routine: widget.routineName
                     );
                   }
                 });
@@ -261,7 +261,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
                     physics: BouncingScrollPhysics(),
                     itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return _listViewInput(context, snapshot.data[index].workout, snapshot.data[index].thumbnail, snapshot.data[index].artboardName, snapshot.data[index].bodyPart, snapshot.data[index].level);
+                        return _listViewInput(context, snapshot.data[index].workout, snapshot.data[index].thumbnail, snapshot.data[index].artboard, snapshot.data[index].muscle, snapshot.data[index].level);
                           /*
                           GestureDetector(
                             onTap: () {

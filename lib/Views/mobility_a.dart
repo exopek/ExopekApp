@@ -56,12 +56,12 @@ class MobilityWorkoutsPage extends StatelessWidget {
                                     Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                                     //ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
                                   ],
-                                  child: Workout3APage(routineName: snapshot.data[index].routineName, category: _header,));
+                                  child: Workout3APage(routineName: snapshot.data[index].routine, category: _header,));
                             },
                           ),
                         );
                       },
-                      child: _listViewInput(context, snapshot.data[index].routineName, snapshot.data[index].thumbnails[0])
+                      child: _listViewInput(context, snapshot.data[index].routine, snapshot.data[index].thumbnail[0])
                   );
                 });
           } else {

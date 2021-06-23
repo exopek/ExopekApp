@@ -138,39 +138,39 @@ class Workout {
 
 
 class WorkoutAnimation {
-  WorkoutAnimation({@required this.artboardName, @required this.workout, @required this.level, @required this.bodyPart, @required this.thumbnail});
+  WorkoutAnimation({@required this.artboard, @required this.workout, @required this.level, @required this.muscle, @required this.thumbnail});
 
-  final String artboardName;
+  final String artboard;
   final String workout;
   final String level;
-  final String bodyPart;
+  final String muscle;
   final String thumbnail;
 
   factory WorkoutAnimation.fromMap(Map<String, dynamic> data) {
     if (data == null) {
       return null;
     }
-    final String artboardName = data['artboardName'];
+    final String artboard = data['artboard'];
     final String workout = data['workout'];
     final String level = data['level'];
-    final String bodyPart = data['bodyPart'];
+    final String muscle = data['muscle'];
     final String thumbnail = data['thumbnail'];
 
     return WorkoutAnimation(
-        artboardName: artboardName,
+        artboard: artboard,
         workout: workout,
         level: level,
-        bodyPart: bodyPart,
+        muscle: muscle,
         thumbnail: thumbnail,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'artboardName': artboardName,
+      'artboard': artboard,
       'workout': workout,
       'level': level,
-      'bodyPart': bodyPart,
+      'muscle': muscle,
       'thumbnail': thumbnail,
     };
   }
@@ -179,53 +179,53 @@ class WorkoutAnimation {
 
 
 class RoutineAnimation {
-  RoutineAnimation({@required this.workoutNames, @required this.thumbnails, @required this.routineName, @required this.artboards, @required this.reps, @required this.duration, @required this.muscleGroups, @required this.classifycation});
+  RoutineAnimation({@required this.workout, @required this.thumbnail, @required this.routine, @required this.artboard, @required this.rep, @required this.duration, @required this.muscle, @required this.level});
 
-  final String routineName;
-  final List<dynamic> reps;
+  final String routine;
+  final List<dynamic> rep;
   final List<dynamic> duration;
-  final List<dynamic> artboards;
-  final List<dynamic> thumbnails;
-  final List<dynamic> workoutNames;
-  final List<dynamic> classifycation;
-  final List<dynamic> muscleGroups; // bodyParts
+  final List<dynamic> artboard;
+  final List<dynamic> thumbnail;
+  final List<dynamic> workout;
+  final List<dynamic> level;
+  final List<dynamic> muscle; // bodyParts
 
 
   factory RoutineAnimation.fromMap(Map<String, dynamic> data) {
     if (data == null) {
       return null;
     }
-    final String routineName = data['routineName'];
-    final List<dynamic> artboards = data['artboards'];
-    final List<dynamic> reps = data['reps'];
+    final String routine = data['routine'];
+    final List<dynamic> artboard = data['artboard'];
+    final List<dynamic> rep = data['rep'];
     final List<dynamic> duration = data['duration'];
-    final List<dynamic> thumbnails = data['thumbnails'];
-    final List<dynamic> workoutNames = data['workoutNames'];
-    final List<dynamic> classifycation = data['classifycation'];
-    final List<dynamic> muscleGroups = data['muscleGroups'];
+    final List<dynamic> thumbnail = data['thumbnail'];
+    final List<dynamic> workout = data['workout'];
+    final List<dynamic> level = data['level'];
+    final List<dynamic> muscle = data['muscle'];
 
     return RoutineAnimation(
-        artboards: artboards,
-        reps: reps,
+        artboard: artboard,
+        rep: rep,
         duration: duration,
-        routineName: routineName,
-        thumbnails: thumbnails,
-        workoutNames: workoutNames,
-        classifycation: classifycation,
-        muscleGroups: muscleGroups
+        routine: routine,
+        thumbnail: thumbnail,
+        workout: workout,
+        level: level,
+        muscle: muscle
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'artboards': artboards,
-      'reps': reps,
+      'artboard': artboard,
+      'rep': rep,
       'duration': duration,
-      'routineName': routineName,
-      'thumbnails': thumbnails,
-      'workoutNames': workoutNames,
-      'classifycation': classifycation,
-      'muscleGroups': muscleGroups
+      'routine': routine,
+      'thumbnail': thumbnail,
+      'workout': workout,
+      'level': level,
+      'muscle': muscle
     };
   }
 

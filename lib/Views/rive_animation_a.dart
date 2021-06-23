@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,8 +11,11 @@ import 'package:video_app/Notifyers/animationState_notifyer.dart';
 class AnimationPage extends StatefulWidget {
 
   final List artboardList;
+  final int trainingSeconds;
+  final int pauseSeconds;
+  final int sets;
 
-  const AnimationPage({Key key, this.artboardList}) : super(key: key);
+  const AnimationPage({Key key, this.artboardList, this.trainingSeconds, this.pauseSeconds, this.sets}) : super(key: key);
 
   @override
   _AnimationPageState createState() => _AnimationPageState();
@@ -38,10 +42,10 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
 
   /// ToDo: Hier muss ein Future hin
   //List _artBoardList = ['Art', 'Art1', 'Art2', 'Art3'];
-  List _durations = [10, 5, 20, 10];
+  List _durations = [];
   //var _animationState = new List.filled(3, false);
 
-
+  Timer _timer;
   int _pageIndex;
   double viewportFraction = 0.0;
   PageController _pageController;
@@ -58,9 +62,38 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+    final AnimationStateNotifier animationStateNotifier = Provider.of<AnimationStateNotifier>(context, listen: false);
+    animationStateNotifier.updateListLength(widget.artboardList.length);
     _pageIndex = 0;
+    _durations = List.generate(widget.artboardList.length, (index) => widget.trainingSeconds);
     _pageController = PageController(
       initialPage: 0);
+
+    _timer = Timer.periodic(Duration(seconds: widget.trainingSeconds + widget.pauseSeconds + 1), (Timer timer) {
+      if (_pageIndex < widget.artboardList.length) {
+        _pageIndex++;
+      } else {
+        _pageIndex = 0;
+      }
+
+      _pageController.animateToPage(
+        _pageIndex,
+        duration: Duration(milliseconds: 350),
+        curve: Curves.easeIn,
+      );
+    });
+
+    //_pageController.addListener(_doScroll);
+    /*
+    if (animationStateNotifier.scrollPageState == true && _pageController.page.toInt() != widget.artboardList.length-1) {
+      setState(() {
+        _pageController.jumpToPage(_pageController.page.toInt() + 1);
+      });
+
+    }
+    */
+
+
       //..addListener(_onScrollUpDateAnimation);
     /*
     _showCheckAnimation = false;
@@ -106,6 +139,17 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
 
 
     }
+
+  void _doScroll() {
+    final AnimationStateNotifier animationStateNotifier = Provider.of<AnimationStateNotifier>(context, listen: false);
+    print('Hallooooooo');
+    if (animationStateNotifier.scrollPage == true) {
+      print('bin drin');
+      print('${_pageController.page.toInt()}');
+      animationStateNotifier.updatePage(false);
+      _pageController.jumpToPage(_pageController.page.toInt() + 1);
+    }
+  }
 
 
 
@@ -258,6 +302,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
     void dispose() {
     //_animationController.removeListener(_togglePlay);
     //_animationController.dispose();
+      _timer.cancel();
     super.dispose();
   }
 
@@ -266,64 +311,69 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
     return Scaffold(
       appBar: AppBar(
 
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
       ),
       body: PageView.builder(
-              controller: _pageController,
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.artboardList.length,
-              itemBuilder: (context, position) {
-                //final _artboard = artboardMap[position];
-                //print('im build: ${_artboard}');
-                //print(animationControllerMap[position]);
-                //_reinitRiveAnimation(position);
-                return Consumer<AnimationStateNotifier>(
-                builder: (context, data, child) {
-                  return AnimationWidget(
-                    duration: Duration(seconds: _durations[position]),
-                    artBoardName: widget.artboardList[position],
-                    showCheckAnimation: data.animationState()[position],
-                    lastAnimationValue: data.animationValue()[position],
-                    page: position,
-                  );
-                }
-                );
+                  controller: _pageController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: widget.artboardList.length,
+                  itemBuilder: (context, position) {
+
+                    //final _artboard = artboardMap[position];
+                    //print('im build: ${_artboard}');
+                    //print(animationControllerMap[position]);
+                    //_reinitRiveAnimation(position);
+                    return Consumer<AnimationStateNotifier>(
+                    builder: (context, data, child) {
+
+                      return AnimationWidget(
+                        duration: Duration(seconds: _durations[position]),
+                        artBoardName: widget.artboardList[position],
+                        showCheckAnimation: data.animationState()[position],
+                        lastAnimationValue: data.animationValue()[position],
+                        page: position,
+                        trainingSeconds: widget.trainingSeconds,
+                        pauseSeconds: widget.pauseSeconds,
+                      );
+                    }
+                    );
 
 
-                  /*
-                  Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width/2,
-                      //color: Color.fromRGBO(70*_pageController.page.round(), 0, 0, 1),
-                      child: AnimatedBuilder(
-                        animation:  _animationController,
-                        builder: (BuildContext context, Widget child) {
-                          final progress = _animationController.value ?? 0;
-                          final hasCompleted = progress == 1.0;
+                      /*
+                      Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10.0),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width/2,
+                          //color: Color.fromRGBO(70*_pageController.page.round(), 0, 0, 1),
+                          child: AnimatedBuilder(
+                            animation:  _animationController,
+                            builder: (BuildContext context, Widget child) {
+                              final progress = _animationController.value ?? 0;
+                              final hasCompleted = progress == 1.0;
 
-                          return Stack(
-                            children: [
-                              Center(child: WorkoutCompletionRing(progress: progress,)),
-                              _showCheckAnimation ? Positioned.fill(
-                                child: Icon(
-                                  Icons.timer,
-                                  color: Colors.green,
-                                ),
-                              ) :
-                               Rive(artboard: artboardMap[position],)
-                            ],
-                          );
-                        }
+                              return Stack(
+                                children: [
+                                  Center(child: WorkoutCompletionRing(progress: progress,)),
+                                  _showCheckAnimation ? Positioned.fill(
+                                    child: Icon(
+                                      Icons.timer,
+                                      color: Colors.green,
+                                    ),
+                                  ) :
+                                   Rive(artboard: artboardMap[position],)
+                                ],
+                              );
+                            }
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-                */
-              }
-            ),
+                    );
+                    */
+                  }
+                )
+
       /*
       floatingActionButton: FloatingActionButton(
         onPressed: _togglePlay,
