@@ -227,8 +227,8 @@ class _Workout3APageState extends State<Workout3APage> {
                   children: [
                     NeoContainer(
                       spreadRadius2: 0.0,
-                      containerHeight: 60.0,
-                      containerWidth: 60.0,
+                      containerHeight: MediaQuery.of(context).size.height*0.1,
+                      containerWidth: MediaQuery.of(context).size.height*0.1,
                       circleShape: true,
                       shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
@@ -257,8 +257,8 @@ class _Workout3APageState extends State<Workout3APage> {
                     ),
                     NeoContainer(
                       spreadRadius2: 0.0,
-                      containerHeight: 60.0,
-                      containerWidth: 60.0,
+                      containerHeight: MediaQuery.of(context).size.height*0.1,
+                      containerWidth: MediaQuery.of(context).size.height*0.1,
                       circleShape: true,
                       shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
@@ -287,8 +287,8 @@ class _Workout3APageState extends State<Workout3APage> {
                     ),
                     NeoContainer(
                       spreadRadius2: 0.0,
-                      containerHeight: 60.0,
-                      containerWidth: 60.0,
+                      containerHeight: MediaQuery.of(context).size.height*0.1,
+                      containerWidth: MediaQuery.of(context).size.height*0.1,
                       circleShape: true,
                       shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
@@ -329,8 +329,8 @@ class _Workout3APageState extends State<Workout3APage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      height: 60.0,
-                      width: 60.0,
+                      height: MediaQuery.of(context).size.height*0.1,
+                      width: MediaQuery.of(context).size.height*0.1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -350,8 +350,8 @@ class _Workout3APageState extends State<Workout3APage> {
                       ),
                     ),
                     Container(
-                      height: 60.0,
-                      width: 60.0,
+                      height: MediaQuery.of(context).size.height*0.1,
+                      width: MediaQuery.of(context).size.height*0.1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -371,8 +371,8 @@ class _Workout3APageState extends State<Workout3APage> {
                       ),
                     ),
                     Container(
-                      height: 60.0,
-                      width: 60.0,
+                      height: MediaQuery.of(context).size.height*0.1,
+                      width: MediaQuery.of(context).size.height*0.1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -406,8 +406,8 @@ class _Workout3APageState extends State<Workout3APage> {
                   children: [
                     NeoContainer(
                       spreadRadius2: 0.0,
-                      containerHeight: 60.0,
-                      containerWidth: 60.0,
+                      containerHeight: MediaQuery.of(context).size.height*0.1,
+                      containerWidth: MediaQuery.of(context).size.height*0.1,
                       circleShape: true,
                       shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
@@ -431,8 +431,8 @@ class _Workout3APageState extends State<Workout3APage> {
                     ),
                     NeoContainer(
                       spreadRadius2: 0.0,
-                      containerHeight: 60.0,
-                      containerWidth: 60.0,
+                      containerHeight: MediaQuery.of(context).size.height*0.1,
+                      containerWidth: MediaQuery.of(context).size.height*0.1,
                       circleShape: true,
                       shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
@@ -456,8 +456,8 @@ class _Workout3APageState extends State<Workout3APage> {
                     ),
                     NeoContainer(
                       spreadRadius2: 0.0,
-                      containerHeight: 60.0,
-                      containerWidth: 60.0,
+                      containerHeight: MediaQuery.of(context).size.height*0.1,
+                      containerWidth: MediaQuery.of(context).size.height*0.1,
                       circleShape: true,
                       shadowColor2: Colors.white60,
                       shadowColor1: Colors.black,
@@ -494,8 +494,8 @@ class _Workout3APageState extends State<Workout3APage> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height*0.1,
                 color: Colors.white,
-                child: GestureDetector(
-                  onTap: () => Navigator.of(context).push(
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
                         return MultiProvider(
@@ -503,7 +503,7 @@ class _Workout3APageState extends State<Workout3APage> {
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
                             ChangeNotifierProvider(create: (context) => AnimationStateNotifier())
-                          ], child: AnimationPage(artboardList: videoPath, trainingSeconds: training, pauseSeconds: pause, sets: sets,)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
+                          ], child: AnimationPage(artboardList: videoPath, trainingSeconds: training, pauseSeconds: pause, sets: sets, workout: workout)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
                         );
 
                       },

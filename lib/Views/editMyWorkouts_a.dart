@@ -172,76 +172,81 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
 
   Widget _excerciseDragandDrop(BuildContext context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
-    return Container(
-      height: MediaQuery.of(context).size.height/1.45,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.white,
-      child: ReorderableListView(
-        //scrollController: ScrollController().,
-        //physics: NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        children: [
-          if (routineMap.workout.isNotEmpty)
-            for (int i = 0; i <= routineMap.workout.length-1; i++)
-                 Slidable(
-                   key: ValueKey(i.toString()),
-                   actionPane: SlidableScrollActionPane(),
-                   actionExtentRatio: 1,
-                   secondaryActions: <Widget> [
-                     IconSlideAction(
-                       caption: 'Löschen',
-                       color: Colors.red,
-                       icon: Icons.delete,
-                       onTap: () {
-                         routineMap.workout.removeAt(i);
-                         routineMap.thumbnail.removeAt(i);
-                         routineMap.artboard.removeAt(i);
-                         routineMap.level.removeAt(i);
-                         routineMap.muscle.removeAt(i);
-                         routineMap = routineMap;
-                         database.updateRoutineWorkoutList(routineMap, widget.routineName);
-                         setState(() {
+    return FutureBuilder<RoutineAnimation>(
+      future: getWorkoutList(context),
+      builder: (context, snapshot) {
+        return Container(
+          height: MediaQuery.of(context).size.height/1.45,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child: ReorderableListView(
+            //scrollController: ScrollController().,
+            //physics: NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            children: [
+              if (snapshot.hasData)
+                for (int i = 0; i <= routineMap.workout.length-1; i++)
+                     Slidable(
+                       key: ValueKey(i.toString()),
+                       actionPane: SlidableScrollActionPane(),
+                       actionExtentRatio: 1,
+                       secondaryActions: <Widget> [
+                         IconSlideAction(
+                           caption: 'Löschen',
+                           color: Colors.red,
+                           icon: Icons.delete,
+                           onTap: () {
+                             routineMap.workout.removeAt(i);
+                             routineMap.thumbnail.removeAt(i);
+                             routineMap.artboard.removeAt(i);
+                             routineMap.level.removeAt(i);
+                             routineMap.muscle.removeAt(i);
+                             routineMap = routineMap;
+                             database.updateRoutineWorkoutList(routineMap, widget.routineName);
+                             setState(() {
 
-                         });
-                         log('index: $i');
-                       },
-                     )
-                   ],
-                   child: DraggableWidget(
-                    key: ValueKey(i.toString()),
-                    customWidgetString: routineMap.workout[i],
-                     workoutLocation: i.toString(),
-                ),
-                 ),
+                             });
+                             log('index: $i');
+                           },
+                         )
+                       ],
+                       child: DraggableWidget(
+                        key: ValueKey(i.toString()),
+                        customWidgetString: routineMap.workout[i],
+                         workoutLocation: i.toString(),
+                    ),
+                     ),
 
-        ],
-        onReorder: (oldIndex, newIndex) {
-          setState(() {
-          if (newIndex > oldIndex) {
-            newIndex -= 1;
-          }
-          final workouts = routineMap.workout.removeAt(oldIndex);
-          //print(workout);
-          routineMap.workout.insert(newIndex, workouts);
-          // Anderer Datensatz
-          final thumbs = routineMap.thumbnail.removeAt(oldIndex);
-          routineMap.thumbnail.insert(newIndex, thumbs);
-          // Anderer Datensatz
-          final arts = routineMap.artboard.removeAt(oldIndex);
-          routineMap.artboard.insert(newIndex, arts);
-          // Anderer Datensatz
-          final classy = routineMap.level.removeAt(oldIndex);
-          routineMap.level.insert(newIndex, classy);
-          // Anderer Datensatz
-          final muscleG = routineMap.muscle.removeAt(oldIndex);
-          routineMap.muscle.insert(newIndex, muscleG);
+            ],
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+              if (newIndex > oldIndex) {
+                newIndex -= 1;
+              }
+              final workouts = routineMap.workout.removeAt(oldIndex);
+              //print(workout);
+              routineMap.workout.insert(newIndex, workouts);
+              // Anderer Datensatz
+              final thumbs = routineMap.thumbnail.removeAt(oldIndex);
+              routineMap.thumbnail.insert(newIndex, thumbs);
+              // Anderer Datensatz
+              final arts = routineMap.artboard.removeAt(oldIndex);
+              routineMap.artboard.insert(newIndex, arts);
+              // Anderer Datensatz
+              final classy = routineMap.level.removeAt(oldIndex);
+              routineMap.level.insert(newIndex, classy);
+              // Anderer Datensatz
+              final muscleG = routineMap.muscle.removeAt(oldIndex);
+              routineMap.muscle.insert(newIndex, muscleG);
 
-            //workoutList = workoutList;
-          routineMap = routineMap;
-            database.updateRoutineWorkoutList(routineMap, widget.routineName);
-          });
-        },
-      ),
+                //workoutList = workoutList;
+              routineMap = routineMap;
+                database.updateRoutineWorkoutList(routineMap, widget.routineName);
+              });
+            },
+          ),
+        );
+      }
     );
   }
 

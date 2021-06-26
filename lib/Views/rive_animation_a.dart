@@ -14,8 +14,9 @@ class AnimationPage extends StatefulWidget {
   final int trainingSeconds;
   final int pauseSeconds;
   final int sets;
+  final List workout;
 
-  const AnimationPage({Key key, this.artboardList, this.trainingSeconds, this.pauseSeconds, this.sets}) : super(key: key);
+  const AnimationPage({Key key, this.artboardList, this.trainingSeconds, this.pauseSeconds, this.sets, this.workout}) : super(key: key);
 
   @override
   _AnimationPageState createState() => _AnimationPageState();
@@ -47,6 +48,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
 
   Timer _timer;
   int _pageIndex;
+  int _nextArtBoardIndex;
   double viewportFraction = 0.0;
   PageController _pageController;
   bool _showCheckAnimation;
@@ -59,21 +61,29 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
   RiveAnimationController _controller1;
   RiveAnimationController _controller2;
   List<RiveAnimationController> _riveController = [];
+  int _setCounter;
   @override
   void initState() {
     super.initState();
     final AnimationStateNotifier animationStateNotifier = Provider.of<AnimationStateNotifier>(context, listen: false);
     animationStateNotifier.updateListLength(widget.artboardList.length);
     _pageIndex = 0;
+    _setCounter = 0;
     _durations = List.generate(widget.artboardList.length, (index) => widget.trainingSeconds);
     _pageController = PageController(
       initialPage: 0);
 
-    _timer = Timer.periodic(Duration(seconds: widget.trainingSeconds + widget.pauseSeconds + 1), (Timer timer) {
-      if (_pageIndex < widget.artboardList.length) {
+    _timer = Timer.periodic(Duration(seconds: widget.trainingSeconds + widget.pauseSeconds + 2), (Timer timer) {
+      if (_pageIndex < widget.artboardList.length-1) {
         _pageIndex++;
       } else {
-        _pageIndex = 0;
+        if (_setCounter < widget.sets) {
+          _pageIndex = 0;
+          _setCounter++;
+        } else {
+          _pageIndex =_pageIndex;
+        }
+
       }
 
       _pageController.animateToPage(
@@ -309,10 +319,6 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-
-        backgroundColor: Colors.black,
-      ),
       body: PageView.builder(
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
@@ -325,15 +331,22 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
                     //_reinitRiveAnimation(position);
                     return Consumer<AnimationStateNotifier>(
                     builder: (context, data, child) {
-
+                      if (position == widget.artboardList.length-1) {
+                        _nextArtBoardIndex = 0;
+                      } else {
+                        _nextArtBoardIndex = position + 1;
+                      }
                       return AnimationWidget(
                         duration: Duration(seconds: _durations[position]),
                         artBoardName: widget.artboardList[position],
+                        nextArtBoardName: widget.artboardList[_nextArtBoardIndex],
                         showCheckAnimation: data.animationState()[position],
                         lastAnimationValue: data.animationValue()[position],
                         page: position,
                         trainingSeconds: widget.trainingSeconds,
                         pauseSeconds: widget.pauseSeconds,
+                        workout: widget.workout[position],
+                        workoutLength: widget.artboardList.length,
                       );
                     }
                     );
