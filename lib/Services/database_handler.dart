@@ -19,9 +19,9 @@ class DatabaseHandler {
     data: favorite.toMap(),
   );
 
-  Future<void> createFinishWorkout(Einheit einheit) async => _service.setData(
+  Future<void> createFinishWorkout(FinishRoutineAnimation routine) async => _service.setData(
     path: CloudPath.setfinishworkout(uid, currentDate()),
-    data: einheit.toMap(),
+    data: routine.toMap(),
   );
 
   Future<void> deleteFavorite(String workoutName) async => _service.deleteData(

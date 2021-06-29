@@ -503,7 +503,8 @@ class _Workout3APageState extends State<Workout3APage> {
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
                             ChangeNotifierProvider(create: (context) => AnimationStateNotifier())
-                          ], child: AnimationPage(artboardList: videoPath, trainingSeconds: training, pauseSeconds: pause, sets: sets, workout: workout)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
+                          ], child: AnimationPage(artboardList: videoPath, trainingSeconds: training, pauseSeconds: pause, sets: sets, workout: workout, routine: widget.routineName,
+                        thumbnail: thumbnails, level: classifycation, muscle: muscleGroups,)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
                         );
 
                       },

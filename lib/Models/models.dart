@@ -232,6 +232,73 @@ class RoutineAnimation {
 }
 
 
+class FinishRoutineAnimation {
+  FinishRoutineAnimation({@required this.workout, @required this.thumbnail, @required this.routine, @required this.artboard, @required this.duration, @required this.muscle, @required this.level,
+  @required this.date, @required this.training, @required this.pause, @required this.sets});
+
+  final String routine;
+  final int sets;
+  final int duration;
+  final List<dynamic> artboard;
+  final List<dynamic> thumbnail;
+  final List<dynamic> workout;
+  final List<dynamic> level;
+  final List<dynamic> muscle; // bodyParts
+  final String date;
+  final int training;
+  final int pause;
+
+
+  factory FinishRoutineAnimation.fromMap(Map<String, dynamic> data) {
+    if (data == null) {
+      return null;
+    }
+    final String routine = data['routine'];
+    final List<dynamic> artboard = data['artboard'];
+    final int sets = data['sets'];
+    final int duration = data['duration'];
+    final List<dynamic> thumbnail = data['thumbnail'];
+    final List<dynamic> workout = data['workout'];
+    final List<dynamic> level = data['level'];
+    final List<dynamic> muscle = data['muscle'];
+    final String date = data['date'];
+    final int training = data['training'];
+    final int pause = data['pause'];
+
+    return FinishRoutineAnimation(
+        artboard: artboard,
+        sets: sets,
+        duration: duration,
+        routine: routine,
+        thumbnail: thumbnail,
+        workout: workout,
+        level: level,
+        muscle: muscle,
+        date: date,
+        training: training,
+        pause: pause
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'artboard': artboard,
+      'sets': sets,
+      'duration': duration,
+      'routine': routine,
+      'thumbnail': thumbnail,
+      'workout': workout,
+      'level': level,
+      'muscle': muscle,
+      'date': date,
+      'training': training,
+      'pause': pause
+    };
+  }
+
+}
+
+
 class Routine {
   Routine({@required this.workoutNames, @required this.thumbnails, @required this.routineName, @required this.videoPaths, @required this.count, @required this.muscleGroups, @required this.classifycation});
 

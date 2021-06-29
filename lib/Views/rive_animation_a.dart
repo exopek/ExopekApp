@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:video_app/CustomWidgets/animationWidget.dart';
+import 'package:video_app/CustomWidgets/training_finish_widget.dart';
 import 'package:video_app/Notifyers/animationState_notifyer.dart';
 
 
@@ -15,8 +16,12 @@ class AnimationPage extends StatefulWidget {
   final int pauseSeconds;
   final int sets;
   final List workout;
+  final String routine;
+  final List thumbnail;
+  final List muscle;
+  final List level;
 
-  const AnimationPage({Key key, this.artboardList, this.trainingSeconds, this.pauseSeconds, this.sets, this.workout}) : super(key: key);
+  const AnimationPage({Key key, this.artboardList, this.trainingSeconds, this.pauseSeconds, this.sets, this.workout, this.routine, this.level, this.thumbnail, this.muscle}) : super(key: key);
 
   @override
   _AnimationPageState createState() => _AnimationPageState();
@@ -46,6 +51,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
   List _durations = [];
   //var _animationState = new List.filled(3, false);
 
+  bool _finish;
   Timer _timer;
   int _pageIndex;
   int _nextArtBoardIndex;
@@ -68,6 +74,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
     final AnimationStateNotifier animationStateNotifier = Provider.of<AnimationStateNotifier>(context, listen: false);
     animationStateNotifier.updateListLength(widget.artboardList.length);
     _pageIndex = 0;
+    _finish = false;
     _setCounter = 0;
     _durations = List.generate(widget.artboardList.length, (index) => widget.trainingSeconds);
     _pageController = PageController(
@@ -93,6 +100,9 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
       );
     });
 
+
+    _pageController.addListener(_restartTimer);
+    _pageController.addListener(_finshTraining);
     //_pageController.addListener(_doScroll);
     /*
     if (animationStateNotifier.scrollPageState == true && _pageController.page.toInt() != widget.artboardList.length-1) {
@@ -186,6 +196,42 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
     _notifier?.value = _pageController.page - _previousPage;
     log('pagecontrollerPage: ${_pageController.page.toInt()}');
     //log('notifyer: ${_notifier?.value}');
+  }
+
+  void _finshTraining() {
+    if (_setCounter == widget.sets && _pageController.page.toInt() == widget.artboardList.length-1) {
+      Future.delayed(Duration(seconds: widget.trainingSeconds + widget.pauseSeconds), () {
+        setState(() {
+          _finish = true;
+        });
+      });
+    }
+  }
+
+  void _restartTimer() {
+    _timer.cancel();
+    _pageIndex = _pageController.page.toInt();
+    setState(() {
+      _timer = Timer.periodic(Duration(seconds: widget.trainingSeconds + widget.pauseSeconds + 2), (Timer timer) {
+        if (_pageIndex < widget.artboardList.length-1) {
+          _pageIndex++;
+        } else {
+          if (_setCounter < widget.sets) {
+            _pageIndex = 0;
+            _setCounter++;
+          } else {
+            _pageIndex =_pageIndex;
+          }
+
+        }
+
+        _pageController.animateToPage(
+          _pageIndex,
+          duration: Duration(milliseconds: 350),
+          curve: Curves.easeIn,
+        );
+      });
+    });
   }
 
   /*
@@ -336,18 +382,24 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
                       } else {
                         _nextArtBoardIndex = position + 1;
                       }
-                      return AnimationWidget(
-                        duration: Duration(seconds: _durations[position]),
-                        artBoardName: widget.artboardList[position],
-                        nextArtBoardName: widget.artboardList[_nextArtBoardIndex],
-                        showCheckAnimation: data.animationState()[position],
-                        lastAnimationValue: data.animationValue()[position],
-                        page: position,
-                        trainingSeconds: widget.trainingSeconds,
-                        pauseSeconds: widget.pauseSeconds,
-                        workout: widget.workout[position],
-                        workoutLength: widget.artboardList.length,
-                      );
+                      if (_finish == true) {
+                        return FinishAnimation(routine: widget.routine, workout: widget.workout, artboard: widget.artboardList, muscle: widget.muscle, thumbnail: widget.thumbnail,
+                        training: widget.trainingSeconds, sets: widget.sets, level: widget.level, pause: widget.pauseSeconds,);
+                      } else {
+                        return AnimationWidget(
+                          duration: Duration(seconds: _durations[position]),
+                          artBoardName: widget.artboardList[position],
+                          nextArtBoardName: widget.artboardList[_nextArtBoardIndex],
+                          showCheckAnimation: data.animationState()[position],
+                          lastAnimationValue: data.animationValue()[position],
+                          page: position,
+                          trainingSeconds: widget.trainingSeconds,
+                          pauseSeconds: widget.pauseSeconds,
+                          workout: widget.workout[position],
+                          workoutLength: widget.artboardList.length,
+                        );
+                      }
+
                     }
                     );
 

@@ -69,7 +69,7 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
             } else {
               _animationColor = Colors.lightBlue[400];
               _workoutState = 'Pause';
-              _animationController.animateBack(0.0,);
+              _animationController.animateBack(0);
             }
 
           });
