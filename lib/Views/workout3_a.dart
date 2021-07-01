@@ -75,9 +75,9 @@ class _Workout3APageState extends State<Workout3APage> {
 
   @override
   void initState() {
-    training = 10;
-    pause = 0;
-    sets = 0;
+    training = 5;
+    pause = 5;
+    sets = 1;
     firstVisit = false;
     workout = [];
     videoPath = [];

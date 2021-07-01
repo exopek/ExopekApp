@@ -7,7 +7,7 @@ import 'package:video_app/CustomWidgets/workout_completion_ring.dart';
 import 'package:video_app/Notifyers/animationState_notifyer.dart';
 
 class AnimationWidget extends StatefulWidget {
-  const AnimationWidget({Key key, this.duration, this.artBoardName, this.showCheckAnimation, this.page, this.lastAnimationValue, this.trainingSeconds, this.pauseSeconds, this.workout, this.position, this.workoutLength, this.nextArtBoardName}) : super(key: key);
+  const AnimationWidget({Key key, this.duration, this.artBoardName, this.showCheckAnimation, this.page, this.lastAnimationValue, this.trainingSeconds, this.pauseSeconds, this.workout, this.position, this.workoutLength, this.nextArtBoardName, this.currentSet, this.sets, this.workoutNext}) : super(key: key);
 
   final Duration duration;
   final String artBoardName;
@@ -18,16 +18,20 @@ class AnimationWidget extends StatefulWidget {
   final int trainingSeconds;
   final int pauseSeconds;
   final String workout;
+  final String workoutNext;
   final int position;
   final int workoutLength;
+  final int currentSet;
+  final int sets;
 
   @override
   _AnimationWidgetState createState() => _AnimationWidgetState();
 }
 
 
-class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProviderStateMixin{
+class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderStateMixin{
   AnimationController _animationController;
+  AnimationController _animationControllerNext;
   RiveAnimationController _controller;
   RiveAnimationController _controllerNext;
   Artboard _riveArtboard;
@@ -36,10 +40,13 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
   double _lastAnimationVaue;
   Color _animationColor;
   String _workoutState;
+  Duration dur;
+  bool _firstController;
 
   @override
   void initState() {
     super.initState();
+    _firstController = true;
     _workoutState = 'Training';
     _animationColor = Colors.green;
     _lastAnimationVaue = widget.lastAnimationValue;
@@ -47,6 +54,11 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
     _animationController = AnimationController(
       vsync: this,
       duration: widget.duration,
+
+    );
+    _animationControllerNext = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: widget.pauseSeconds)
     );
     _animationController.forward(from: _showCheckAnimation ? 1.0 : _lastAnimationVaue);
     _animationController.addStatusListener((status) {
@@ -62,14 +74,17 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
             _animationController
               ..duration = Duration(seconds: widget.pauseSeconds);
             log('position: ${widget.page} - workoutLength: ${widget.workoutLength}');
-            if (widget.page == widget.workoutLength-1) {
+            if (widget.page == widget.workoutLength-1 && widget.currentSet == widget.sets) {
               _animationColor = Colors.green;
               _workoutState = 'Fertig';
               _animationController.reset();
             } else {
               _animationColor = Colors.lightBlue[400];
               _workoutState = 'Pause';
-              _animationController.animateBack(0);
+              _animationController.reset();
+              //_animationController.animateBack(0);
+              _animationControllerNext.reverse(from: widget.pauseSeconds.toDouble());
+              _firstController = false;
             }
 
           });
@@ -79,10 +94,17 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
 
       } else if (status == AnimationStatus.dismissed) {
         log('animationControllerValue: ${_animationController.value}');
-        animationStateNotifier.holdAnimationValues(widget.page, _animationController.value);
+        //animationStateNotifier.holdAnimationValues(widget.page, _animationController.value);
         //_controller.isActive = false;
       }
     });
+
+    _animationControllerNext.addStatusListener((statusNext) {
+      if (_animationControllerNext.isDismissed) {
+        _controllerNext.isActive = false;
+      }
+    });
+
     rootBundle.load('assets/kniebeuge.riv').then(
           (data) async {
         // Load the RiveFile from the binary data.
@@ -107,6 +129,7 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
   @override
   void dispose() {
     _animationController.dispose();
+    _animationControllerNext.dispose();
     _controller.dispose();
     _controllerNext.dispose();
     super.dispose();
@@ -151,9 +174,13 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
               color: _animationColor,
               child: Center(
                 child: AnimatedBuilder(
-                    animation: _animationController,
+                    animation: _firstController ? _animationController : _animationControllerNext,
                     builder: (BuildContext context, Widget child) {
-                      Duration dur = _animationController.duration * _animationController.value;
+                      if (_firstController == false) {
+                        dur = _animationControllerNext.duration * _animationControllerNext.value;
+                      } else {
+                        dur = _animationController.duration * _animationController.value;
+                      }
                       return Text(
                         '${dur.inMinutes}:${(dur.inSeconds % 60).toString().padLeft(2, '0')}',
                         style: TextStyle(
@@ -166,71 +193,126 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
                 ),
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height/3,
+            Stack(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height/3,
+                  width: MediaQuery.of(context).size.width,
+                  color: Theme.of(context).primaryColor,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _lastAnimationVaue = 0.0;
+                        _showCheckAnimation = false;
+                        _controller.isActive = true;
+                        _animationController.reset();
+                        _animationController.forward(from: 0.0);
+                        animationStateNotifier.holdAnimationValues(widget.page, _lastAnimationVaue);
+                        animationStateNotifier.updateAnimationState(widget.page, false);
+                      });
+                    },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height/3,
+                          width: MediaQuery.of(context).size.width/2,
+                          child: AnimatedBuilder(
+                              animation:  _animationController,
+                              builder: (BuildContext context, Widget child) {
+                                final progress = _animationController.value ?? 0;
+                                if (_riveArtboard != null) {
+                                  animationStateNotifier.holdAnimationValues(widget.page, progress);
 
-              color: Theme.of(context).primaryColor,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _lastAnimationVaue = 0.0;
-                    _showCheckAnimation = false;
-                    _controller.isActive = true;
-                    _animationController.reset();
-                    _animationController.forward(from: 0.0);
-                    animationStateNotifier.holdAnimationValues(widget.page, _lastAnimationVaue);
-                    animationStateNotifier.updateAnimationState(widget.page, false);
-                  });
-                },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height/3,
-                      width: MediaQuery.of(context).size.width/2,
-                      child: AnimatedBuilder(
-                          animation:  _animationController,
-                          builder: (BuildContext context, Widget child) {
-                            final progress = _animationController.value ?? 0;
-                            if (mounted) {
-                              animationStateNotifier.holdAnimationValues(widget.page, progress);
-                            }
-                            return Stack(
-                              children: [
-                                Center(child: WorkoutCompletionRing(progress: progress,)),
-                                _showCheckAnimation ? Center(
-                                  child: Container(
-                                      height: 150.0,
-                                      width: 150.0,
-                                      child: Rive(artboard: _riveArtboardNext,
+                                return Stack(
+                                  children: [
+                                    Center(child: WorkoutCompletionRing(progress: progress,)),
+                                    _showCheckAnimation ? Center(
+                                      child: Container(
+                                          height: 150.0,
+                                          width: 150.0,
+                                          child: Center(
+                                              child: Image.asset('assets/Logo_weiß.png'
+                                              )
+                                          )
+                                      ),
+                                    )
+                                /*
+                                Positioned.fill(
+                                      child: Image.asset('assets/Logo_weiß.png'
                                       )
-                                  ),
-                                )
+                                    )
+                                        */
+                                        :
+                                    Center(
+                                      child: Container(
+                                          height: 150.0,
+                                          width: 150.0,
+                                          child: Rive(artboard: _riveArtboard,
+                                          )
+                                      ),
+                                    )
+                                  ],
+                                );
+                                } else {
+                                  return Container();
+                                }
+                              }
+                          ),
+                        ),
+                  ),
+                ),
+                //
+                Container(
+                  height: MediaQuery.of(context).size.height/6,
+                  width: MediaQuery.of(context).size.width/5,
+                  child: AnimatedBuilder(
+                      animation:  _animationControllerNext,
+                      builder: (BuildContext context, Widget child) {
+                        final progress1 = _animationControllerNext.value;
+
+                    if (_riveArtboardNext != null) {
+                        return Stack(
+                          children: [
+                            Center(child: WorkoutCompletionRing(progress: progress1,)),
+                            _showCheckAnimation ? Center(
+                              child: Container(
+                                  height: 50.0,
+                                  width: 50.0,
+                                  child: Rive(artboard: _riveArtboardNext,
+                                  )
+                              ),
+                            )
                             /*
                             Positioned.fill(
                                   child: Image.asset('assets/Logo_weiß.png'
                                   )
                                 )
                                     */
-                                    :
-                                Center(
-                                  child: Container(
-                                      height: 150.0,
-                                      width: 150.0,
-                                      child: Rive(artboard: _riveArtboard,
+                                :
+                            Center(
+                              child: Container(
+                                  height: 50.0,
+                                  width: 50.0,
+                                  child: Center(
+                                      child: Image.asset('assets/Logo_weiß.png'
                                       )
-                                  ),
-                                )
-                              ],
-                            );
-                          }
-                      ),
-                    ),
-              ),
+                                  )
+                              ),
+                            )
+                          ],
+                        );
+                    } else {
+                      return Container();
+                    }
+                      }
+                  ),
+                ),
+              ],
             ),
             Container(
               height: MediaQuery.of(context).size.height/16,
               width: MediaQuery.of(context).size.width,
               color: Theme.of(context).primaryColor,
               child: Center(
-                child: Text(widget.workout,
+                child: Text(_firstController ? widget.workout : widget.workoutNext,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 40.0
@@ -238,6 +320,22 @@ class _AnimationWidgetState extends State<AnimationWidget> with SingleTickerProv
                 ),
               ),
             ),
+            Container(
+              height: MediaQuery.of(context).size.height/16,
+              width: MediaQuery.of(context).size.width,
+              color: Theme.of(context).primaryColor,
+              child: Center(
+                child: Text('${widget.currentSet}/${widget.sets} Sätze',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 40.0
+                  ),
+                ),
+              ),
+            ),
+
+
+
           ],
         ),
       ),

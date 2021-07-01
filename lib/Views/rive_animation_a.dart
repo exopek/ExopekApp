@@ -75,7 +75,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
     animationStateNotifier.updateListLength(widget.artboardList.length);
     _pageIndex = 0;
     _finish = false;
-    _setCounter = 0;
+    _setCounter = 1;
     _durations = List.generate(widget.artboardList.length, (index) => widget.trainingSeconds);
     _pageController = PageController(
       initialPage: 0);
@@ -209,6 +209,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
   }
 
   void _restartTimer() {
+    final AnimationStateNotifier animationStateNotifier = Provider.of<AnimationStateNotifier>(context, listen: false);
     _timer.cancel();
     _pageIndex = _pageController.page.toInt();
     setState(() {
@@ -217,6 +218,8 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
           _pageIndex++;
         } else {
           if (_setCounter < widget.sets) {
+            animationStateNotifier.holdAnimationValues(_pageIndex, 0.0);
+            animationStateNotifier.updateAnimationState(_pageIndex, true);
             _pageIndex = 0;
             _setCounter++;
           } else {
@@ -366,6 +369,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
+                  physics: NeverScrollableScrollPhysics(),
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
                   itemCount: widget.artboardList.length,
@@ -390,13 +394,16 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
                           duration: Duration(seconds: _durations[position]),
                           artBoardName: widget.artboardList[position],
                           nextArtBoardName: widget.artboardList[_nextArtBoardIndex],
-                          showCheckAnimation: data.animationState()[position],
+                          showCheckAnimation: false,//data.animationState()[position],
                           lastAnimationValue: data.animationValue()[position],
                           page: position,
                           trainingSeconds: widget.trainingSeconds,
                           pauseSeconds: widget.pauseSeconds,
                           workout: widget.workout[position],
+                          workoutNext: widget.workout[_nextArtBoardIndex],
                           workoutLength: widget.artboardList.length,
+                          sets: widget.sets,
+                          currentSet: _setCounter,
                         );
                       }
 

@@ -46,7 +46,7 @@ class _FinishAnimationState extends State<FinishAnimation> {
         thumbnail: widget.thumbnail,
         routine: widget.routine,
         artboard: widget.artboard,
-        duration: widget.artboard.length*(widget.pause+widget.training),
+        duration: widget.artboard.length*(widget.pause+widget.training)*widget.sets,
         muscle: widget.muscle,
         level: widget.level,
         date: currentDate(),
