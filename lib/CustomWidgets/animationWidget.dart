@@ -42,10 +42,12 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
   String _workoutState;
   Duration dur;
   bool _firstController;
+  bool _finish;
 
   @override
   void initState() {
     super.initState();
+    _finish = false;
     _firstController = true;
     _workoutState = 'Training';
     _animationColor = Colors.green;
@@ -69,7 +71,7 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
         _controller.isActive = false;
         animationStateNotifier.updatePage(true);
 
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(Duration(seconds: 0), () {
           setState(() {
             _animationController
               ..duration = Duration(seconds: widget.pauseSeconds);
@@ -78,6 +80,8 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
               _animationColor = Colors.green;
               _workoutState = 'Fertig';
               _animationController.reset();
+              _animationControllerNext.reset();
+              _finish = true;
             } else {
               _animationColor = Colors.lightBlue[400];
               _workoutState = 'Pause';
@@ -193,142 +197,282 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
                 ),
               ),
             ),
-            Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height/3,
-                  width: MediaQuery.of(context).size.width,
-                  color: Theme.of(context).primaryColor,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _lastAnimationVaue = 0.0;
-                        _showCheckAnimation = false;
-                        _controller.isActive = true;
-                        _animationController.reset();
-                        _animationController.forward(from: 0.0);
-                        animationStateNotifier.holdAnimationValues(widget.page, _lastAnimationVaue);
-                        animationStateNotifier.updateAnimationState(widget.page, false);
-                      });
-                    },
-                        child: Container(
-                          height: MediaQuery.of(context).size.height/3,
-                          width: MediaQuery.of(context).size.width/2,
-                          child: AnimatedBuilder(
-                              animation:  _animationController,
-                              builder: (BuildContext context, Widget child) {
-                                final progress = _animationController.value ?? 0;
-                                if (_riveArtboard != null) {
-                                  animationStateNotifier.holdAnimationValues(widget.page, progress);
+             Container(
+                height: MediaQuery.of(context).size.height*0.05,
+                width: MediaQuery.of(context).size.width,
+                child: AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (BuildContext context, Widget child) {
+                    return WorkoutCompletionRing(progress: _animationController.value,);
 
-                                return Stack(
-                                  children: [
-                                    Center(child: WorkoutCompletionRing(progress: progress,)),
-                                    _showCheckAnimation ? Center(
-                                      child: Container(
-                                          height: 150.0,
-                                          width: 150.0,
-                                          child: Center(
-                                              child: Image.asset('assets/Logo_weiß.png'
-                                              )
-                                          )
-                                      ),
-                                    )
-                                /*
-                                Positioned.fill(
-                                      child: Image.asset('assets/Logo_weiß.png'
-                                      )
-                                    )
-                                        */
-                                        :
-                                    Center(
-                                      child: Container(
-                                          height: 150.0,
-                                          width: 150.0,
-                                          child: Rive(artboard: _riveArtboard,
-                                          )
-                                      ),
-                                    )
-                                  ],
-                                );
-                                } else {
-                                  return Container();
-                                }
-                              }
-                          ),
-                        ),
-                  ),
+                  }
                 ),
-                //
-                Container(
-                  height: MediaQuery.of(context).size.height/6,
-                  width: MediaQuery.of(context).size.width/5,
-                  child: AnimatedBuilder(
-                      animation:  _animationControllerNext,
-                      builder: (BuildContext context, Widget child) {
-                        final progress1 = _animationControllerNext.value;
-
-                    if (_riveArtboardNext != null) {
-                        return Stack(
-                          children: [
-                            Center(child: WorkoutCompletionRing(progress: progress1,)),
-                            _showCheckAnimation ? Center(
-                              child: Container(
-                                  height: 50.0,
-                                  width: 50.0,
-                                  child: Rive(artboard: _riveArtboardNext,
-                                  )
-                              ),
-                            )
-                            /*
-                            Positioned.fill(
-                                  child: Image.asset('assets/Logo_weiß.png'
-                                  )
-                                )
-                                    */
-                                :
-                            Center(
-                              child: Container(
-                                  height: 50.0,
-                                  width: 50.0,
-                                  child: Center(
-                                      child: Image.asset('assets/Logo_weiß.png'
-                                      )
-                                  )
-                              ),
-                            )
-                          ],
-                        );
-                    } else {
-                      return Container();
-                    }
-                      }
-                  ),
-                ),
-              ],
-            ),
+              ),
             Container(
-              height: MediaQuery.of(context).size.height/16,
+              height: MediaQuery.of(context).size.height*0.15,
               width: MediaQuery.of(context).size.width,
               color: Theme.of(context).primaryColor,
-              child: Center(
-                child: Text(_firstController ? widget.workout : widget.workoutNext,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40.0
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text('Sätze',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40.0
+                        ),
+                      ),
+                      Text('${widget.currentSet}/${widget.sets}',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40.0
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('Übungen',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40.0
+                        ),
+                      ),
+                      Text('${widget.page+1}/${widget.workoutLength}',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40.0
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            /*
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+              child: Container(
+                height: MediaQuery.of(context).size.height/16,
+                width: MediaQuery.of(context).size.width,
+                color: Theme.of(context).primaryColor,
+                child: Center(
+                  child: Text('${widget.currentSet}/${widget.sets}',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 40.0
+                    ),
                   ),
                 ),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+              child: Container(
+                height: MediaQuery.of(context).size.height/16,
+                width: MediaQuery.of(context).size.width,
+                color: Theme.of(context).primaryColor,
+                child: Center(
+                  child: Text('Sätze',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 40.0
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            */
             Container(
-              height: MediaQuery.of(context).size.height/16,
+              height: MediaQuery.of(context).size.height/3,
               width: MediaQuery.of(context).size.width,
-              color: Theme.of(context).primaryColor,
-              child: Center(
-                child: Text('${widget.currentSet}/${widget.sets} Sätze',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40.0
+              child: AnimatedBuilder(
+                  animation:  _animationController,
+                  builder: (BuildContext context, Widget child) {
+                    final progress = _animationController.value ?? 0;
+                    if (_riveArtboard != null) {
+                      animationStateNotifier.holdAnimationValues(widget.page, progress);
+
+                      return Stack(
+                        children: [
+
+                          _showCheckAnimation ? Center(
+                            child: Container(
+                                height: 150.0,
+                                width: 150.0,
+                                child: !_finish ? Rive(artboard: _riveArtboardNext,
+                                ) : Center(child: Image.asset('assets/Logo_weiß.png'
+                                ))
+                            ),
+                          )
+                          /*
+                                  Positioned.fill(
+                                        child: Image.asset('assets/Logo_weiß.png'
+                                        )
+                                      )
+                                          */
+                              :
+                          Center(
+                            child: Container(
+                                height: 200.0,
+                                width: 200.0,
+                                child: Rive(artboard: _riveArtboard,
+                                )
+                            ),
+                          )
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }
+              ),
+            ),
+            /*
+            Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.1),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height/4,
+                    width: MediaQuery.of(context).size.width,
+                    color: Theme.of(context).primaryColor,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _lastAnimationVaue = 0.0;
+                          _showCheckAnimation = false;
+                          _controller.isActive = true;
+                          _animationController.reset();
+                          _animationController.forward(from: 0.0);
+                          animationStateNotifier.holdAnimationValues(widget.page, _lastAnimationVaue);
+                          animationStateNotifier.updateAnimationState(widget.page, false);
+                        });
+                      },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height/4,
+                            width: MediaQuery.of(context).size.width/3,
+                            child: AnimatedBuilder(
+                                animation:  _animationController,
+                                builder: (BuildContext context, Widget child) {
+                                  final progress = _animationController.value ?? 0;
+                                  if (_riveArtboard != null) {
+                                    animationStateNotifier.holdAnimationValues(widget.page, progress);
+
+                                  return Stack(
+                                    children: [
+                                      Center(child: WorkoutCompletionRing(progress: progress,)),
+                                      _showCheckAnimation ? Center(
+                                        child: Container(
+                                            height: 130.0,
+                                            width: 130.0,
+                                            child: Center(
+                                                child: Image.asset('assets/Logo_weiß.png'
+                                                )
+                                            )
+                                        ),
+                                      )
+                                  /*
+                                  Positioned.fill(
+                                        child: Image.asset('assets/Logo_weiß.png'
+                                        )
+                                      )
+                                          */
+                                          :
+                                      Center(
+                                        child: Container(
+                                            height: 130.0,
+                                            width: 130.0,
+                                            child: Rive(artboard: _riveArtboard,
+                                            )
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                  } else {
+                                    return Container();
+                                  }
+                                }
+                            ),
+                          ),
+                    ),
+                  ),
+                ),
+                //
+                Padding(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.1),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height/6,
+                    width: MediaQuery.of(context).size.width/5,
+                    child: AnimatedBuilder(
+                        animation:  _animationControllerNext,
+                        builder: (BuildContext context, Widget child) {
+                          final progress1 = _animationControllerNext.value;
+
+                      if (_riveArtboardNext != null) {
+                          return Stack(
+                            children: [
+                              Center(child: WorkoutCompletionRing(progress: progress1,)),
+                              _showCheckAnimation ? Center(
+                                child: Container(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    child: Rive(artboard: _riveArtboardNext,
+                                    )
+                                ),
+                              )
+                              /*
+                              Positioned.fill(
+                                    child: Image.asset('assets/Logo_weiß.png'
+                                    )
+                                  )
+                                      */
+                                  :
+                              Center(
+                                child: Container(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    child: Center(
+                                        child: Image.asset('assets/Logo_weiß.png'
+                                        )
+                                    )
+                                ),
+                              )
+                            ],
+                          );
+                      } else {
+                        return Container();
+                      }
+                        }
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            */
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+              child: Container(
+                height: MediaQuery.of(context).size.height/16,
+                width: MediaQuery.of(context).size.width,
+                color: Theme.of(context).primaryColor,
+                child: Center(
+                  child: AnimatedCrossFade(
+                    duration: Duration(seconds: 1),
+                    crossFadeState: _firstController ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                    firstChild: Text(widget.workout,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 40.0
+                      ),
+                    ),
+                    secondChild: Text('Next: ${widget.workoutNext}',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 40.0
+                      ),
+                    ),
                   ),
                 ),
               ),

@@ -10,13 +10,54 @@ class WorkoutCompletionRing extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 1.0, // so hat das ParentWidget die gleiche Breite und Höhe => gut für Kriese
       child: CustomPaint(
-        painter: RingPainter(
+        painter: RectPainter(
           progress: progress
         ),
       ),
     );
   }
 }
+
+
+class RectPainter extends CustomPainter {
+  RectPainter({@required this.progress});
+  final double progress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final notCompleted = progress < 1.0;
+    final strokeWidth = 20.0; // dynamische Widgetgröße möglich
+    final rect = Rect.fromLTRB(20.0, 100.0, 20.0, 100.0);
+    //final center = Offset(size.width/2, size.height/2);
+    //final radius = notCompleted ? (size.width - strokeWidth) / 2 : size.width / 2;
+    /*
+    if (notCompleted) {
+      final backgroundPaint = Paint()
+        ..isAntiAlias = true // shape looks smoother
+        ..strokeWidth = strokeWidth
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke;
+      canvas.drawRect(rect, backgroundPaint);
+    }
+    */
+
+    final foregroundPaint = Paint()
+      ..isAntiAlias = true
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;//notCompleted ? PaintingStyle.stroke : PaintingStyle.fill;
+    canvas.drawRect(Offset(0.0, 0.0) & Size(progress*size.width, 20.0), foregroundPaint);
+
+  }
+
+  @override
+  bool shouldRepaint(covariant RectPainter oldDelegate) {
+    return oldDelegate.progress != progress;
+  }
+
+}
+
 
 class RingPainter extends CustomPainter {
   RingPainter({@required this.progress});
@@ -33,7 +74,7 @@ class RingPainter extends CustomPainter {
       final backgroundPaint = Paint()
         ..isAntiAlias = true // shape looks smoother
         ..strokeWidth = strokeWidth
-        ..color = Colors.white
+        ..color = Colors.black
         ..style = PaintingStyle.stroke;
       canvas.drawCircle(center, radius, backgroundPaint);
     }
@@ -42,7 +83,7 @@ class RingPainter extends CustomPainter {
     final foregroundPaint = Paint()
       ..isAntiAlias = true
       ..strokeWidth = strokeWidth
-      ..color = Colors.black
+      ..color = Colors.red
       ..style = notCompleted ? PaintingStyle.stroke : PaintingStyle.fill;
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), -pi/2, 2 * pi * progress, false, foregroundPaint);
   }

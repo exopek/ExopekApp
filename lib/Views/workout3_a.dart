@@ -10,6 +10,7 @@ import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/animationState_notifyer.dart';
 import 'package:video_app/Notifyers/timerEnd_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
+import 'package:video_app/Views/pre_workout_a.dart';
 import 'package:video_app/Views/rive_animation_a.dart';
 import 'package:intl/intl.dart';
 
@@ -503,8 +504,8 @@ class _Workout3APageState extends State<Workout3APage> {
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
                             ChangeNotifierProvider(create: (context) => TimerNotifyer()),
                             ChangeNotifierProvider(create: (context) => AnimationStateNotifier())
-                          ], child: AnimationPage(artboardList: videoPath, trainingSeconds: training, pauseSeconds: pause, sets: sets, workout: workout, routine: widget.routineName,
-                        thumbnail: thumbnails, level: classifycation, muscle: muscleGroups,)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
+                          ], child: PreWorkoutPage(artboardList: videoPath, trainingSeconds: training, pauseSeconds: pause, sets: sets, workout: workout, routine: widget.routineName,
+                        thumbnail: thumbnails, level: classifycation, muscle: muscleGroups, uid: database.uid,)//child: VideoPlayerList(urlList: videoPath, workoutName: widget.routineName, muscleGroupsList: muscleGroups, classifycationList: classifycation, thumbnialsList: thumbnails, workoutNameList: workout,),
                         );
 
                       },
