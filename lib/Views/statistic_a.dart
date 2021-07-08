@@ -187,7 +187,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   void sort_Week(snapshot) {
     for (int i = 0; i < snapshot.data.length; i++) {
-      final databaseDay = DateTime.parse(snapshot.data[i].Datum);
+      final databaseDay = DateTime.parse(snapshot.data[i].date);
       if (databaseDay.year == _datetime_weekBegin.year && databaseDay.month == _datetime_weekBegin.month && databaseDay.day >= _datetime_weekBegin.day && databaseDay.day <= _datetime_weekEnd.day) {
         finishWorkoutList.add(snapshot.data[i]);
       } else {
@@ -198,7 +198,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   void sort_Month(snapshot) {
     for (int i = 0; i < snapshot.data.length; i++) {
-      final databaseDay = DateTime.parse(snapshot.data[i].Datum);
+      final databaseDay = DateTime.parse(snapshot.data[i].date);
       if (databaseDay.year == _datetime_year && databaseDay.month == _datetime_month) {
         finishWorkoutList.add(snapshot.data[i]);
       } else {
@@ -209,7 +209,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   void sort_Year(snapshot) {
     for (int i = 0; i < snapshot.data.length; i++) {
-      final databaseDay = DateTime.parse(snapshot.data[i].Datum);
+      final databaseDay = DateTime.parse(snapshot.data[i].date);
       if (databaseDay.year == _datetime_year) {
         finishWorkoutList.add(snapshot.data[i]);
       } else {
@@ -220,9 +220,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   void count_ausdauer_kraft() {
     for (int i = 0; i < finishWorkoutList.length; i++) {
-      if (finishWorkoutList[i].Klassifizierung[0] == 'Kraft') {
+      if (finishWorkoutList[i].level[0] == 'Kraft') {
         kraft = kraft + 1;
-      } else if (finishWorkoutList[i].Klassifizierung[0] == 'Ausdauer') {
+      } else if (finishWorkoutList[i].level[0] == 'Ausdauer') {
         ausdauer = ausdauer + 1;
       } else {
         ausdauer = 0;
@@ -234,7 +234,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   void count_muskelgruppen() {
     for (int i = 0; i < finishWorkoutList.length; i++) {
-      for (var value in finishWorkoutList[i].Muskelgruppen) {
+      for (var value in finishWorkoutList[i].muscle) {
         if (value == 'Brust') {
           brust = brust + 1;
           counter_uebungen = counter_uebungen + 1;
@@ -415,7 +415,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       //bottomNavigationBar: _navigationBar(context),
-      body: StreamBuilder<List<Einheit>>(
+      body: StreamBuilder<List<FinishRoutineAnimation>>(
         stream: database.verlaufStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -860,7 +860,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   containerChild: Container(
                                     child: Center(
                                       child: Text(
-                                        finishWorkoutList[index].Name,
+                                        finishWorkoutList[index].routine,
                                         style: TextStyle(
                                           fontFamily: 'FiraSansExtraCondensed',
                                           color: Colors.white,

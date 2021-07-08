@@ -88,9 +88,9 @@ class DatabaseHandler {
     builder:  (data) => RoutineAnimation.fromMap(data),
   );
 
-  Stream<List<Einheit>> verlaufStream() => _service.collectionStream(
+  Stream<List<FinishRoutineAnimation>> verlaufStream() => _service.collectionStream(
     path: CloudPath.getverlauf(uid),
-    builder:  (data) => Einheit.fromMap(data),
+    builder:  (data) => FinishRoutineAnimation.fromMap(data),
   );
 
   Stream<Routine> routineInputStream(String id) => _service.documentStream(
