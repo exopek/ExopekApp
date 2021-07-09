@@ -36,6 +36,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
   List finishWorkoutList;
 
+  var anfaenger;
+  var fortgeschritten;
+  var profi;
   var kraft;
   var ausdauer;
   var brust;
@@ -45,6 +48,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
   var ruecken;
   var counter_uebungen;
 
+  double prozent_anfeanger;
+  double prozent_fortgeschritten;
+  double prozenz_profi;
   double prozent_kraft;
   double prozent_ausdauer;
   double prozent_brust;
@@ -188,11 +194,42 @@ class _StatisticAPageState extends State<StatisticAPage> {
   void sort_Week(snapshot) {
     for (int i = 0; i < snapshot.data.length; i++) {
       final databaseDay = DateTime.parse(snapshot.data[i].date);
+
+      //log('${databaseDay.day} >= ${_datetime_weekBegin.day}');
+      if (_datetime_weekBegin.year != _datetime_weekEnd.year) {
+        if (databaseDay.year == _datetime_weekBegin.year) {
+          if (databaseDay.month == _datetime_weekBegin.month && databaseDay.day >= _datetime_weekBegin.day) {
+            finishWorkoutList.add(snapshot.data[i]);
+          }
+        } else if (databaseDay.year == _datetime_weekEnd.year) {
+          if (databaseDay.month == _datetime_weekEnd.month && databaseDay.day <= _datetime_weekEnd.day) {
+            finishWorkoutList.add(snapshot.data[i]);
+          }
+        }
+      } else if (_datetime_weekBegin.year == _datetime_weekEnd.year) {
+        if (_datetime_weekBegin.month != _datetime_weekEnd.month) {
+          if (databaseDay.month == _datetime_weekBegin.month) {
+            if (databaseDay.day >= _datetime_weekBegin.day) {
+              finishWorkoutList.add(snapshot.data[i]);
+            }
+          } else if (databaseDay.month == _datetime_weekEnd.month) {
+            if (databaseDay.day <= _datetime_weekEnd.day) {
+              finishWorkoutList.add(snapshot.data[i]);
+            }
+          }
+        } else if (_datetime_weekBegin.month == _datetime_weekEnd.month) {
+          if (databaseDay.day >= _datetime_weekBegin.day && databaseDay.day <= _datetime_weekEnd.day) {
+            finishWorkoutList.add(snapshot.data[i]);
+          }
+        }
+      }
+      /*
       if (databaseDay.year == _datetime_weekBegin.year && databaseDay.month == _datetime_weekBegin.month && databaseDay.day >= _datetime_weekBegin.day && databaseDay.day <= _datetime_weekEnd.day) {
         finishWorkoutList.add(snapshot.data[i]);
-      } else {
-        log('message');
+      } else if (databaseDay.year == _datetime_weekEnd.year && databaseDay.month == _datetime_weekEnd.month && databaseDay.day >= _datetime_weekBegin.day && databaseDay.day <= _datetime_weekEnd.day) {
+        finishWorkoutList.add(snapshot.data[i]);
       }
+      */
     }
   }
 
@@ -201,8 +238,6 @@ class _StatisticAPageState extends State<StatisticAPage> {
       final databaseDay = DateTime.parse(snapshot.data[i].date);
       if (databaseDay.year == _datetime_year && databaseDay.month == _datetime_month) {
         finishWorkoutList.add(snapshot.data[i]);
-      } else {
-        log('message');
       }
     }
   }
@@ -212,22 +247,22 @@ class _StatisticAPageState extends State<StatisticAPage> {
       final databaseDay = DateTime.parse(snapshot.data[i].date);
       if (databaseDay.year == _datetime_year) {
         finishWorkoutList.add(snapshot.data[i]);
-      } else {
-        log('message');
       }
     }
   }
 
   void count_ausdauer_kraft() {
     for (int i = 0; i < finishWorkoutList.length; i++) {
-      if (finishWorkoutList[i].level[0] == 'Kraft') {
-        kraft = kraft + 1;
-      } else if (finishWorkoutList[i].level[0] == 'Ausdauer') {
-        ausdauer = ausdauer + 1;
+      if (finishWorkoutList[i].level[0] == 'Anfänger') {
+        anfaenger = anfaenger + 1;
+      } else if (finishWorkoutList[i].level[0] == 'Fortgeschritten') {
+        fortgeschritten = fortgeschritten + 1;
+      } else if (finishWorkoutList[i].level[0] == 'Profi') {
+
+        //log('message: ${finishWorkoutList.length}');
       } else {
-        ausdauer = 0;
-        kraft = 0;
-        log('message: ${finishWorkoutList.length}');
+        anfaenger = 0;
+        fortgeschritten = 0;
       }
     }
   }
@@ -262,16 +297,16 @@ class _StatisticAPageState extends State<StatisticAPage> {
     firstVisit = false;
     workout = [];
     videoPath = [];
-    kraft = 0;
-    ausdauer = 0;
+    anfaenger = 0;
+    fortgeschritten = 0;
     brust = 0;
     beine = 0;
     bauch = 0;
     schultern = 0;
     ruecken = 0;
     counter_uebungen = 0;
-    prozent_kraft = 0;
-    prozent_ausdauer = 0;
+    prozent_anfeanger = 0;
+    prozent_fortgeschritten = 0;
     prozent_beine = 0;
     prozent_bauch = 0;
     prozent_brust = 0;
@@ -286,7 +321,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
     _week = true;
     _month = false;
     _year = false;
-    _woche_color = Colors.redAccent;
+    _woche_color = Colors.red;
     _monat_color = Colors.white;
     _jahr_color = Colors.white;
     /*
@@ -420,8 +455,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             finishWorkoutList.clear();
-            kraft = 0;
-            ausdauer = 0;
+            anfaenger = 0;
+            fortgeschritten = 0;
             brust = 0;
             beine = 0;
             bauch = 0;
@@ -442,16 +477,16 @@ class _StatisticAPageState extends State<StatisticAPage> {
             count_muskelgruppen();
 
             if (finishWorkoutList.length == 0) {
-              prozent_kraft = 0;
-              prozent_ausdauer = 0;
+              prozent_anfeanger = 0;
+              prozent_fortgeschritten = 0;
               prozent_beine = 0;
               prozent_bauch = 0;
               prozent_brust = 0;
               prozent_schultern = 0;
               prozent_ruecken = 0;
             } else {
-              prozent_kraft = (kraft/finishWorkoutList.length)*100;
-              prozent_ausdauer = (ausdauer/finishWorkoutList.length)*100;
+              prozent_anfeanger = (anfaenger/finishWorkoutList.length)*100;
+              prozent_fortgeschritten = (fortgeschritten/finishWorkoutList.length)*100;
               prozent_beine = (beine/counter_uebungen)*100;
               prozent_bauch = (bauch/counter_uebungen)*100;
               prozent_brust = (brust/counter_uebungen)*100;
@@ -459,7 +494,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
               prozent_ruecken = (ruecken/counter_uebungen)*100;
             }
 
-            print('proz_ausdauer: ${prozent_ausdauer}');
+            //print('proz_ausdauer: ${prozent_ausdauer}');
             return CustomScrollView(
               physics: BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()
@@ -603,8 +638,11 @@ class _StatisticAPageState extends State<StatisticAPage> {
                               //blurRadius2: 3.0,
                               circleShape: false,
                               containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
-                              containerChild: InkWell(
-                                onTap: () {
+                              containerChild: TextButton(
+                                style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(Colors.transparent)
+                                ),
+                                onPressed: () {
                                   setState(() {
                                     _week = true;
                                     _month = false;
@@ -618,7 +656,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   child: Text(
                                     'Woche',
                                     style: TextStyle(
-                                      color: _woche_color
+                                      color: _woche_color,
+                                      fontWeight: FontWeight.bold
                                     ),
                                   ),
                                 ),
@@ -641,8 +680,11 @@ class _StatisticAPageState extends State<StatisticAPage> {
                               //blurRadius2: 3.0,
                               circleShape: false,
                               containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
-                              containerChild: InkWell(
-                                onTap: () {
+                              containerChild: TextButton(
+                                style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(Colors.transparent)
+                                ),
+                                onPressed: () {
                                   setState(() {
                                     _week = false;
                                     _month = true;
@@ -656,7 +698,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   child: Text(
                                     'Monat',
                                     style: TextStyle(
-                                        color: _monat_color
+                                        color: _monat_color,
+                                        fontWeight: FontWeight.bold
                                     ),
                                   ),
                                 ),
@@ -679,8 +722,11 @@ class _StatisticAPageState extends State<StatisticAPage> {
                               //blurRadius2: 3.0,
                               circleShape: false,
                               containerBorderRadius: BorderRadius.all(Radius.circular(40.0)),
-                              containerChild: InkWell(
-                                onTap: () {
+                              containerChild: TextButton(
+                                style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(Colors.transparent)
+                                ),
+                                onPressed: () {
                                   setState(() {
                                     _week = false;
                                     _month = false;
@@ -694,7 +740,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   child: Text(
                                     'Jahr',
                                     style: TextStyle(
-                                        color: _jahr_color
+                                        color: _jahr_color,
+                                        fontWeight: FontWeight.bold
                                     ),
                                   ),
                                 ),
@@ -727,8 +774,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                     shadowColor1: Colors.black,
                                     spreadRadius2: 0.0,
                                     shadowColor2: Colors.white30,
-                                    containerChild: InkWell(
-                                      onTap: () {
+                                    containerChild: IconButton(
+                                      onPressed: () {
                                         if (_week == true) {
                                           final _oldDateTime_weekBegin = _datetime_weekBegin;
                                           final _oldDateTime_weekEnd = _datetime_weekEnd;
@@ -754,8 +801,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                         }
 
                                       },
-                                      child: Icon(
-                                        Icons.arrow_back_ios_sharp
+                                      icon: Icon(
+                                        Icons.arrow_back_ios_sharp,
+                                        color: Colors.white,
                                       ),
                                     ),
                                 ),
@@ -774,8 +822,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                     spreadRadius2: 0.0,
                                     shadowColor1: Colors.black,
                                     shadowColor2: Colors.white30,
-                                    containerChild: InkWell(
-                                      onTap: () {
+                                    containerChild: IconButton(
+                                      onPressed: () {
                                         if (_week == true) {
                                           final _oldDateTime_weekBegin = _datetime_weekBegin;
                                           final _oldDateTime_weekEnd = _datetime_weekEnd;
@@ -801,8 +849,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                         }
 
                                       },
-                                      child: Icon(
-                                          Icons.arrow_forward_ios_sharp
+                                      icon: Icon(
+                                          Icons.arrow_forward_ios_sharp,
+                                        color:  Colors.white,
                                       ),
                                     ),
                                 ),
@@ -858,15 +907,37 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   gradientColor3: Theme.of(context).primaryColor,
                                   gradientColor4: Theme.of(context).primaryColor,
                                   containerChild: Container(
-                                    child: Center(
-                                      child: Text(
-                                        finishWorkoutList[index].routine,
-                                        style: TextStyle(
-                                          fontFamily: 'FiraSansExtraCondensed',
-                                          color: Colors.white,
-                                          fontSize: 20.0
-                                        ),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                            finishWorkoutList[index].routine,
+                                            style: TextStyle(
+                                              fontFamily: 'FiraSansExtraCondensed',
+                                              color: Colors.white,
+                                              fontSize: 20.0
+                                            ),
                                       ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 8.0),
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Icon(Icons.circle, color: Colors.deepPurple,),
+                                                Icon(Icons.circle, color: Colors.cyan,),
+                                                Icon(Icons.circle, color: Colors.pink,),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                    ]
                                     ),
                                 ),
                                 )
@@ -925,7 +996,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                 width: 200.0,
                                 color: Theme.of(context).primaryColor,
                                 child: Center(
-                                  child: Text('Dein Übungsanteil, welcher sich auf den Aufbau von Kraft konzentriert',
+                                  child: Text('Dein Übungsanteil, mit dem Level Anfänger',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'FiraSansExtraCondensed',
@@ -940,7 +1011,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
-                                child: Text('${prozent_kraft.round().toString()}%',
+                                child: Text('${prozent_anfeanger.round().toString()}%',
                                   style: TextStyle(
                                     color: Color.fromRGBO(231, 40, 44, 1),
                                     fontFamily: 'FiraSansExtraCondensed',
@@ -977,7 +1048,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
                                         colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
-                                        stops: [prozent_kraft/100, prozent_kraft/100]
+                                        stops: [prozent_anfeanger/100, prozent_anfeanger/100]
                                     ),
                                   ),
                                 ),
@@ -1015,7 +1086,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                 width: 220.0,
                                 color: Theme.of(context).primaryColor,
                                 child: Center(
-                                  child: Text('Dein Übungsanteil, welcher sich auf den Aufbau von Ausdauer konzentriert',
+                                  child: Text('Dein Übungsanteil, mit dem Level Fortgeschritten',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'FiraSansExtraCondensed',
@@ -1030,7 +1101,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
-                                child: Text('${prozent_ausdauer.round().toString()}%',
+                                child: Text('${prozent_fortgeschritten.round().toString()}%',
                                   style: TextStyle(
                                       color: Color.fromRGBO(231, 40, 44, 1),
                                       fontFamily: 'FiraSansExtraCondensed',
@@ -1067,7 +1138,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
                                         colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
-                                        stops: [prozent_ausdauer/100, prozent_ausdauer/100]
+                                        stops: [prozent_fortgeschritten/100, prozent_fortgeschritten/100]
                                     ),
                                   ),
                                 ),

@@ -34,8 +34,10 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
   AnimationController _animationControllerNext;
   RiveAnimationController _controller;
   RiveAnimationController _controllerNext;
+  RiveAnimationController _checkController;
   Artboard _riveArtboard;
   Artboard _riveArtboardNext;
+  Artboard _checkRiveboard;
   bool _showCheckAnimation;
   double _lastAnimationVaue;
   Color _animationColor;
@@ -126,6 +128,18 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
            });
 
       },
+    );
+
+    rootBundle.load('assets/appanimate.riv').then(
+        (data) async {
+          final file = RiveFile.import(data);
+          final _checkRiveBoard = file.artboardByName('Check');
+          _checkController = SimpleAnimation('CheckAnimation');
+          _checkRiveBoard.addController(_checkController);
+          setState(() {
+            _checkRiveboard = _checkRiveBoard;
+          });
+        }
     );
 
   }
@@ -302,13 +316,13 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
                                 height: 150.0,
                                 width: 150.0,
                                 child: !_finish ? Rive(artboard: _riveArtboardNext,
-                                ) : Center(child: Image.asset('assets/Logo_weiß.png'
-                                ))
+                                ) : Rive(artboard: _checkRiveboard,)
                             ),
                           )
                           /*
                                   Positioned.fill(
                                         child: Image.asset('assets/Logo_weiß.png'
+
                                         )
                                       )
                                           */

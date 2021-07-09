@@ -117,11 +117,12 @@ class _Workout3APageState extends State<Workout3APage> {
             pinned: true, // header bleibt fest bei minExtent
             //floating: true,     // Scrollt den gesamten header weg
             delegate: NetworkingPageHeader(
-              expandPic: true,
+              expandPic: false,
               showBackButton: true,
-                minExtent: 250.0,
-                maxExtent: MediaQuery.of(context).size.height,
-                headerName: widget.routineName
+                minExtent: 160.0,
+                maxExtent: MediaQuery.of(context).size.height*0.35,
+                headerName: widget.routineName,
+                picRef: 'assets/Exopek_Logo.png'
             ),
           ),
           /*
@@ -218,6 +219,30 @@ class _Workout3APageState extends State<Workout3APage> {
                   },
                   childCount: workout.length
               )),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 100.0,
+              child: Padding(
+                padding: EdgeInsets.all(0.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 40.0,
+                    width: 200.0,
+                    color: Colors.red,
+                    child: Center(
+                      child: Text('Timer',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'FiraSansExtraCondensed',
+                            fontSize: 22.0
+                        ),),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
           // Timer
           SliverPadding(
             padding: EdgeInsets.only(top: 30.0),

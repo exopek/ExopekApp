@@ -51,55 +51,57 @@ class _HomeAPageState extends State<HomeAPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       //bottomNavigationBar: _navigationBar(context),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width:  MediaQuery.of(context).size.width,
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 80, left: MediaQuery.of(context).size.width/8, right: MediaQuery.of(context).size.width/8),
-              child: _header(context),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 25.0, left: 15.0),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return MultiProvider(
-                              providers: [
-                                Provider(create: (context) => DatabaseHandler(uid: database.uid),),
-                                ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
-                              ],
-                              child: SettingsPage());
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 50.0,
-                    width: 50.0,
-                    child: Center(
-                      child: Icon(
-                        Icons.settings,
-                        color: Colors.white,
+      body: SafeArea(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width:  MediaQuery.of(context).size.width,
+          child: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 80, left: MediaQuery.of(context).size.width/8, right: MediaQuery.of(context).size.width/8),
+                child: _header(context),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 15.0, left: 15.0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return MultiProvider(
+                                providers: [
+                                  Provider(create: (context) => DatabaseHandler(uid: database.uid),),
+                                  ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
+                                ],
+                                child: SettingsPage());
+                          },
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 50.0,
+                      width: 50.0,
+                      child: Center(
+                        child: Icon(
+                          Icons.settings,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/8, top: MediaQuery.of(context).size.height/4.4),
-              child: _catergoriesHeader(context),
-            ),
-            Padding(
-              padding: EdgeInsets.only( top: MediaQuery.of(context).size.height/3.5),
-                child: _catergories(context)),
-          ],
+              Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/8, top: MediaQuery.of(context).size.height/4.4),
+                child: _catergoriesHeader(context),
+              ),
+              Padding(
+                padding: EdgeInsets.only( top: MediaQuery.of(context).size.height/3.5),
+                  child: _catergories(context)),
+            ],
+          ),
         ),
       )
     );
@@ -182,7 +184,7 @@ class _HomeAPageState extends State<HomeAPage> {
                   gradientColor2: Theme.of(context).primaryColor,
                   gradientColor3: Theme.of(context).primaryColor,
                   gradientColor4: Theme.of(context).primaryColor,
-                  containerHeight: MediaQuery.of(context).size.height/2,
+                  containerHeight: MediaQuery.of(context).size.height/2.4,
                   containerWidth: MediaQuery.of(context).size.width,
                   shadowColor1: Colors.white30,
                   shadowColor2: Colors.black,
