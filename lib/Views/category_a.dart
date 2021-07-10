@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
+import 'package:video_app/Notifyers/color_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 
 
@@ -24,7 +25,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
 
   List excerciseTabBar = ['Alle' ,'Chest', 'Legs', 'Back', 'Shoulders', 'Arms', 'Abs', 'Hamstrings'];
 
-  List konfiguratorTabBar = ['Alle' ,'Chest', 'Legs', 'Back', 'Shoulders', 'Arms', 'Abs', 'Hamstrings'];
+  List konfiguratorTabBar = ['Alle' ,'Brust', 'Beine', 'Rücken', 'Schultern', 'Arme', 'Bauch'];
 
   List mobilityTabBar = ['Hips', 'Shoulder', 'Neck', 'Back', 'Legs'];
 
@@ -96,7 +97,11 @@ class _CategoryAPageState extends State<CategoryAPage> {
     if (widget.category == 'Konfigurator') {
       return Scaffold(
           appBar: AppBar(
-            title: Text(widget.category),
+            title: Text(widget.category,
+              style: TextStyle(
+                fontWeight: FontWeight.bold
+            ),
+            ),
             centerTitle: true,
             backgroundColor: Color.fromRGBO(19, 19, 19, 1.0),
             elevation: 0,
@@ -104,10 +109,12 @@ class _CategoryAPageState extends State<CategoryAPage> {
           backgroundColor: Color.fromRGBO(19, 19, 19, 1.0),
           bottomNavigationBar: Container(
             height: 50.0,
-            child: OutlineButton(
-
-              borderSide: BorderSide(
-                color: Colors.white
+            child: TextButton(
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.all(Colors.grey.withOpacity(0.4)),
+                side: MaterialStateProperty.all(BorderSide(
+                  color: Colors.white
+                ))
               ),
               child: Center(
                 child: Text(
@@ -208,6 +215,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
 
   Widget _tabBar(BuildContext context) {
     final CTabBarIndex tabBarIndex = Provider.of<CTabBarIndex>(context);
+    final ColorNotifyer colorNotifyer = Provider.of<ColorNotifyer>(context);
     return Container(
       height: MediaQuery.of(context).size.height/12.0,
       width: MediaQuery.of(context).size.width,
@@ -221,12 +229,13 @@ class _CategoryAPageState extends State<CategoryAPage> {
               child: GestureDetector(
                 onTap: () {
                   tabBarIndex.updateIndex(index, widget.category,context);
+                  colorNotifyer.updateTabColor(index, context);
                 },
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       border: Border.all(
-                          color: Colors.white
+                          color: colorNotifyer.tabColor1[index]
                       )
                   ),
                   child: Padding(

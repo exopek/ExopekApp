@@ -8,6 +8,7 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
     @required this.maxExtent,
     @required this.headerName,
     this.picRef,
+    this.headerText,
     @required this.showBackButton,
     @required this.expandPic
   });
@@ -16,6 +17,7 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
   final double maxExtent;
   final String headerName;
   final String picRef;
+  final String headerText;
   final bool expandPic;
 
   @override
@@ -35,6 +37,20 @@ class NetworkingPageHeader implements SliverPersistentHeaderDelegate {
           Image.asset(
             picRef ?? 'assets/Thabs.png',//'https://r-cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg',
             fit: BoxFit.cover,
+          ),
+          Center(
+            child: Container(
+              height: MediaQuery.of(context).size.height*0.1,
+              width: MediaQuery.of(context).size.width*0.5,
+              child: Text(headerText ?? '',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26.0,
+                    fontFamily: 'FiraSansExtraCondensed',
+
+                ),
+              ),
+            ),
           ),
           Container(
             decoration: BoxDecoration(

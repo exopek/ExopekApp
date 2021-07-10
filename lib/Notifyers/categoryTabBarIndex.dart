@@ -40,7 +40,7 @@ class CTabBarIndex extends ChangeNotifier {
   updateIndex(int Index, String category, context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context, listen: false);
     List<Stream> functionalStreams = [];
-    List<Stream> excerciseStreams = [database.allWorkoutStream() ,database.chestWorkoutStream() ,database.legWorkoutStream()];
+    List<Stream> excerciseStreams = [database.allWorkoutStream() ,database.chestWorkoutStream() ,database.legWorkoutStream(), database.backWorkoutStream(), database.shoulderWorkoutStream(), database.armWorkoutStream(), database.absWorkoutStream()];
     List<Stream> mobilityStream = [];
     if (category == 'Functional') {
       _currentStreamList = functionalStreams;

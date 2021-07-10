@@ -109,6 +109,26 @@ class DatabaseHandler {
     builder:  (data) => WorkoutAnimation.fromMap(data),
   );
 
+  Stream<List<WorkoutAnimation>> backWorkoutStream() => _service.collectionStream(
+    path: CloudPath.getbackworkouts(),
+    builder:  (data) => WorkoutAnimation.fromMap(data),
+  );
+
+  Stream<List<WorkoutAnimation>> armWorkoutStream() => _service.collectionStream(
+    path: CloudPath.getarmworkouts(),
+    builder:  (data) => WorkoutAnimation.fromMap(data),
+  );
+
+  Stream<List<WorkoutAnimation>> absWorkoutStream() => _service.collectionStream(
+    path: CloudPath.getabsworkouts(),
+    builder:  (data) => WorkoutAnimation.fromMap(data),
+  );
+
+  Stream<List<WorkoutAnimation>> shoulderWorkoutStream() => _service.collectionStream(
+    path: CloudPath.getshoulderworkouts(),
+    builder:  (data) => WorkoutAnimation.fromMap(data),
+  );
+
   Stream<List<WorkoutAnimation>> allWorkoutStream() => _service.collectionStream(
     path: CloudPath.getallworkouts(),
     builder:  (data) => WorkoutAnimation.fromMap(data),

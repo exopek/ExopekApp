@@ -6,6 +6,7 @@ import 'package:video_app/CustomWidgets/DraggableListItem.dart';
 import 'package:video_app/CustomWidgets/persistant_sliver_header.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
+import 'package:video_app/Notifyers/color_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/category_a.dart';
 import 'dart:async';
@@ -77,11 +78,13 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                 pinned: true, // header bleibt fest bei minExtent
                 //floating: true,     // Scrollt den gesamten header weg
                 delegate: NetworkingPageHeader(
-                  expandPic: true,
+                  expandPic: false,
                     showBackButton: true,
-                    minExtent: 150.0,
-                    maxExtent: MediaQuery.of(context).size.height,
-                    headerName: widget.routineName
+                    minExtent: MediaQuery.of(context).size.height*0.3,
+                    maxExtent: MediaQuery.of(context).size.height*0.4,
+                    headerName: widget.routineName,
+                    picRef: 'assets/Exopek_Logo.png'
+                    //headerText: 'Füge Übungen hinzu\nund baue somit dein ganz persönliches Workout'
                 ),
               ),
               /*
@@ -120,22 +123,20 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                        Align(
                           alignment: Alignment.centerRight,
                             child: _excerciseDragandDrop(context)),
-                      OutlineButton(
+                      IconButton(
                         splashColor: Colors.grey,
-                        borderSide: BorderSide(
-                          color: Colors.white
-                        ),
                         onPressed: () {
                           Navigator.of(context).push(
                               _createRoute(context)
                           );
                         },
-                        child: Center(
+                        icon: Center(
                           child: Icon(
                             Icons.add,
                             color: Colors.white,
                           ),
                         ),
+                        iconSize: 30.0,
                       ),
 
                     ],
@@ -313,6 +314,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
         return MultiProvider(
             providers: [
               Provider(create: (context) => DatabaseHandler(uid: database.uid),),
+              ChangeNotifierProvider(create: (context) => ColorNotifyer(context: context)),
               ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
             ],
             child: CategoryAPage(category: 'Konfigurator', routineName: widget.routineName,));

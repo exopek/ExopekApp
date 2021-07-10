@@ -67,7 +67,11 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0.0,
         centerTitle: true,
-        title: Text('My Workouts'),
+        title: Text('Meine Workouts',
+          style: TextStyle(
+            fontWeight: FontWeight.bold
+          ),
+        ),
         leading: Container(),
       ),
       body: SingleChildScrollView(
@@ -144,7 +148,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
                             child: Padding(
                               padding: EdgeInsets.all(20.0),
                               child: Align(
-                                child: Text('Du hast noch kein Workout erstellst.\n'
+                                child: Text('Du hast noch kein Workout erstellst?\n'
                                     'Über das Klicken auf das + Symbol erstellst du dein erstes Workout',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -212,7 +216,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         containerChild: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 75.0),
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.17),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Container(
@@ -223,7 +227,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: 30.0, left: 50.0),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.04, left: MediaQuery.of(context).size.width*0.03, right: MediaQuery.of(context).size.width*0.24),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(name.toUpperCase(),
@@ -240,8 +244,8 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
-                  height: 60,
-                  width: 60,
+                  height: MediaQuery.of(context).size.height*0.07,
+                  width: MediaQuery.of(context).size.width*0.2,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                         primary: Colors.grey,
@@ -270,8 +274,8 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
               child: Align(
                 alignment: Alignment.topRight,
                 child: Container(
-                  height: 60,
-                  width: 60,
+                  height: MediaQuery.of(context).size.height*0.07,
+                  width: MediaQuery.of(context).size.width*0.2,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       primary: Colors.grey,

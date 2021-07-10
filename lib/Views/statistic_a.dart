@@ -46,11 +46,13 @@ class _StatisticAPageState extends State<StatisticAPage> {
   var bauch;
   var schultern;
   var ruecken;
+  var arme;
   var counter_uebungen;
+  var counter_level;
 
   double prozent_anfeanger;
   double prozent_fortgeschritten;
-  double prozenz_profi;
+  double prozent_profi;
   double prozent_kraft;
   double prozent_ausdauer;
   double prozent_brust;
@@ -58,6 +60,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
   double prozent_bauch;
   double prozent_schultern;
   double prozent_ruecken;
+  double prozent_arme;
 
   Future<Routine> getWorkoutList(BuildContext context) async {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
@@ -267,6 +270,24 @@ class _StatisticAPageState extends State<StatisticAPage> {
     }
   }
 
+
+  void count_level() {
+    for (int i = 0; i < finishWorkoutList.length; i++) {
+      for (var value in finishWorkoutList[i].level) {
+        if (value == 'Anfänger') {
+          anfaenger = anfaenger + 1;
+          counter_level = counter_level + 1;
+        } else if (value == 'Fortgeschritten') {
+          fortgeschritten = fortgeschritten + 1;
+          counter_level = counter_level + 1;
+        } else if (value == 'Profi') {
+          profi = profi + 1;
+          counter_level = counter_level + 1;
+        }
+      }
+    }
+  }
+
   void count_muskelgruppen() {
     for (int i = 0; i < finishWorkoutList.length; i++) {
       for (var value in finishWorkoutList[i].muscle) {
@@ -285,6 +306,9 @@ class _StatisticAPageState extends State<StatisticAPage> {
         } else if (value == 'Bauch') {
           bauch = bauch + 1;
           counter_uebungen = counter_uebungen + 1;
+        } else if (value == 'Arme') {
+          arme = arme + 1;
+          counter_uebungen = counter_uebungen + 1;
         }
       }
     }
@@ -299,19 +323,24 @@ class _StatisticAPageState extends State<StatisticAPage> {
     videoPath = [];
     anfaenger = 0;
     fortgeschritten = 0;
+    profi = 0;
+    counter_level = 0;
     brust = 0;
     beine = 0;
     bauch = 0;
     schultern = 0;
     ruecken = 0;
+    arme = 0;
     counter_uebungen = 0;
     prozent_anfeanger = 0;
     prozent_fortgeschritten = 0;
+    prozent_profi = 0;
     prozent_beine = 0;
     prozent_bauch = 0;
     prozent_brust = 0;
     prozent_schultern = 0;
     prozent_ruecken = 0;
+    prozent_arme = 0;
     _weekBegin = calculate_Week_Start_and_End()[0];
     _weekEnd = calculate_Week_Start_and_End()[1];
     _datetime_weekBegin = DateTime.parse(_weekBegin);
@@ -457,12 +486,15 @@ class _StatisticAPageState extends State<StatisticAPage> {
             finishWorkoutList.clear();
             anfaenger = 0;
             fortgeschritten = 0;
+            profi = 0;
             brust = 0;
             beine = 0;
             bauch = 0;
             schultern = 0;
             ruecken = 0;
+            arme = 0;
             counter_uebungen = 0;
+            counter_level = 0;
             // Befüllt die Liste für den angegebenen Zeitraum einer Woche.
             if (_week == true) {
               sort_Week(snapshot);
@@ -473,25 +505,30 @@ class _StatisticAPageState extends State<StatisticAPage> {
             }
 
             // Ermittelt die Häufigkeit der Tag's Kraft und Ausdauer in den geladenen Modelen Einheit.
-            count_ausdauer_kraft();
+            //count_ausdauer_kraft();
+            count_level();
             count_muskelgruppen();
 
             if (finishWorkoutList.length == 0) {
               prozent_anfeanger = 0;
               prozent_fortgeschritten = 0;
+              prozent_profi = 0;
               prozent_beine = 0;
               prozent_bauch = 0;
               prozent_brust = 0;
               prozent_schultern = 0;
               prozent_ruecken = 0;
+              prozent_arme = 0;
             } else {
-              prozent_anfeanger = (anfaenger/finishWorkoutList.length)*100;
-              prozent_fortgeschritten = (fortgeschritten/finishWorkoutList.length)*100;
+              prozent_anfeanger = (anfaenger/counter_level)*100;
+              prozent_fortgeschritten = (fortgeschritten/counter_level)*100;
+              prozent_profi = (profi/counter_level)*100;
               prozent_beine = (beine/counter_uebungen)*100;
               prozent_bauch = (bauch/counter_uebungen)*100;
               prozent_brust = (brust/counter_uebungen)*100;
               prozent_schultern = (schultern/counter_uebungen)*100;
               prozent_ruecken = (ruecken/counter_uebungen)*100;
+              prozent_arme = (arme/counter_uebungen)*100;
             }
 
             //print('proz_ausdauer: ${prozent_ausdauer}');
@@ -923,6 +960,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                       ),
                                           ),
                                         ),
+                                        /*
                                         Padding(
                                           padding: EdgeInsets.only(top: 8.0),
                                           child: Align(
@@ -937,6 +975,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                             ),
                                           ),
                                         )
+                                        */
                                     ]
                                     ),
                                 ),
@@ -958,7 +997,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                           width: 200.0,
                           color: Colors.white,
                           child: Center(
-                            child: Text('Trainingsweise',
+                            child: Text('Trainingsschwierigkeit',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontFamily: 'FiraSansExtraCondensed',
@@ -988,7 +1027,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerChild: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
@@ -1007,7 +1046,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(right: 20.0, top: 5.0),
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
@@ -1022,7 +1061,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 10.0),
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015),
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: NeoContainer(
@@ -1078,7 +1117,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerChild: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
@@ -1097,7 +1136,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(right: 20.0, top: 5.0),
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
@@ -1112,7 +1151,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 10.0),
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015),
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: NeoContainer(
@@ -1139,6 +1178,96 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                         end: Alignment.centerRight,
                                         colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
                                         stops: [prozent_fortgeschritten/100, prozent_fortgeschritten/100]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: NeoContainer(
+                      containerHeight: MediaQuery.of(context).size.height/5,
+                      containerWidth: MediaQuery.of(context).size.width/2,
+                      containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      circleShape: false,
+                      spreadRadius2: 0.0,
+                      shadowColor2: Colors.white60,
+                      shadowColor1: Colors.black,
+                      gradientColor1: Theme.of(context).primaryColor,
+                      gradientColor2: Theme.of(context).primaryColor,
+                      gradientColor3: Theme.of(context).primaryColor,
+                      gradientColor4: Theme.of(context).primaryColor,
+                      containerChild: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                height: 40.0,
+                                width: 220.0,
+                                color: Theme.of(context).primaryColor,
+                                child: Center(
+                                  child: Text('Dein Übungsanteil, mit dem Level Profi',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'FiraSansExtraCondensed',
+                                        fontSize: 20.0
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                child: Text('${prozent_profi.round().toString()}%',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(231, 40, 44, 1),
+                                      fontFamily: 'FiraSansExtraCondensed',
+                                      fontSize: 30.0
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.015),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: NeoContainer(
+                                circleShape: false,
+                                containerHeight: MediaQuery.of(context).size.height*0.02,
+                                containerWidth: MediaQuery.of(context).size.width/1.2,
+                                shadowColor1: Colors.white30,
+                                shadowColor2: Colors.black,
+                                gradientColor1: Theme.of(context).primaryColor,
+                                gradientColor2: Theme.of(context).primaryColor,
+                                gradientColor3: Theme.of(context).primaryColor,
+                                gradientColor4: Theme.of(context).primaryColor,
+                                shadow1Offset: 2.0,
+                                shadow2Offset: -1.0,
+                                spreadRadius2: 0.0,
+                                spreadRadius1: 0.0,
+                                blurRadius2: 0.0,
+                                blurRadius1: 0.0,
+                                containerChild: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [Color.fromRGBO(231, 40, 44, 1), Colors.transparent],
+                                        stops: [prozent_profi/100, prozent_profi/100]
                                     ),
                                   ),
                                 ),
@@ -1178,7 +1307,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                   child: Padding(
                     padding: EdgeInsets.all(10.0),
                     child: NeoContainer(
-                      containerHeight: MediaQuery.of(context).size.height/1.6,
+                      containerHeight: MediaQuery.of(context).size.height/1.35,
                       containerWidth: MediaQuery.of(context).size.width/2,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
@@ -1197,6 +1326,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                           _muscle_group_content(context, 'Schulterübungen', prozent_schultern),
                           _muscle_group_content(context, 'Rückenübungen', prozent_ruecken),
                           _muscle_group_content(context, 'Bauchübungen', prozent_bauch),
+                          _muscle_group_content(context, 'Armübungen', prozent_arme),
                         ],
                       ),
                     ),
