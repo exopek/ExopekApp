@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:video_app/CustomWidgets/add_routine_button.dart';
 import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/Models/models.dart';
+import 'package:video_app/Notifyers/trueOrfalse_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/editMyWorkouts_a.dart';
 
@@ -13,7 +14,7 @@ class MyWorkoutsAPage extends StatefulWidget {
   _MyWorkoutsAPageState createState() => _MyWorkoutsAPageState();
 }
 
-class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
+class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> with SingleTickerProviderStateMixin {
 
   PageController _pageViewController1;
 
@@ -74,102 +75,199 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
         ),
         leading: Container(),
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            StreamBuilder<List<RoutineAnimation>>( // ToDo: Das Model muss noch angepasst werden
-              stream: database.routineStream(), // ToDo: Im Stream muss das Model noch angepasst werden
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.requireData.isNotEmpty) {
-                  return SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: Column(
+      body: StreamBuilder<List<RoutineAnimation>>(
+        stream: database.routineStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.requireData.isNotEmpty) {
+            return SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 10.0,
-                                  width: 80.0,
-                                  color: Colors.red,
-                                ),
-                                AddRoutineButton(),
-                               Container(
-                                 height: 10.0,
-                                 width: 80.0,
-                                 color: Colors.red,
-                               )
-                              ],
-                            ),
-                          ),
-                          _workouts(context, snapshot),
-                          Padding(
-                              padding: EdgeInsets.only(top: 20),
-                              child: _infoSideBar(context, snapshot)
-                          ),
-                        ] ),
-                  );
-                } else if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else {
-                  return SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 10.0,
-                                  width: 80.0,
-                                  color: Colors.red,
-                                ),
-                                AddRoutineButton(),
-                                Container(
-                                  height: 10.0,
-                                  width: 80.0,
-                                  color: Colors.red,
-                                )
-                              ],
-                            ),
-                          ),
                           Container(
-                            height: MediaQuery.of(context).size.height*0.6,
-                            //color: Colors.white,
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Align(
-                                child: Text('Du hast noch kein Workout erstellst?\n'
-                                    'Über das Klicken auf das + Symbol erstellst du dein erstes Workout',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24.0,
-                                  fontFamily: 'FiraSansExtraCondensed'
-                                ),
-                                ),
-                                alignment: Alignment.topCenter,
-                              ),
-                            ),
+                            height: 10.0,
+                            width: 80.0,
+                            color: Colors.red,
+                          ),
+                          AddRoutineButton(),
+                          Container(
+                            height: 10.0,
+                            width: 80.0,
+                            color: Colors.red,
                           )
+                        ],
+                      ),
+                    ),
+                    _workouts(context, snapshot),
+                    Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: _infoSideBar(context, snapshot)
+                    ),
+                  ] ),
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  strokeWidth: 8,
+                ),
+              ),
+            );
+          } else {
+            return SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 10.0,
+                            width: 80.0,
+                            color: Colors.red,
+                          ),
+                          AddRoutineButton(),
+                          Container(
+                            height: 10.0,
+                            width: 80.0,
+                            color: Colors.red,
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.6,
+                      //color: Colors.white,
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Align(
+                          child: Text('Du hast noch kein Workout erstellst?\n'
+                              'Über das Klicken auf das + Symbol erstellst du dein erstes Workout',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24.0,
+                                fontFamily: 'FiraSansExtraCondensed'
+                            ),
+                          ),
+                          alignment: Alignment.topCenter,
+                        ),
+                      ),
+                    )
 
-                        ] ),
-                  );
-                }
+                  ] ),
+            );
+          }
+          /*
+          return SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                    if (snapshot.hasData && snapshot.requireData.isNotEmpty) {
+                      return SingleChildScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Container(
+                                      height: 10.0,
+                                      width: 80.0,
+                                      color: Colors.red,
+                                    ),
+                                    AddRoutineButton(),
+                                   Container(
+                                     height: 10.0,
+                                     width: 80.0,
+                                     color: Colors.red,
+                                   )
+                                  ],
+                                ),
+                              ),
+                              _workouts(context, snapshot),
+                              Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: _infoSideBar(context, snapshot)
+                              ),
+                            ] ),
+                      );
+                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                            strokeWidth: 8,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return SingleChildScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Container(
+                                      height: 10.0,
+                                      width: 80.0,
+                                      color: Colors.red,
+                                    ),
+                                    AddRoutineButton(),
+                                    Container(
+                                      height: 10.0,
+                                      width: 80.0,
+                                      color: Colors.red,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: MediaQuery.of(context).size.height*0.6,
+                                //color: Colors.white,
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: Align(
+                                    child: Text('Du hast noch kein Workout erstellst?\n'
+                                        'Über das Klicken auf das + Symbol erstellst du dein erstes Workout',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24.0,
+                                      fontFamily: 'FiraSansExtraCondensed'
+                                    ),
+                                    ),
+                                    alignment: Alignment.topCenter,
+                                  ),
+                                ),
+                              )
 
-              }
+                            ] ),
+                      );
+                    }
+
+
+
+
+              ],
             ),
-
-          ],
-        ),
+          );
+          */
+        }
       ),
     );
   }
@@ -293,6 +391,7 @@ class _MyWorkoutsAPageState extends State<MyWorkoutsAPage> {
                             return MultiProvider(
                                 providers: [
                                   Provider(create: (context) => DatabaseHandler(uid: database.uid),),
+                                  ChangeNotifierProvider(create: (context) => TrueOrFalseNotifyer()),
                                 ],
                                 child: EditWorkoutPage(routineName: name,));
                           },

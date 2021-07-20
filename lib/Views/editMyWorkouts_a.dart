@@ -7,6 +7,7 @@ import 'package:video_app/CustomWidgets/persistant_sliver_header.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
 import 'package:video_app/Notifyers/color_notifyer.dart';
+import 'package:video_app/Notifyers/trueOrfalse_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
 import 'package:video_app/Views/category_a.dart';
 import 'dart:async';
@@ -31,23 +32,45 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
 
   RoutineAnimation routineMap;
 
-  Future<RoutineAnimation> getWorkoutList(BuildContext context) async {
+  RoutineAnimation newRoutineMap;
+
+  Future<RoutineAnimation> getWorkoutList() async {
           final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
-          try {
-            final Input = await database.getRoutineCustomMap(widget.routineName);
-            log('pureInput: $Input');
-            routineInput = Input;
-            log('input: $Input');
-          } catch(e) {
-            print(e);
-          }
-          return routineInput;
+          final Input = await database.getRoutineCustomMap(widget.routineName);
+          //routineInput = Input;
+          return Input;
   }
 
   bool firstVisit;
 
   @override
   void initState() {
+    /*
+    routineMap = RoutineAnimation(
+      workout: [],
+      rep: [],
+      duration: [],
+      routine: '',
+      thumbnail: [],
+      artboard: [],
+      level: [],
+      muscle: [],
+    );
+    getWorkoutList(context).then((value){
+      setState(() {
+        //workoutList = value;
+        routineMap = value;
+        firstVisit = true;
+      });
+    });
+    */
+    /*
+    getWorkoutList(context).asStream()..listen((event) {
+      setState(() {
+        routineMap = event;
+      });
+    });
+    */
     firstVisit = false;
     workoutList = new List();
     super.initState();
@@ -56,7 +79,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
   @override
   Widget build(BuildContext context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
-
+    /*
     if (firstVisit == false) {
       getWorkoutList(context).then((value){
         setState(() {
@@ -68,6 +91,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
       });
 
     }
+    */
     return Scaffold(
       backgroundColor: Colors.grey[900],
       body: SafeArea(
@@ -87,35 +111,6 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                     //headerText: 'Füge Übungen hinzu\nund baue somit dein ganz persönliches Workout'
                 ),
               ),
-              /*
-              SliverList(
-
-                delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        _excerciseDragandDrop(context),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                                _createRoute(context)
-                            );
-                          },
-                          child: Center(
-                            child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                            ),
-                          ),
-                        ),
-
-                      ],
-                    );
-                  },
-                  childCount: 1, // 1000 list items
-                ),
-              ),
-              */
               SliverToBoxAdapter(
                 child: Container(
                   child: Column(
@@ -127,8 +122,24 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                         splashColor: Colors.grey,
                         onPressed: () {
                           Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return MultiProvider(
+                                    providers: [
+                                      Provider(create: (context) => DatabaseHandler(uid: database.uid),),
+                                      ChangeNotifierProvider(create: (context) => ColorNotifyer(context: context)),
+                                      ChangeNotifierProvider(create: (context) => CTabBarIndex(context: context)),
+                                      ChangeNotifierProvider(create: (context) => TrueOrFalseNotifyer()),
+                                    ],
+                                    child:  CategoryAPage(category: 'Konfigurator', routineName: widget.routineName,));
+                              },
+                            ),
+                          );
+                          /*
+                          Navigator.of(context).push(
                               _createRoute(context)
                           );
+                          */
                         },
                         icon: Center(
                           child: Icon(
@@ -173,10 +184,31 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
 
   Widget _excerciseDragandDrop(BuildContext context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
+    final TrueOrFalseNotifyer pageVisitState = Provider.of<TrueOrFalseNotifyer>(context);
     return FutureBuilder<RoutineAnimation>(
-      future: getWorkoutList(context),
+      future: getWorkoutList(),
       builder: (context, snapshot) {
-        return Container(
+        routineMap = !pageVisitState.trueOrFalse ? snapshot.data : newRoutineMap; // ToDo: Hier kommt der Consumer hin
+        //log('snapshot: ${snapshot.data.workout}');
+        return routineMap.workout.isEmpty ?
+        Container(
+          height: MediaQuery.of(context).size.height/1.45,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child: Padding(
+            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.2, right: MediaQuery.of(context).size.width*0.2, top: 40),
+            child: Align(
+            alignment: Alignment.topCenter,
+            child: Text('Du hast noch keine Übungen hinzugefügt.\n\nZum Hinzufügen von Übungen Swip Up und drücke auf das + Icon.',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 25.0,
+                fontFamily: 'FiraSansExtraCondensed'
+              ),
+            ),
+        ),
+          ),) :
+        Container(
           height: MediaQuery.of(context).size.height/1.45,
           width: MediaQuery.of(context).size.width,
           color: Colors.white,
@@ -207,7 +239,6 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                              setState(() {
 
                              });
-                             log('index: $i');
                            },
                          )
                        ],
@@ -241,8 +272,10 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
               routineMap.muscle.insert(newIndex, muscleG);
 
                 //workoutList = workoutList;
-              routineMap = routineMap;
-                database.updateRoutineWorkoutList(routineMap, widget.routineName);
+              newRoutineMap = routineMap;
+              //firstVisit = true;
+              pageVisitState.updateTrueOrFalse(true);
+                database.updateRoutineWorkoutList(newRoutineMap, widget.routineName);
               });
             },
           ),

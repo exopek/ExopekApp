@@ -150,6 +150,7 @@ class _AnimationWidgetState extends State<AnimationWidget> with TickerProviderSt
     _animationControllerNext.dispose();
     _controller.dispose();
     _controllerNext.dispose();
+    _checkController.dispose();
     super.dispose();
   }
 

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:video_app/CustomWidgets/animationWidget.dart';
 import 'package:video_app/CustomWidgets/training_finish_widget.dart';
+import 'package:video_app/CustomWidgets/youtubeWidget.dart';
 import 'package:video_app/Notifyers/animationState_notifyer.dart';
 
 
@@ -390,7 +391,7 @@ class _AnimationPageState extends State<AnimationPage> with TickerProviderStateM
                         return FinishAnimation(routine: widget.routine, workout: widget.workout, artboard: widget.artboardList, muscle: widget.muscle, thumbnail: widget.thumbnail,
                         training: widget.trainingSeconds, sets: widget.sets, level: widget.level, pause: widget.pauseSeconds,);
                       } else {
-                        return AnimationWidget(
+                        return YoutubeWidget(
                           duration: Duration(seconds: _durations[position]),
                           artBoardName: widget.artboardList[position],
                           nextArtBoardName: widget.artboardList[_nextArtBoardIndex],

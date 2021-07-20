@@ -44,7 +44,7 @@ class AddTodoButton extends StatelessWidget {
       width: MediaQuery.of(context).size.width*0.47,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-            primary: Colors.grey.withRed(200),
+            primary: Colors.grey.withOpacity(0.4),
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(35))),
             side: BorderSide(color: Colors.grey)
         ),
@@ -68,19 +68,10 @@ class AddTodoButton extends StatelessWidget {
                   ),
                 );
               }
-            })
-                .catchError((error, stackTrace) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return BlankPage(result: error.toString(),);
-                  },
-                ),
-              );
             });
           } catch (e) {
             Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-              return BlankPage(result: e.toString(),);//_AddTodoPopupCard();
+              return _AddTodoPopupCard();
             }));
           }
 
@@ -95,7 +86,8 @@ class AddTodoButton extends StatelessWidget {
             child: Center(
                   child: Text('Sign in with Email',
                   style: TextStyle(
-                    fontSize: 20.0,
+                    //fontSize: MediaQuery.of(context).size.width*0.06,
+                    fontWeight: FontWeight.bold,
                     color: Colors.grey
                 ),),
               )
@@ -130,7 +122,7 @@ class _AddTodoPopupCard extends StatelessWidget {
             return CustomRectTween(begin: begin, end: end);
           },
           child: Material(
-            color: Colors.redAccent,
+            color: Colors.redAccent.withOpacity(0.8),
             elevation: 2,
             shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
@@ -148,7 +140,7 @@ class _AddTodoPopupCard extends StatelessWidget {
                       thickness: 0.2,
                     ),
                     const Text(
-                      '1. Falsche Passwort oder Email'
+                      'Falsche Passwort oder Email'
                     ),
 
                   ],

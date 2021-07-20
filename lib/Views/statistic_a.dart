@@ -482,7 +482,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
       body: StreamBuilder<List<FinishRoutineAnimation>>(
         stream: database.verlaufStream(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData) { // hier könnte noch requiredData hin, dann müsste allerdings ne menge code Kopiert werden
             finishWorkoutList.clear();
             anfaenger = 0;
             fortgeschritten = 0;
@@ -925,7 +925,16 @@ class _StatisticAPageState extends State<StatisticAPage> {
                 SliverToBoxAdapter(
                     child: Container(
                         height: MediaQuery.of(context).size.height/6,
-                        child: ListView.builder(
+                        child: finishWorkoutList.isEmpty ?
+                        Center(
+                          child: Text('Du hast in dieser Woche noch kein Workout abgeschlossen.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontFamily: 'FiraSansExtraCondensed'
+                            ),
+                          ),) :
+                        ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: finishWorkoutList.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -1014,7 +1023,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                     padding: EdgeInsets.all(10.0),
                     child: NeoContainer(
                       containerHeight: MediaQuery.of(context).size.height/5,
-                      containerWidth: MediaQuery.of(context).size.width/2,
+                      containerWidth: MediaQuery.of(context).size.width,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
                       spreadRadius2: 0.0,
@@ -1027,26 +1036,24 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerChild: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.02),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
-                                height: 40.0,
-                                width: 200.0,
+                                height: MediaQuery.of(context).size.height*0.07,
+                                width: MediaQuery.of(context).size.width*0.7,
                                 color: Theme.of(context).primaryColor,
-                                child: Center(
                                   child: Text('Dein Übungsanteil, mit dem Level Anfänger',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'FiraSansExtraCondensed',
                                         fontSize: 20.0
                                     ),),
-                                ),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01),
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
@@ -1074,7 +1081,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                   gradientColor2: Theme.of(context).primaryColor,
                                   gradientColor3: Theme.of(context).primaryColor,
                                   gradientColor4: Theme.of(context).primaryColor,
-                                  shadow1Offset: 2.0,
+                                  shadow1Offset: 1.0,
                                   shadow2Offset: -1.0,
                                   spreadRadius2: 0.0,
                                   spreadRadius1: 0.0,
@@ -1104,11 +1111,11 @@ class _StatisticAPageState extends State<StatisticAPage> {
                     padding: EdgeInsets.all(10.0),
                     child: NeoContainer(
                       containerHeight: MediaQuery.of(context).size.height/5,
-                      containerWidth: MediaQuery.of(context).size.width/2,
+                      containerWidth: MediaQuery.of(context).size.width,
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
                       spreadRadius2: 0.0,
-                      shadowColor2: Colors.white60,
+                      shadowColor2: Colors.white30,
                       shadowColor1: Colors.black,
                       gradientColor1: Theme.of(context).primaryColor,
                       gradientColor2: Theme.of(context).primaryColor,
@@ -1117,26 +1124,25 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerChild: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.02),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
-                                height: 40.0,
-                                width: 220.0,
+                                height: MediaQuery.of(context).size.height*0.07,
+                                width: MediaQuery.of(context).size.width*0.7,
                                 color: Theme.of(context).primaryColor,
-                                child: Center(
                                   child: Text('Dein Übungsanteil, mit dem Level Fortgeschritten',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'FiraSansExtraCondensed',
                                         fontSize: 20.0
                                     ),),
-                                ),
+
                               ),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01),
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
@@ -1164,7 +1170,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                 gradientColor2: Theme.of(context).primaryColor,
                                 gradientColor3: Theme.of(context).primaryColor,
                                 gradientColor4: Theme.of(context).primaryColor,
-                                shadow1Offset: 2.0,
+                                shadow1Offset: 1.0,
                                 shadow2Offset: -1.0,
                                 spreadRadius2: 0.0,
                                 spreadRadius1: 0.0,
@@ -1198,7 +1204,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
                       spreadRadius2: 0.0,
-                      shadowColor2: Colors.white60,
+                      shadowColor2: Colors.white30,
                       shadowColor1: Colors.black,
                       gradientColor1: Theme.of(context).primaryColor,
                       gradientColor2: Theme.of(context).primaryColor,
@@ -1207,26 +1213,24 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerChild: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.02),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
-                                height: 40.0,
-                                width: 220.0,
+                                height: MediaQuery.of(context).size.height*0.07,
+                                width: MediaQuery.of(context).size.width*0.7,
                                 color: Theme.of(context).primaryColor,
-                                child: Center(
                                   child: Text('Dein Übungsanteil, mit dem Level Profi',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'FiraSansExtraCondensed',
                                         fontSize: 20.0
                                     ),),
-                                ),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.height*0.01),
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
@@ -1254,7 +1258,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                                 gradientColor2: Theme.of(context).primaryColor,
                                 gradientColor3: Theme.of(context).primaryColor,
                                 gradientColor4: Theme.of(context).primaryColor,
-                                shadow1Offset: 2.0,
+                                shadow1Offset: 1.0,
                                 shadow2Offset: -1.0,
                                 spreadRadius2: 0.0,
                                 spreadRadius1: 0.0,
@@ -1312,7 +1316,7 @@ class _StatisticAPageState extends State<StatisticAPage> {
                       containerBorderRadius: BorderRadius.all(Radius.circular(15.0)),
                       circleShape: false,
                       spreadRadius2: 0.0,
-                      shadowColor2: Colors.white60,
+                      shadowColor2: Colors.white30,
                       shadowColor1: Colors.black,
                       gradientColor1: Theme.of(context).primaryColor,
                       gradientColor2: Theme.of(context).primaryColor,
@@ -1335,6 +1339,17 @@ class _StatisticAPageState extends State<StatisticAPage> {
 
               ],
             );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  strokeWidth: 8,
+                ),
+              ),
+            );
           } else {
             return Container();
           }
@@ -1354,8 +1369,8 @@ class _StatisticAPageState extends State<StatisticAPage> {
             child: Align(
               alignment: Alignment.topLeft,
               child: Container(
-                height: 40.0,
-                width: 100.0,
+                height: MediaQuery.of(context).size.height*0.06,
+                width: MediaQuery.of(context).size.width*0.6,
                 color: Theme.of(context).primaryColor,
                 child: Align(
                   alignment: Alignment.centerLeft,

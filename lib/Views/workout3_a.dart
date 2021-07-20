@@ -266,16 +266,11 @@ class _Workout3APageState extends State<Workout3APage> {
                           child:  IconButton(
                             onPressed: () {
                               setState(() {
-                                if (pause == 0) {
-                                  pause = 0;
-                                } else {
-                                  pause = pause - 5;
-                                }
-
+                                pause = pause + 5;
                               });
                             },
                             icon: Icon(
-                              Icons.remove,
+                              Icons.add,
                               color: Colors.white,
                             ),
                           )
@@ -296,16 +291,11 @@ class _Workout3APageState extends State<Workout3APage> {
                         child:  IconButton(
                           onPressed: () {
                             setState(() {
-                              if (training == 0) {
-                                training = 0;
-                              } else {
-                                training = training - 5;
-                              }
-
+                              training = training + 5;
                             });
                           },
                           icon: Icon(
-                              Icons.remove,
+                              Icons.add,
                               color: Colors.white,
                           ),
                         )
@@ -326,16 +316,11 @@ class _Workout3APageState extends State<Workout3APage> {
                           child:  IconButton(
                             onPressed: () {
                               setState(() {
-                                if (sets == 0) {
-                                  sets = 0;
-                                } else {
-                                  sets = sets - 1;
-                                }
-
+                                sets = sets + 1;
                               });
                             },
                             icon: Icon(
-                              Icons.remove,
+                              Icons.add,
                               color: Colors.white,
                             ),
                           )
@@ -445,11 +430,15 @@ class _Workout3APageState extends State<Workout3APage> {
                           child:  IconButton(
                             onPressed: () {
                               setState(() {
-                                pause = pause + 5;
+                                if (pause == 0) {
+                                  pause = 0;
+                                } else {
+                                  pause = pause - 5;
+                                }
                               });
                             },
                             icon: Icon(
-                              Icons.add,
+                              Icons.remove,
                               color: Colors.white,
                             ),
                           )
@@ -470,11 +459,16 @@ class _Workout3APageState extends State<Workout3APage> {
                           child:  IconButton(
                             onPressed: () {
                               setState(() {
-                                training = training + 5;
+                                if (training == 0) {
+                                  training = 0;
+                                } else {
+                                  training = training - 5;
+                                }
                               });
+
                             },
                             icon: Icon(
-                              Icons.add,
+                              Icons.remove,
                               color: Colors.white,
                             ),
                           )
@@ -495,13 +489,17 @@ class _Workout3APageState extends State<Workout3APage> {
                           child:  IconButton(
                             onPressed: () {
                               setState(() {
-                                sets = sets + 1;
+                                if (sets == 0) {
+                                  sets = 0;
+                                } else {
+                                  sets = sets - 1;
+                                }
                               });
                             },
                             splashColor: Colors.transparent,
                             splashRadius: 0.1,
                             icon: Icon(
-                              Icons.add,
+                              Icons.remove,
                               color: Colors.white,
                             ),
                           )

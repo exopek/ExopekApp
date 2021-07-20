@@ -32,54 +32,20 @@ class _ProfilPageState extends State<ProfilPage> {
           color: Colors.white
         ),),
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-              child: Container(
+      body: Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 //color: Colors.black,
-                child: Column(
+                child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                            child: StreamBuilder(
-                              stream: storage.getProfilImage(),
-                                builder: (_, AsyncSnapshot<DownloadUrl> snapshot2){
-                                  if (snapshot2.hasData) {
-                                    return InkWell(
-                                      onTap: () async {
-                                        final pickedImage = await HelperFunctions().pickImage();
-                                        File UserImage = File(pickedImage.path);
-                                        await storage.uploadProfilImage(UserImage);
-                                      },
-                                      child: Container(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                    snapshot2.data.downloadUrl
-                                                )
-                                            )
-                                        ),
-
-                                        /*Consumer<FirebaseAuthService>(
-                                      builder: (context, data, child) {
-                                        var userData = data.onAuthStateChanged;
-                                        print(userData.first.);
-                                        return Text(data.userData.toString());
-                                      }),
-                                      */
-
-                                      ),
-                                    );
-                                  } else if (snapshot2.hasError) {
-                                    return StreamBuilder<OwnUser>(
-                                    stream: auth.onAuthStateChanged,
-                                    builder: (_, AsyncSnapshot<OwnUser> snapshot) {
-                                      if (snapshot.hasData && snapshot.data.foto != null) {
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                              child: StreamBuilder(
+                                stream: storage.getProfilImage(),
+                                  builder: (_, AsyncSnapshot<DownloadUrl> snapshot2){
+                                    if (snapshot2.hasData) {
                                       return InkWell(
                                         onTap: () async {
                                           final pickedImage = await HelperFunctions().pickImage();
@@ -94,22 +60,26 @@ class _ProfilPageState extends State<ProfilPage> {
                                               image: DecorationImage(
                                                 fit: BoxFit.cover,
                                                   image: NetworkImage(
-                                                      snapshot.data.foto,
+                                                      snapshot2.data.downloadUrl
                                                   )
                                               )
                                           ),
 
                                           /*Consumer<FirebaseAuthService>(
-                                      builder: (context, data, child) {
-                                        var userData = data.onAuthStateChanged;
-                                        print(userData.first.);
-                                        return Text(data.userData.toString());
-                                      }),
-                                      */
+                                        builder: (context, data, child) {
+                                          var userData = data.onAuthStateChanged;
+                                          print(userData.first.);
+                                          return Text(data.userData.toString());
+                                        }),
+                                        */
 
                                         ),
                                       );
-                                      } else {
+                                    } else if (snapshot2.hasError) {
+                                      return StreamBuilder<OwnUser>(
+                                      stream: auth.onAuthStateChanged,
+                                      builder: (_, AsyncSnapshot<OwnUser> snapshot) {
+                                        if (snapshot.hasData && snapshot.data.foto != null) {
                                         return InkWell(
                                           onTap: () async {
                                             final pickedImage = await HelperFunctions().pickImage();
@@ -117,124 +87,160 @@ class _ProfilPageState extends State<ProfilPage> {
                                             await storage.uploadProfilImage(UserImage);
                                           },
                                           child: Container(
-                                            height: 90.0,
-                                            width: 90.0,
-                                            child: Icon(Icons.camera_alt_rounded,
-                                              color: Colors.white,),
+                                            height: 100.0,
+                                            width: 100.0,
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
-                                                color: Colors.grey[900]
-                                          ),
-                                        )
-                                        );
-                                      }
-                                    });
-                                  } else {
-                                    return InkWell(
-                                      onTap: () async {
-                                        final pickedImage = await HelperFunctions().pickImage();
-                                        File UserImage = File(pickedImage.path);
-                                        await storage.uploadProfilImage(UserImage);
-                                      },
-                                      child: Container(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: Icon(Icons.camera_alt_rounded,
-                                        color: Colors.white,),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.grey[900]
-                                            /*
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    snapshot.data.foto
+                                                image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        snapshot.data.foto,
+                                                    )
                                                 )
-                                            )
+                                            ),
 
-                                             */
+                                            /*Consumer<FirebaseAuthService>(
+                                        builder: (context, data, child) {
+                                          var userData = data.onAuthStateChanged;
+                                          print(userData.first.);
+                                          return Text(data.userData.toString());
+                                        }),
+                                        */
+
+                                          ),
+                                        );
+                                        } else {
+                                          return InkWell(
+                                            onTap: () async {
+                                              final pickedImage = await HelperFunctions().pickImage();
+                                              File UserImage = File(pickedImage.path);
+                                              await storage.uploadProfilImage(UserImage);
+                                            },
+                                            child: Container(
+                                              height: 90.0,
+                                              width: 90.0,
+                                              child: Icon(Icons.camera_alt_rounded,
+                                                color: Colors.white,),
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.grey[900]
+                                            ),
+                                          )
+                                          );
+                                        }
+                                      });
+                                    } else {
+                                      return InkWell(
+                                        onTap: () async {
+                                          final pickedImage = await HelperFunctions().pickImage();
+                                          File UserImage = File(pickedImage.path);
+                                          await storage.uploadProfilImage(UserImage);
+                                        },
+                                        child: Container(
+                                          height: 100.0,
+                                          width: 100.0,
+                                          child: Icon(Icons.camera_alt_rounded,
+                                          color: Colors.white,),
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.grey[900]
+                                              /*
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      snapshot.data.foto
+                                                  )
+                                              )
+
+                                               */
+                                          ),
+
+                                          /*Consumer<FirebaseAuthService>(
+                                        builder: (context, data, child) {
+                                          var userData = data.onAuthStateChanged;
+                                          print(userData.first.);
+                                          return Text(data.userData.toString());
+                                        }),
+                                        */
+
                                         ),
-
-                                        /*Consumer<FirebaseAuthService>(
-                                      builder: (context, data, child) {
-                                        var userData = data.onAuthStateChanged;
-                                        print(userData.first.);
-                                        return Text(data.userData.toString());
-                                      }),
-                                      */
-
-                                      ),
-                                    );
+                                      );
+                                    }
                                   }
-                                }
-                                )
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: StreamBuilder<OwnUser>(
-                          stream: auth.onAuthStateChanged,
-                          builder: (_, AsyncSnapshot<OwnUser> snapshot) {
-                            if (snapshot.hasData && snapshot.data.name != null) {
-                              return Text(snapshot.data.name,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                    fontSize: 25,
-                                  fontWeight: FontWeight.bold
-                                ),);
-                            } else {
-                              return Text('Hallo',
-                                style: TextStyle(
-                                    fontSize: 25,
-                                  color: Colors.white
-                                ),);
-                            }
-                          }
+                                  )
                         ),
                       ),
                       Align(
-                        alignment: Alignment.bottomCenter,
-                        /*
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height/2,),
-                              */
-                      child: Container(
-                        height: MediaQuery.of(context).size.height/10,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              stops: [0.2, 0.4, 0.9],
-                              colors: [Colors.red, Colors.red, Colors.red]
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
+                          child: StreamBuilder<OwnUser>(
+                            stream: auth.onAuthStateChanged,
+                            builder: (_, AsyncSnapshot<OwnUser> snapshot) {
+                              if (snapshot.hasData && snapshot.data.name != null) {
+                                return Text(snapshot.data.name,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                      fontSize: 25,
+                                    fontWeight: FontWeight.bold
+                                  ),);
+                              } else {
+                                return Text('Hallo',
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                    color: Colors.white
+                                  ),);
+                              }
+                            }
                           ),
                         ),
-                        child: OutlineButton(
-                          color: Colors.black,
-                          highlightedBorderColor: Colors.white,
-                          onPressed: ()  {
-                            signOutGoogle().then((result) {
-                              if (result != null) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return SignInPage();
-                                    },
-                                  ),
-                                );
-                              }
-                            });
-                          },
-                          child: Text('LogOut',
-                          style: TextStyle(
-                            fontSize: 25,
-                                color: Colors.black
-                          ),),
-                        ),
-                      ))
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          /*
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height/2,),
+                                */
+                        child: Container(
+                          height: MediaQuery.of(context).size.height/10,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                stops: [0.2, 0.4, 0.9],
+                                colors: [Colors.red, Colors.red, Colors.red]
+                            ),
+                          ),
+                          child: OutlineButton(
+                            color: Colors.black,
+                            highlightedBorderColor: Colors.white,
+                            onPressed: ()  {
+                              signOutGoogle().then((result) {
+                                if (result != null) {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return SignInPage();
+                                      },
+                                    ),
+                                  );
+                                }
+                              });
+                            },
+                            child: Text('LogOut',
+                            style: TextStyle(
+                              fontSize: 25,
+                                  color: Colors.black
+                            ),),
+                          ),
+                        )),
+                      )
                     ],
                   ),
 
               )
-           )
 
     );
   }

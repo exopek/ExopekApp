@@ -38,7 +38,7 @@ class CategoryMyWorkouts extends StatelessWidget {
       child: StreamBuilder<List<RoutineAnimation>>(
         stream: database.routineStream(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.requireData.isNotEmpty) {
             return  ListView.builder(
               controller: myWorkoutsController,
               physics: myWorkoutsPhysics,
@@ -63,7 +63,7 @@ class CategoryMyWorkouts extends StatelessWidget {
                       child: _listViewInput(context, snapshot.data[index].routine)
                   );
                 });
-          } else {
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
             return SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Container(
@@ -71,7 +71,34 @@ class CategoryMyWorkouts extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 child: Center(
                   child: CircularProgressIndicator(
-                    backgroundColor: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.white,
+                    valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+                    strokeWidth: 8,
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+
+              child: Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.2, top: MediaQuery.of(context).size.height*0.3),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height*0.14,
+                    width: MediaQuery.of(context).size.width*0.8,
+                    child: Center(
+                      child: Text('Du hast noch keine eigenen Workouts erstellt.',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 30.0,
+                          fontFamily: 'FiraSansExtraCondensed'
+                      ),
+                      ),
+                    ),
                   ),
                 ),
               ),

@@ -126,16 +126,32 @@ class _HomeAPageState extends State<HomeAPage> {
                   return _workoutContainerContent(context, snapshot.data[Index].name, snapshot.data[Index].thumbnail, Index, scale);
                 });
           } else if(snapshot.connectionState == ConnectionState.waiting) {
-            return Container();
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  strokeWidth: 8,
+                ),
+              ),
+            );
           } else {
-            return Container();
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  strokeWidth: 8,
+                ),
+              ),
+            );
           }
         },
       ),
     );
   }
 
-  Widget _waitContainer(BuildContext context, int index, double scale) {
+  Widget _waitContainer(BuildContext context, double scale) {
     return Stack(
         children: [
           Padding(
@@ -143,11 +159,29 @@ class _HomeAPageState extends State<HomeAPage> {
                 right: 15.0,
                 top: 50 - scale * 25,
                 bottom: 10),
-            child: Container(
-              width: MediaQuery.of(context).size.width/1.0,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0))
-              ),
+            child: NeoContainer(
+              gradientColor1: Theme.of(context).primaryColor,
+              gradientColor2: Theme.of(context).primaryColor,
+              gradientColor3: Theme.of(context).primaryColor,
+              gradientColor4: Theme.of(context).primaryColor,
+              containerHeight: MediaQuery.of(context).size.height/2.4,
+              containerWidth: MediaQuery.of(context).size.width,
+              shadowColor1: Colors.white30,
+              shadowColor2: Colors.black,
+              shadow2Offset: 2.0,
+              shadow1Offset: -3.0,
+              spreadRadius1: 1.0,
+              spreadRadius2: 3.0,
+              blurRadius1: 3.0,
+              blurRadius2: 3.5,
+              circleShape: false,
+              borderColor: Colors.black,
+              containerBorderRadius: BorderRadius.all(Radius.circular(35.0)),
+              containerChild: LinearProgressIndicator(
+                minHeight: MediaQuery.of(context).size.height/2.4,
+                valueColor: AlwaysStoppedAnimation(Colors.black.withOpacity(0.2)),
+                backgroundColor: Theme.of(context).primaryColor,
+              )
             ),
           ),
         ]
@@ -198,7 +232,7 @@ class _HomeAPageState extends State<HomeAPage> {
                   borderColor: Colors.black,
                   containerBorderRadius: BorderRadius.all(Radius.circular(35.0)),
                   containerChild: Container(
-                    width: MediaQuery.of(context).size.width/1.0,
+                    width: MediaQuery.of(context).size.width,
                     child: Container(
                       decoration: BoxDecoration(
                         //color: Colors.black.withOpacity(0.3),

@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:video_app/CustomWidgets/custom_rect_tween.dart';
 import 'package:video_app/CustomWidgets/custom_signIn_Button.dart';
 import 'package:video_app/Helpers/blank.dart';
+import 'package:video_app/Helpers/hero_dialog_route.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/listViewIndex.dart';
 import 'package:video_app/Notifyers/navigationBar_notifyer.dart';
@@ -84,7 +86,7 @@ class _SignInPageState extends State<SignInPage> {
                       _signInButtonEmail(context),
                       //SizedBox(height: MediaQuery.of(context).size.height/100),
                       //_testButton(context),
-                      _signInButton(context),
+                      //_signInButton(context),
                       //SizedBox(height: MediaQuery.of(context).size.height/15),
                       _createAccountButton(context)
                     ],
@@ -110,15 +112,16 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget _signInButtonEmail(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height/3.0,
+      height: MediaQuery.of(context).size.height/2.6,
       width: MediaQuery.of(context).size.width/1.5,
       child: Column(
           children: [
             SizedBox(height: 20.0,),
             Container(
-                  height: MediaQuery.of(context).size.height/17.0,
+                  height: MediaQuery.of(context).size.height/14.0,
                   width: MediaQuery.of(context).size.width/1.4,
                   decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.all(Radius.circular(40.0)),
                       border: Border.all(
                           color: Colors.grey
@@ -128,16 +131,16 @@ class _SignInPageState extends State<SignInPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
                     child: TextField(
-
+                      textAlign: TextAlign.start,
                       decoration: InputDecoration(
                         hintText: '  Deine E-Mail',
                         hintStyle: TextStyle(
-                          color: Colors.black54
+                          color: Colors.black87,
                         ),
                         border: InputBorder.none
                       ),
                       style: TextStyle(
-                          color: Colors.white
+                          color: Colors.black
                       ),
                       controller: emailController,
                     ),
@@ -146,9 +149,10 @@ class _SignInPageState extends State<SignInPage> {
 
             SizedBox(height: 20.0,),
             Container(
-                height: MediaQuery.of(context).size.height/17.0,
+                height: MediaQuery.of(context).size.height/14.0,
                 width: MediaQuery.of(context).size.width/1.4,
                 decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.all(Radius.circular(40.0)),
                   border: Border.all(
                     color: Colors.grey
@@ -158,6 +162,7 @@ class _SignInPageState extends State<SignInPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
                     child: TextField(
+                      textAlign: TextAlign.start,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: '  Deine Passwort',
@@ -167,7 +172,7 @@ class _SignInPageState extends State<SignInPage> {
                           border: InputBorder.none
                       ),
                       style: TextStyle(
-                        color: Colors.white
+                        color: Colors.black
                       ),
                       controller: passwordController,
                     ),
@@ -177,6 +182,10 @@ class _SignInPageState extends State<SignInPage> {
             Padding(
               padding: EdgeInsets.only(left: 0),
               child: AddTodoButton(email: emailController.text, password: passwordController.text),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+              child: _signInButton(context),
             )
             /*
             OutlineButton(
@@ -238,7 +247,7 @@ class _SignInPageState extends State<SignInPage> {
 
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-            primary: Colors.grey.withRed(200),
+            primary: Colors.grey.withOpacity(0.4),
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(35))),
             side: BorderSide(color: Colors.grey)
         ),
@@ -264,32 +273,21 @@ class _SignInPageState extends State<SignInPage> {
                 );
               }
 
-                throw(result.toString());
-            })
-                .catchError((error, stackTrace) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return BlankPage(result: error.toString(),);
-                  },
-                ),
-              );
+                //throw(result.toString());
             });
+
           } catch (e) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return BlankPage(result: e.toString(),);
-                },
-              ),
-            );
+            Navigator.of(context).push(HeroDialogRoute(builder: (context) {
+              return _AddTodoPopupCard();
+            }));
           }
         },
         child: Center(
           child: Text(
             'Sign in with Google',
             style: TextStyle(
-              fontSize: 20,
+              //fontSize: MediaQuery.of(context).size.width*0.06,
+              fontWeight: FontWeight.bold,
               color: Colors.grey,
             ),
           ),
@@ -383,4 +381,61 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
+}
+
+
+/// Tag-value used for the add todo popup button.
+const String _heroAddTodo = 'add-todo-hero';
+
+/// {@template add_todo_popup_card}
+/// Popup card to add a new [Todo]. Should be used in conjuction with
+/// [HeroDialogRoute] to achieve the popup effect.
+///
+/// Uses a [Hero] with tag [_heroAddTodo].
+/// {@endtemplate}
+class _AddTodoPopupCard extends StatelessWidget {
+  /// {@macro add_todo_popup_card}
+  const _AddTodoPopupCard({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Hero(
+          tag: _heroAddTodo,
+          createRectTween: (begin, end) {
+            return CustomRectTween(begin: begin, end: end);
+          },
+          child: Material(
+            color: Colors.redAccent.withOpacity(0.8),
+            elevation: 2,
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                        'Sorry da ist etwas schief gelaufen.'
+                    ),
+                    const Divider(
+                      color: Colors.white,
+                      thickness: 0.2,
+                    ),
+                    const Text(
+                        'Falsche Passwort oder Email'
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

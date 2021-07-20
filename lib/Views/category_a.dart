@@ -5,7 +5,10 @@ import 'package:video_app/CustomWidgets/neoContainer.dart';
 import 'package:video_app/Models/models.dart';
 import 'package:video_app/Notifyers/categoryTabBarIndex.dart';
 import 'package:video_app/Notifyers/color_notifyer.dart';
+import 'package:video_app/Notifyers/trueOrfalse_notifyer.dart';
 import 'package:video_app/Services/database_handler.dart';
+
+import 'editMyWorkouts_a.dart';
 
 
 class CategoryAPage extends StatefulWidget {
@@ -59,12 +62,15 @@ class _CategoryAPageState extends State<CategoryAPage> {
 
   var levelMap = new Map();
 
+  var _iconColorMap = new Map();
+
   void setFirstTabbarIndex() async {
     final CTabBarIndex tabBarIndex = Provider.of<CTabBarIndex>(context);
     tabBarIndex.updateIndex(0, widget.category,context);
   }
 
   void initState() {
+    _iconColorMap = {'Anfänger': Colors.cyanAccent, 'Fortgeschritten': Colors.deepPurple, 'Profi': Colors.red};
     var tabBarMap = {'Functional':functionalTabBar, 'Mobility':mobilityTabBar, 'Excercises':excerciseTabBar, 'Konfigurator':konfiguratorTabBar};
     //thumbnailMap = {'Bankdrücken': '', 'Schulterpresse': '', 'Butterfly': '', 'CrossPress': '', 'XPushUp': '', 'Seitheben': ''};
     //toggleMap = {'Bankdrücken': false, 'Schulterpresse': false, 'Butterfly': false, 'CrossPress': false, 'XPushUp': false, 'Seitheben': false};
@@ -84,6 +90,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
   @override
   Widget build(BuildContext context) {
     final DatabaseHandler database = Provider.of<DatabaseHandler>(context);
+    final TrueOrFalseNotifyer pageVisitState = Provider.of<TrueOrFalseNotifyer>(context);
     /*
     if (firstVisit == false) {
       final CTabBarIndex tabBarIndex = Provider.of<CTabBarIndex>(context);
@@ -127,6 +134,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
                 )
               ),
               onPressed: () {
+                pageVisitState.updateTrueOrFalse(false);
                 toggleMap.forEach((key, value) {
                   if (value == true) {
                     thumbnails.add(thumbnailMap[key]);
@@ -152,6 +160,7 @@ class _CategoryAPageState extends State<CategoryAPage> {
                       return MultiProvider(
                           providers: [
                             Provider(create: (context) => DatabaseHandler(uid: database.uid),),
+                            ChangeNotifierProvider(create: (context) => TrueOrFalseNotifyer()),
                           ],
                           child: EditWorkoutPage(routineName: widget.routineName,));
                     },
@@ -306,10 +315,6 @@ class _CategoryAPageState extends State<CategoryAPage> {
     if (widget.category == 'Konfigurator') {
       return Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/35, left: MediaQuery.of(context).size.width/20, right: MediaQuery.of(context).size.width/20),
-        child: Material(
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          elevation: 5.0,
-          shadowColor: Colors.black,
           child: NeoContainer(
             containerHeight: MediaQuery.of(context).size.height/8,
             containerWidth: MediaQuery.of(context).size.width/2,
@@ -322,7 +327,6 @@ class _CategoryAPageState extends State<CategoryAPage> {
             gradientColor2: Theme.of(context).primaryColor,
             gradientColor3: Theme.of(context).primaryColor,
             gradientColor4: Theme.of(context).primaryColor,
-
             containerChild: Center(
               child: SwitchListTile(
                 title: Text(workoutTag,
@@ -331,26 +335,20 @@ class _CategoryAPageState extends State<CategoryAPage> {
                     fontFamily: 'FiraSansExtraCondensed',
                       color: Colors.white
                   ),),
+                secondary: Icon(Icons.whatshot, color: _iconColorMap[level],),
                 value: toggleMap[workoutTag] ?? false,
                 onChanged: (bool value) {
                   setState(() {
-                    log('workoutTag: $workoutTag');
-                    log('value: $value');
-                    log('thumbnail: $thumbnail');
                     toggleMap[workoutTag] = value;
                     thumbnailMap[workoutTag] = thumbnail;
                     artboardMap[workoutTag] = artboardName;
                     bodyPartMap[workoutTag] = bodyPart;
                     levelMap[workoutTag] = level;
-                    log('$artboardMap');
-                    log('$toggleMap');
-                    log('$thumbnailMap');
                   });
                 },
               ),
             ),
           ),
-        ),
       );
     } else {
       return Padding(
